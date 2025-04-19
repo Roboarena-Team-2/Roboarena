@@ -37,18 +37,41 @@ ziel_chip = pygame.Rect(730, 107, 50, 40)
 
 # Wände
 walls = [
-    pygame.Rect(0, 70, 800, 20), pygame.Rect(0, 510, 700, 20), pygame.Rect(0, 70, 20, 460),
-    pygame.Rect(600, 598, 200, 10), pygame.Rect(795, 200, 20, 460), pygame.Rect(780, 70, 20, 460),
-    pygame.Rect(500, 150, 160, 200), pygame.Rect(300, 102, 3, 13), pygame.Rect(300, 124, 3, 15),
-    pygame.Rect(540, 88, 3, 15), pygame.Rect(540, 137, 3, 15), pygame.Rect(259, 116, 400, 7),
-    pygame.Rect(50, 150, 600, 70), pygame.Rect(50, 150, 20, 120), pygame.Rect(70, 200, 150, 20),
-    pygame.Rect(380, 250, 100, 160), pygame.Rect(85, 250, 100, 160), pygame.Rect(0, 300, 100, 160),
-    pygame.Rect(0, 500, 700, 100), pygame.Rect(200, 220, 160, 100), pygame.Rect(220, 300, 120, 20),
-    pygame.Rect(320, 200, 20, 120), pygame.Rect(340, 200, 180, 20), pygame.Rect(500, 220, 20, 140),
-    pygame.Rect(520, 340, 140, 20), pygame.Rect(620, 240, 20, 100), pygame.Rect(640, 240, 115, 20),
-    pygame.Rect(766, 240, 20, 200), pygame.Rect(85, 237, 100, 100),
-    pygame.Rect(100, 350, 300, 60), pygame.Rect(100, 400, 580, 20), pygame.Rect(100, 400, 20, 70),
-    pygame.Rect(300, 420, 20, 90), pygame.Rect(0, 400, 700, 120), pygame.Rect(680, 420, 20, 90)
+    pygame.Rect(0, 70, 800, 20),
+    pygame.Rect(0, 510, 700, 20),
+    pygame.Rect(0, 70, 20, 460),
+    pygame.Rect(600, 598, 200, 10),
+    pygame.Rect(795, 200, 20, 460),
+    pygame.Rect(780, 70, 20, 460),
+    pygame.Rect(500, 150, 160, 200),
+    pygame.Rect(300, 102, 3, 13),
+    pygame.Rect(300, 124, 3, 15),
+    pygame.Rect(540, 88, 3, 15),
+    pygame.Rect(540, 137, 3, 15),
+    pygame.Rect(259, 116, 400, 7),
+    pygame.Rect(50, 150, 600, 70),
+    pygame.Rect(50, 150, 20, 120),
+    pygame.Rect(70, 200, 150, 20),
+    pygame.Rect(380, 250, 100, 160),
+    pygame.Rect(85, 250, 100, 160),
+    pygame.Rect(0, 300, 100, 160),
+    pygame.Rect(0, 500, 700, 100),
+    pygame.Rect(200, 220, 160, 100),
+    pygame.Rect(220, 300, 120, 20),
+    pygame.Rect(320, 200, 20, 120),
+    pygame.Rect(340, 200, 180, 20),
+    pygame.Rect(500, 220, 20, 140),
+    pygame.Rect(520, 340, 140, 20),
+    pygame.Rect(620, 240, 20, 100),
+    pygame.Rect(640, 240, 115, 20),
+    pygame.Rect(766, 240, 20, 200),
+    pygame.Rect(85, 237, 100, 100),
+    pygame.Rect(100, 350, 300, 60),
+    pygame.Rect(100, 400, 580, 20),
+    pygame.Rect(100, 400, 20, 70),
+    pygame.Rect(300, 420, 20, 90),
+    pygame.Rect(0, 400, 700, 120),
+    pygame.Rect(680, 420, 20, 90),
 ]
 
 
@@ -57,8 +80,16 @@ def zeichne_text(text_str, farbe, y_offset=0, shadow=True):
     text = font.render(text_str, True, farbe)
     if shadow:
         shadow_txt = font.render(text_str, True, (0, 0, 0))
-        screen.blit(shadow_txt, (WIDTH // 2 - text.get_width() // 2 + 2, HEIGHT // 2 + 2 + y_offset))
-    screen.blit(text, (WIDTH // 2 - text.get_width() // 2, HEIGHT // 2 + y_offset))
+        screen.blit(
+            shadow_txt,
+            (
+                WIDTH // 2 - text.get_width() // 2 + 2,
+                HEIGHT // 2 + 2 + y_offset,
+            ),
+        )
+    screen.blit(
+        text, (WIDTH // 2 - text.get_width() // 2, HEIGHT // 2 + y_offset)
+    )
 
 
 def zeichne_spur(farbe):
@@ -71,13 +102,15 @@ def zeichne_welt():
     for wall in walls:
         pygame.draw.rect(screen, FARBE_WAND, wall)
     pygame.draw.rect(screen, (255, 255, 255), ziel_chip)
-    pygame.draw.rect(screen, (180, 180, 180), (ziel_chip.x, ziel_chip.y, 44, 40))
+    pygame.draw.rect(
+        screen, (180, 180, 180), (ziel_chip.x, ziel_chip.y, 44, 40)
+    )
     pygame.draw.rect(screen, (180, 180, 180), (730, 560, 40, 35))
     pygame.draw.rect(screen, (255, 255, 255), (730, 596, 40, 10))
 
 
 def reset_strahl():
-    global strahl, direction
+    global direction
     strahl.x, strahl.y = start_pos
     direction = [0, -1]
 
@@ -135,7 +168,9 @@ while running:
         if strahl.colliderect(ziel_chip):
             game_state = "win"
 
-        screen.blit(font.render(f"Leben: {leben}", True, (255, 255, 255)), (20, 20))
+        screen.blit(
+            font.render(f"Leben: {leben}", True, (255, 255, 255)), (20, 20)
+        )
 
     elif game_state == "gameover":
         zeichne_spur(FARBE_SPUR_GAMEOVER)
