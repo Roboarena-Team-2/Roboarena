@@ -29,40 +29,73 @@ game_state = "levels"
 trail = []
 leben = 3
 
+
 class Level:
-    def __init__(self, start_pos, start_dir, ziel_pos, ziel_dir, direction, walls):
-        self.start_chip = pygame.Rect(*start_pos, 
-                                      *[(element * 5) + 35 for element in start_dir])
+    def __init__(self,
+                 start_pos, start_dir,
+                 ziel_pos, ziel_dir,
+                 direction,
+                 walls):
+        start_area = start_dir.copy()
+        start_area = [(element * 5) + 35 for element in start_dir.copy()]
+        self.start_chip = pygame.Rect(*start_pos,
+                                      *start_area)
         self.start_dir = start_dir
-        self.ziel_chip = pygame.Rect(*ziel_pos, 
-                                     *[(element * 10) + 40 for element in ziel_dir])
+        ziel_area = [(abs(element) * 10) + 40 for element in ziel_dir]
+        self.ziel_chip = pygame.Rect(*ziel_pos,
+                                     *ziel_area)
         self.ziel_dir = ziel_dir
-        self.strahl = pygame.Rect((self.start_chip.x + 12.5) if self.start_dir[1] == 1 else self.start_chip.x, 
-                                  (self.start_chip.y + 12.5) if self.start_dir[0] == 1 else self.start_chip.y, 
-                                  10, 
-                                  10)
+        up = self.start_dir[1] == 1
+        strahl = [self.start_chip.x+12.5 if up else self.start_chip.x,
+                  self.start_chip.y+12.5 if not up else self.start_chip.y,
+                  10,
+                  10]
+        self.strahl = pygame.Rect(*strahl)
         self.direction = direction
         self.walls = walls
+
+    def start_chip_box(self):
+        if self.start_dir[0] == 1:
+            x = self.start_chip.x + 10
+        else:
+            x = self.start_chip.x
+        if self.start_dir[1] == 1:
+            y = self.start_chip.y + 10
+        else:
+            y = self.start_chip.y
+        box = (x,
+               y,
+               30 if self.start_dir[0] != 0 else self.start_chip.w,
+               30 if self.start_dir[1] != 0 else self.start_chip.h)
+        return pygame.Rect(box)
+
+    def ziel_chip_box(self):
+        x = self.ziel_chip.x + 6 if self.ziel_dir[0] == 1 else self.ziel_chip.x
+        y = self.ziel_chip.y + 6 if self.ziel_dir[1] == 1 else self.ziel_chip.y
+        box = (x,
+               y,
+               44 if self.ziel_dir[0] != 0 else self.ziel_chip.w,
+               44 if self.ziel_dir[1] != 0 else self.ziel_chip.h)
+        return pygame.Rect(box)
 
     def zeichne_welt(self):
         screen.fill(FARBE_HINTERGRUND)
         for wall in self.walls:
             pygame.draw.rect(screen, FARBE_WAND, wall)
         pygame.draw.rect(screen, (255, 255, 255), self.ziel_chip)
-        pygame.draw.rect(screen, (180, 180, 180), ((self.ziel_chip.x + 6) if self.ziel_dir[0] == 1 else self.ziel_chip.x,
-                                                   (self.ziel_chip.y + 6) if self.ziel_dir[1] == 1 else self.ziel_chip.y,
-                                                   44 if self.ziel_dir[0] != 0 else self.ziel_chip.w,
-                                                   44 if self.ziel_dir[1] != 0 else self.ziel_chip.h))
+        pygame.draw.rect(screen, (180, 180, 180), self.ziel_chip_box())
         pygame.draw.rect(screen, (255, 255, 255), self.start_chip)
-        pygame.draw.rect(screen, (180, 180, 180), ((self.start_chip.x + 10) if self.start_dir[0] == 1 else self.start_chip.x,
-                                                   (self.start_chip.y + 10) if self.start_dir[1] == 1 else self.start_chip.y,
-                                                   30 if self.start_dir[0] != 0 else self.start_chip.w,
-                                                   30 if self.start_dir[1] != 0 else self.start_chip.h))
-    
+        pygame.draw.rect(screen, (180, 180, 180), self.start_chip_box())
+
     def reset_strahl(self):
-        global direction
-        self.strahl.x, self.strahl.y = (self.start_chip.x + 12.5) if self.start_dir[1] == 1 else self.start_chip.x, (self.start_chip.y + 12.5) if self.start_dir[0] == 1 else self.start_chip.y
+        self.strahl.x = self.start_chip.x
+        if self.start_dir[1] == 1:
+            self.strahl.x += 12.5
+        self.strahl.y = self.start_chip.y
+        if self.start_dir[0] == 1:
+            self.strahl.y += 12.5
         self.direction = [0, -1]
+
 
 # Wände für Levels
 walls1 = [
@@ -119,8 +152,9 @@ walls2 = [
 
 
 # Level Setup
-level1 = Level((736, HEIGHT - 44), [0, 1], (730, 107), [1, 0], [0, -1], walls1)
-level2 = Level((380, HEIGHT - 50), [0, 1], (382.5, 0), [0, 1], [0, -1], walls2)
+level1 = Level((736, HEIGHT-44), [0, 1], (730, 107), [-1, 0], [0, -1], walls1)
+level2 = Level((380, HEIGHT-50), [0, 1], (382.5, 0), [0, 1], [0, -1], walls2)
+
 
 # Hilfsfunktionen
 def zeichne_text(text_str, farbe, y_offset=0, shadow=True):
@@ -144,6 +178,7 @@ def zeichne_spur(farbe):
         pygame.draw.rect(screen, farbe, segment)
 
 
+chosen_level = level1
 
 # Spiel-Loop
 running = True
@@ -212,7 +247,8 @@ while running:
         chosen_level.strahl.x += chosen_level.direction[0] * STRAHL_SPEED
         chosen_level.strahl.y += chosen_level.direction[1] * STRAHL_SPEED
 
-        trail.append(pygame.Rect(chosen_level.strahl.x + 2, chosen_level.strahl.y + 2, 6, 6))
+        trail.append(pygame.Rect(chosen_level.strahl.x + 2,
+                                 chosen_level.strahl.y + 2, 6, 6))
         zeichne_spur(FARBE_SPUR)
         pygame.draw.rect(screen, FARBE_STRAHL, chosen_level.strahl)
 
