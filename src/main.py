@@ -15,8 +15,10 @@ FARBE_HINTERGRUND = (0, 0, 0)
 FARBE_WAND = (200, 0, 0)
 FARBE_STRAHL = (0, 255, 255)
 FARBE_SPUR = (100, 200, 200)
+FARBE_SPUR_SLOW = (250, 255, 0)
 FARBE_SPUR_WIN = (0, 255, 0)
 FARBE_SPUR_GAMEOVER = (180, 180, 180)
+FARBE_SLOW = (250, 255, 0)
 
 # Spiel-Setup
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -35,7 +37,8 @@ class Level:
                  start_pos, start_dir,
                  ziel_pos, ziel_dir,
                  direction,
-                 walls):
+                 strahl_speed,
+                 walls, slow_buttons):
         start_area = start_dir.copy()
         start_area = [(element * 5) + 35 for element in start_dir.copy()]
         self.start_chip = pygame.Rect(*start_pos,
@@ -52,7 +55,11 @@ class Level:
                   10]
         self.strahl = pygame.Rect(*strahl)
         self.direction = direction
+        self.strahl_speed = strahl_speed
+        self.is_slowed = False
+        self.slow_timer = 0
         self.walls = walls
+        self.slow_buttons = slow_buttons
 
     def start_chip_box(self):
         if self.start_dir[0] == 1:
@@ -82,6 +89,8 @@ class Level:
         screen.fill(FARBE_HINTERGRUND)
         for wall in self.walls:
             pygame.draw.rect(screen, FARBE_WAND, wall)
+        for button in self.slow_buttons:
+            pygame.draw.rect(screen, FARBE_SLOW, button)
         pygame.draw.rect(screen, (255, 255, 255), self.ziel_chip)
         pygame.draw.rect(screen, (180, 180, 180), self.ziel_chip_box())
         pygame.draw.rect(screen, (255, 255, 255), self.start_chip)
@@ -95,6 +104,7 @@ class Level:
         if self.start_dir[0] == 1:
             self.strahl.y += 12.5
         self.direction = [0, -1]
+        self.strahl_speed = STRAHL_SPEED
 
 
 # Wände für Levels
@@ -136,6 +146,10 @@ walls1 = [
     pygame.Rect(680, 420, 20, 90),
 ]
 
+slow_buttons1 = [
+    pygame.Rect(680, 280, 20, 20)
+]
+
 walls2 = [
     pygame.Rect(0, 500, 300, 100),
     pygame.Rect(500, 500, 300, 100),
@@ -150,10 +164,14 @@ walls2 = [
     pygame.Rect(100, 330, 100, 10),
     pygame.Rect(150, 410, 100, 10),]
 
+slow_buttons2 = [
+    pygame.Rect(170, 420, 20, 20)
+]
+
 
 # Level Setup
-level1 = Level((736, HEIGHT-44), [0, 1], (730, 107), [-1, 0], [0, -1], walls1)
-level2 = Level((380, HEIGHT-50), [0, 1], (382.5, 0), [0, 1], [0, -1], walls2)
+level1 = Level((736, HEIGHT-44), [0, 1], (730, 107), [-1, 0], [0, -1], STRAHL_SPEED, walls1, slow_buttons1)
+level2 = Level((380, HEIGHT-50), [0, 1], (382.5, 0), [0, 1], [0, -1], STRAHL_SPEED, walls2, slow_buttons2)
 
 
 # Hilfsfunktionen
@@ -244,13 +262,23 @@ while running:
 
     elif game_state == "playing":
         chosen_level.zeichne_welt()
-        chosen_level.strahl.x += chosen_level.direction[0] * STRAHL_SPEED
-        chosen_level.strahl.y += chosen_level.direction[1] * STRAHL_SPEED
+        chosen_level.strahl.x += chosen_level.direction[0] * chosen_level.strahl_speed
+        chosen_level.strahl.y += chosen_level.direction[1] * chosen_level.strahl_speed
 
         trail.append(pygame.Rect(chosen_level.strahl.x + 2,
                                  chosen_level.strahl.y + 2, 6, 6))
-        zeichne_spur(FARBE_SPUR)
+        if not chosen_level.is_slowed:
+            zeichne_spur(FARBE_SPUR)
+        else:
+            zeichne_spur(FARBE_SPUR_SLOW)
+
         pygame.draw.rect(screen, FARBE_STRAHL, chosen_level.strahl)
+
+        if chosen_level.is_slowed:
+            chosen_level.slow_timer -= clock.get_time()
+        if chosen_level.slow_timer <= 0:
+            chosen_level.strahl_speed = STRAHL_SPEED
+            chosen_level.is_slowed = False
 
         for wall in chosen_level.walls:
             if chosen_level.strahl.colliderect(wall):
@@ -261,6 +289,13 @@ while running:
                     trail.clear()
                     chosen_level.reset_strahl()
                 break
+
+        for button in chosen_level.slow_buttons:
+            if chosen_level.strahl.colliderect(button):
+                if not chosen_level.is_slowed:
+                    chosen_level.strahl_speed = 1
+                    chosen_level.is_slowed = True
+                    chosen_level.slow_timer = 3000
 
         if chosen_level.strahl.colliderect(chosen_level.ziel_chip):
             game_state = "win"
