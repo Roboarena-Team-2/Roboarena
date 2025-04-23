@@ -170,9 +170,9 @@ slow_buttons2 = [
 
 
 # Level Setup
-level1 = Level((736, HEIGHT-44), [0, 1], (730, 107), [-1, 0], [0, -1], 
+level1 = Level((736, HEIGHT-44), [0, 1], (730, 107), [-1, 0], [0, -1],
                STRAHL_SPEED, walls1, slow_buttons1)
-level2 = Level((380, HEIGHT-50), [0, 1], (382.5, 0), [0, 1], [0, -1], 
+level2 = Level((380, HEIGHT-50), [0, 1], (382.5, 0), [0, 1], [0, -1],
                STRAHL_SPEED, walls2, slow_buttons2)
 
 
