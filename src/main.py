@@ -170,8 +170,10 @@ slow_buttons2 = [
 
 
 # Level Setup
-level1 = Level((736, HEIGHT-44), [0, 1], (730, 107), [-1, 0], [0, -1], STRAHL_SPEED, walls1, slow_buttons1)
-level2 = Level((380, HEIGHT-50), [0, 1], (382.5, 0), [0, 1], [0, -1], STRAHL_SPEED, walls2, slow_buttons2)
+level1 = Level((736, HEIGHT-44), [0, 1], (730, 107), [-1, 0], [0, -1], 
+               STRAHL_SPEED, walls1, slow_buttons1)
+level2 = Level((380, HEIGHT-50), [0, 1], (382.5, 0), [0, 1], [0, -1], 
+               STRAHL_SPEED, walls2, slow_buttons2)
 
 
 # Hilfsfunktionen
@@ -262,8 +264,12 @@ while running:
 
     elif game_state == "playing":
         chosen_level.zeichne_welt()
-        chosen_level.strahl.x += chosen_level.direction[0] * chosen_level.strahl_speed
-        chosen_level.strahl.y += chosen_level.direction[1] * chosen_level.strahl_speed
+        chosen_level.strahl.x += (
+            chosen_level.direction[0] * chosen_level.strahl_speed
+        )
+        chosen_level.strahl.y += (
+            chosen_level.direction[1] * chosen_level.strahl_speed
+        )
 
         trail.append(pygame.Rect(chosen_level.strahl.x + 2,
                                  chosen_level.strahl.y + 2, 6, 6))
