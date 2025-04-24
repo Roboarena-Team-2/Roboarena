@@ -19,6 +19,7 @@ FARBE_SPUR_SLOW = (250, 255, 0)
 FARBE_SPUR_WIN = (0, 255, 0)
 FARBE_SPUR_GAMEOVER = (180, 180, 180)
 FARBE_SLOW = (250, 255, 0)
+MOVING_WALL_SPEED = 1
 
 # Spiel-Setup
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -38,7 +39,8 @@ class Level:
                  ziel_pos, ziel_dir,
                  direction,
                  strahl_speed,
-                 walls, slow_buttons):
+                 walls, slow_buttons,
+                 moving_walls):
         start_area = start_dir.copy()
         start_area = [(element * 5) + 35 for element in start_dir.copy()]
         self.start_chip = pygame.Rect(*start_pos,
@@ -60,6 +62,7 @@ class Level:
         self.slow_timer = 0
         self.walls = walls
         self.slow_buttons = slow_buttons
+        self.moving_walls = moving_walls
 
     def start_chip_box(self):
         if self.start_dir[0] == 1:
@@ -91,6 +94,8 @@ class Level:
             pygame.draw.rect(screen, FARBE_WAND, wall)
         for button in self.slow_buttons:
             pygame.draw.rect(screen, FARBE_SLOW, button)
+        for m_wall in self.moving_walls:
+            pygame.draw.rect(screen, FARBE_WAND, m_wall)
         pygame.draw.rect(screen, (255, 255, 255), self.ziel_chip)
         pygame.draw.rect(screen, (180, 180, 180), self.ziel_chip_box())
         pygame.draw.rect(screen, (255, 255, 255), self.start_chip)
@@ -150,6 +155,8 @@ slow_buttons1 = [
     pygame.Rect(680, 280, 20, 20)
 ]
 
+moving_wall1 = [pygame.Rect(500, 300, 50, 20)]
+
 walls2 = [
     pygame.Rect(0, 500, 300, 100),
     pygame.Rect(500, 500, 300, 100),
@@ -168,12 +175,13 @@ slow_buttons2 = [
     pygame.Rect(170, 420, 20, 20)
 ]
 
+moving_wall2 = [pygame.Rect(500, 300, 50, 20)]
 
 # Level Setup
 level1 = Level((736, HEIGHT-44), [0, 1], (730, 107), [-1, 0], [0, -1],
-               STRAHL_SPEED, walls1, slow_buttons1)
+               STRAHL_SPEED, walls1, slow_buttons1, moving_wall1)
 level2 = Level((380, HEIGHT-50), [0, 1], (382.5, 0), [0, 1], [0, -1],
-               STRAHL_SPEED, walls2, slow_buttons2)
+               STRAHL_SPEED, walls2, slow_buttons2, moving_wall2)
 
 
 # Hilfsfunktionen
@@ -280,6 +288,11 @@ while running:
 
         pygame.draw.rect(screen, FARBE_STRAHL, chosen_level.strahl)
 
+        for m_wall in chosen_level.moving_walls:
+            m_wall.x += MOVING_WALL_SPEED
+            if m_wall.left <= WIDTH/2 or m_wall.right >= WIDTH:
+                MOVING_WALL_SPEED *= -1
+
         if chosen_level.is_slowed:
             chosen_level.slow_timer -= clock.get_time()
         if chosen_level.slow_timer <= 0:
@@ -288,6 +301,16 @@ while running:
 
         for wall in chosen_level.walls:
             if chosen_level.strahl.colliderect(wall):
+                leben -= 1
+                if leben <= 0:
+                    game_state = "gameover"
+                else:
+                    trail.clear()
+                    chosen_level.reset_strahl()
+                break
+
+        for m_wall in chosen_level.moving_walls:
+            if chosen_level.strahl.colliderect(m_wall):
                 leben -= 1
                 if leben <= 0:
                     game_state = "gameover"
