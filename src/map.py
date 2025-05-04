@@ -3,8 +3,8 @@ COLORS = {
     "boden": (180, 180, 180),       # grau
     "rand": (60, 60, 60),           # dunkelgrau (Wände)
     "lava": (255, 0, 0),            # rot
-    "eis": (0, 180, 220),         # hellblau
-    "sand": (255, 165, 0),          # orange
+    "eis": (115, 155, 208),         # hellblau
+    "sand": (235, 185, 120),        # orange
     "gebuesch": (0, 128, 0),        # grün
 }
 
