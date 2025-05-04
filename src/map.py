@@ -1,13 +1,12 @@
-# possible colors:
+# Possible colors:
 COLORS = {
-    "boden": (180, 180, 180),       # grau
-    "rand": (60, 60, 60),           # dunkelgrau (Wände)
-    "lava": (255, 0, 0),            # rot
-    "eis": (115, 155, 208),         # hellblau
-    "sand": (235, 185, 120),        # orange
-    "gebuesch": (0, 128, 0),        # grün
+    "boden": (180, 180, 180),       # gray (ground)
+    "rand": (60, 60, 60),           # dark gray (walls)
+    "lava": (255, 0, 0),            # red
+    "eis": (115, 155, 208),         # light blue (ice)
+    "sand": (235, 185, 120),        # orange (sand)
+    "gebuesch": (0, 128, 0),        # green (bush)
 }
-
 
 def get_map1():
     # Initialize empty 23 x 46 inner field
