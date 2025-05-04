@@ -25,29 +25,29 @@
         Die Roboter schießen sich gegenseitig ab. Wird man getroffen, verliert man ein Leben, wobei man
         mit 3 Leben startet. Sind alle 3 Leben weg, hat man verloren. Hat man es geschafft, als letzter in der
         Arena übrig zu bleiben, hat man gewonnen.<br><br>
-        Die Arena hat verschiedene Felder, mit jeweils besonderen Funktionen.
-        <ul>
-            <li style="color: black;">Wände: man kann nicht durch gelangen und kann sie nutzen, um sich zu verstecken</li>
-            <li style="color: green;">Büsche: hier kann man sich verstecken, d.h. wird von den anderen Robotern nicht gesehen</li>
-            <li style="color: red;">Lava: berührt man die Lava, verliert man ein Leben</li>
-            <li style="color: orange;">Sand: man kann sich hier nur langsamer bewegen</li>
-            <li style="color: lightskyblue;">Eis: man "rutscht aus" (versch. Ideen, wie man das realisiert)</li>
-        </ul>
+        Die Arena hat verschiedene Felder, mit jeweils besonderen Funktionen:
     </p>
+    <ul>
+        <li style="color: black;">Wände: man kann nicht durch gelangen und kann sie nutzen, um sich zu verstecken</li>
+        <li style="color: green;">Büsche: hier kann man sich verstecken, d.h. wird von den anderen Robotern nicht gesehen</li>
+        <li style="color: red;">Lava: berührt man die Lava, verliert man ein Leben</li>
+        <li style="color: orange;">Sand: man kann sich hier nur langsamer bewegen</li>
+        <li style="color: lightskyblue;">Eis: man "rutscht aus" (versch. Ideen, wie man das realisiert)</li>
+    </ul>
 
     <p>
         Dann haben wir uns noch überlegt, wie unser Spiel strukturiert sein wird,
         d.h. welche Bildschirme es geben wird:
-        <ul>
-            <li>Startseite/Hauptmenü (Willkommen, kurze Spielanleitung, Button zu Einstellungen)</li>
-            <li>Roboter- und Schwierigkeitsauswahl</li>
-            <li>Spielbildschirm</li>
-            <li>Menü (Button zu Hauptmenü, Hilfeseite, Einstellungen, Spiel schließen, zurück zum Spiel)</li>
-            <li>Hilfeseite</li>
-            <li>Einstellungen (Helligkeit, Lautstärke, Sprache)</li>
-            <li>Game Over / Gewonnen</li>
-        </ul>
     </p>
+    <ul>
+        <li>Startseite/Hauptmenü (Willkommen, kurze Spielanleitung, Button zu Einstellungen)</li>
+        <li>Roboter- und Schwierigkeitsauswahl</li>
+        <li>Spielbildschirm</li>
+        <li>Menü (Button zu Hauptmenü, Hilfeseite, Einstellungen, Spiel schließen, zurück zum Spiel)</li>
+        <li>Hilfeseite</li>
+        <li>Einstellungen (Helligkeit, Lautstärke, Sprache)</li>
+        <li>Game Over / Gewonnen</li>
+    </ul>
 
     <p>
         (Entwicklung Spielidee, Gestaltung Spielfeld & Auswahl der Bildschirme: alle zusammen,
@@ -90,17 +90,24 @@
             So konnte geprüft werden, ob die Karte korrekt angezeigt wird.<br>
             Die Fenstergröße wurde auf 1920x1000 Pixel gesetzt (48 Spalten × 40px und 25 Zeilen × 40px).
             Es wurde bewusst keine Full-HD-Auflösung (1920×1080) gewählt, da Pygame die Windows-Taskleiste nicht berücksichtigt und das Fenster bei voller Höhe sonst über den oberen Bildschirmrand hinausgeht – inklusive der Fensterleiste.
-            Diese Werte stehen in einer eigenen Datei <code>config.py</code>.<br>
+            Diese Werte stehen in einer eigenen Datei <code>config.py</code>.
             <img src="screenshots/testlauf_arena.png" alt="Testlauf Arena">
         </li>
 
-<li>MapVorlage: 
-<img src="screenshots/Map_Zeichnung.png" alt="Map_Zeichnung">
-</li>
+        <li>
+            <strong>Zeichnung der Map:</strong><br>
+            <img src="screenshots/Map_Zeichnung.png" alt="Map Zeichnung (Handskizze)">
+        </li>
+
+        <li>
+            <strong>Ergebnis (umgesetzt in Pygame):</strong><br>
+            <img src="screenshots/Map_Result.png" alt="Map Ergebnis">
+        </li>
+
         <li>
             Zusätzlich wurde eine Datei <code>.flake8</code> erstellt, in der die maximale Zeilenlänge auf 90 Zeichen gesetzt wurde.
             Damit gibt es keine Konflikte mit dem automatischen Formatierer Black, der ähnliche Zeilenlängen verwendet.
-            So werden unnötige Warnungen beim Testen mit Flake8 vermieden.
+            So werden unnötige Warnungen beim Testen mit Flake8 vermieden.<br>
             <img src="screenshots/flake8_fix.png" alt="Flake8 Screenshot">
         </li>
     </ul>
