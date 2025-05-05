@@ -8,6 +8,7 @@ COLORS = {
     "gebuesch": (0, 128, 0),        # green (bush)
 }
 
+
 def get_map1():
     # Initialize empty 23 x 46 inner field
     map1 = []
