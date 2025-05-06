@@ -33,8 +33,7 @@ class Robot:
             eye_distance * math.sin(alpha_rad + eye_offset_rad))
 
         # draw eyes
-        pygame.draw.circle(self.screen, (0, 0, 0), 
+        pygame.draw.circle(self.screen, (0, 0, 0),
                            (left_eye_x, left_eye_y), eye_radius)
-        pygame.draw.circle(self.screen, (0, 0, 0), 
+        pygame.draw.circle(self.screen, (0, 0, 0),
                            (right_eye_x, right_eye_y), eye_radius)
-        
