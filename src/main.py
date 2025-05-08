@@ -52,7 +52,6 @@ while running:
     robot2.draw_robot()
     robot3.draw_robot()
     pygame.display.flip()
-    clock.tick(60)
 
 # Cleanup
 pygame.quit()
