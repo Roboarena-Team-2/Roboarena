@@ -7,7 +7,6 @@ from robot import Robot
 
 # Initialization
 pygame.init()
-clock = pygame.time.Clock()
 
 # Create window
 screen = pygame.display.set_mode((config.WIDTH, config.HEIGHT))
@@ -33,7 +32,6 @@ turn_speed = 5
 # Game loop
 running = True
 while running:
-    clock.tick(60)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
