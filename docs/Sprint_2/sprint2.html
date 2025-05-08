@@ -66,6 +66,7 @@
             </ul>
             <img src="screenshots/Arena_Klasse.png" alt="Arena Klasse">
         </li>
+        <br>
 
         <li>
             Die Darstellung der Arena erfolgt farbbasiert mit Hilfe von <code>pygame.draw.rect</code>. Alle Farben wurden zentral über ein Dictionary <code>COLORS</code> definiert:
@@ -79,11 +80,13 @@
             </ul>
             <img src="screenshots/arena_feldtypen.png" alt="Feldtypen">
         </li>
+        <br>
 
         <li>
             Die Karte selbst wird in <code>map.py</code> erstellt. Dort wurde eine eigene Karte definiert mit verschiedenen Bereichen wie Lava-Feldern, Eisflächen, Sandzonen und Gebüsch.<br>
             <img src="screenshots/Map_Code.png" alt="Map-Code">
         </li>
+        <br>
 
         <li>
             Um alles zu testen, wurde eine eigene Datei <code>main.py</code> erstellt. In dieser Datei wird das Pygame-Fenster geöffnet, die Arena geladen und dargestellt.
@@ -93,22 +96,26 @@
             Diese Werte stehen in einer eigenen Datei <code>config.py</code>.<br>
             <img src="screenshots/testlauf_arena.png" alt="Testlauf Arena">
         </li>
+        <br>
 
         <li>
             <strong>Zeichnung der Map:</strong><br>
             <img src="screenshots/Map_Zeichnung.png" alt="Map Zeichnung (Handskizze)">
         </li>
+        <br>
 
         <li>
             <strong>Ergebnis (umgesetzt in Pygame):</strong><br>
             <img src="screenshots/Map_Result.png" alt="Map Ergebnis">
         </li>
+        <br>
 
         <li>
             Um Roboter zu erstellen, verändern usw., wurde eine Klasse <code>Robot</code> erstellt.
-            Ein Roboter ist zunächst nur ein Kreis mit x/y-Koordinate der Mitte, Radius, Bewegungsrichtung und Farbe.
+            Ein Roboter ist zunächst nur ein Kreis mit x/y-Koordinate der Mitte, Radius, Bewegungsrichtung und Farbe.<br>
             <img src="screenshots/Screenshot_Robot_class.png" alt="Roboter Klasse">
         </li>
+        <br>
 
         <li>
             Zusätzlich enthält die Klasse noch eine Methode, um den Roboter zu zeichnen.
@@ -116,6 +123,7 @@
             in die Bewegungsrichtung schauen. Die Richtung wird in Grad angegeben, wobei 0° nach rechts zeigt.
             <img src="screenshots/Screenshot_draw_robot.png" alt="Funktion draw_robot()">
         </li>
+        <br>
 
         <li>
             Um die Roboter zu testen und zu veranschaulichen, wurden drei verschiedene Beispielroboter erstellt.<br>
@@ -123,6 +131,17 @@
             Diese wurden in die Arena eingefügt.<br>
             <img src="screenshots/Screenshot_arena_with_robots.png" alt="Arena mit Roboter">
         </li>
+        <br>
+
+        <li>
+            Die Bewegung für den Roboter des Spielers wurde in main in der Game loop erstellt.
+            Zusammen mit den Variablen für die Geschwindigkeit beim Bewegen und drehen werden die gedrückten Tasten 
+            in die Richtungen übersetzt.
+            Den Roboter kann man nun kontinuierlich in alle Richtungen (incl. diagonal,...) bewegen und unabhängig davon drehen.
+            Die Pfeiltasten werden für die Bewegung werden benutzt und die Tasten a und d für die Drehung. <br>
+            <img src="screenshots/Movement.png" alt="Movement code erstellen"><br>
+        </li>
+        <br>
 
         
     </ul>
