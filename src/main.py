@@ -15,7 +15,7 @@ clock = pygame.time.Clock()
 
 # Game setup
 arena = Arena(screen, config.ROWS, config.COLUMNS, map.COLORS)
-arena.create_map(map.get_map1())
+arena.create_map(map.get_map("test-level.txt"))
 
 robot1 = Robot(screen, 500, 500, 20, 180, (255, 255, 255))
 robot2 = Robot(screen, 800, 300, 30, 0, (0, 100, 190))

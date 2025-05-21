@@ -1,3 +1,6 @@
+import config
+
+
 # Possible colors:
 COLORS = {
     "boden": (180, 180, 180),       # gray (ground)
@@ -68,3 +71,43 @@ def get_map1():
             map1[y][x] = "gebuesch"  # center bottom
 
     return map1
+
+# creates a map based on an input text file
+def get_map(input = None):
+    # error handling: if no file is provided, the default map from above will be used
+    if input == None:
+        print("Note: Since no map file was provided for the level, a default map will be used.")
+        return get_map1()
+    
+    # if a file is provided
+    file = open(input, "r", encoding="utf-8")
+    lines = file.readlines()
+    if len(lines) != config.ROWS - 2:  # check for correct formatting of the input file
+        raise ValueError("The file must contain exactly " + str(config.ROWS - 2) + " lines!")
+    map = []
+    for line in lines:
+        l = list(line)
+        if l[-1] == "\n":
+            l.pop()
+        if len(l) != config.COLUMNS - 2:
+            raise ValueError("Each line in the file must contain exactly " + str(config.COLUMNS - 2) + " columns!")
+        for i in range(len(l)):
+            if l[i] == "g": # ground
+                l[i] = "boden"
+            elif l[i] == "w": # wall
+                l[i] = "rand"
+            elif l[i] == "l": # lava
+                l[i] = "lava"
+            elif l[i] == "i": # ice
+                l[i] = "eis"
+            elif l[i] == "s": #sand
+                l[i] = "sand"
+            elif l[i] == "b": # bushes
+                l[i] = "gebuesch"
+            else: # in case of wrong input
+                l[i] = "boden"
+        map.append(l)
+    file.close()
+    return map
+
+get_map("test-level.txt")
