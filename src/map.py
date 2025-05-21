@@ -78,7 +78,7 @@ def get_map(input=None):
     # error handling: if no file is provided, the default map from above will be used
     if input is None:
         print("Note: Since no map file was provided for the level,"
-            "a default map will be used.")
+              "a default map will be used.")
         return get_map1()
     # if a file is provided
     file = open(input, "r", encoding="utf-8")
