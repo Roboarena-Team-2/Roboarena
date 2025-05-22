@@ -10,8 +10,7 @@ class Arena:
         self.textures = textures  # possible tile textures
         self.grid = None  # will hold the tile data (for drawing)
         self.initialise_map()  # fill grid with floor and outer walls
-        self.map_picture = None  # complete map for the arena, 
-                                 # so has to be rendered only once
+        self.map_picture = None  # complete map for the arena, to render it only once
 
     def initialise_map(self):
         self.grid = []
