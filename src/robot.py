@@ -23,18 +23,13 @@ class Robot:
 
         alpha_rad = math.radians(self.alpha)
 
-        left_eye_x = (self.x +
-                      (eye_distance * math.cos(alpha_rad - eye_offset_rad)))
-        left_eye_y = (self.y +
-                      (eye_distance * math.sin(alpha_rad - eye_offset_rad)))
-        right_eye_x = (self.x +
-                       (eye_distance * math.cos(alpha_rad + eye_offset_rad)))
-        right_eye_y = (self.y +
-                       (eye_distance * math.sin(alpha_rad + eye_offset_rad)))
+        left_eye_x = self.x + (eye_distance * math.cos(alpha_rad - eye_offset_rad))
+        left_eye_y = self.y + (eye_distance * math.sin(alpha_rad - eye_offset_rad))
+        right_eye_x = self.x + (eye_distance * math.cos(alpha_rad + eye_offset_rad))
+        right_eye_y = self.y + (eye_distance * math.sin(alpha_rad + eye_offset_rad))
 
         # draw eyes
-        pygame.draw.circle(self.screen, (0, 0, 0),
-                           (left_eye_x, left_eye_y), eye_radius)
+        pygame.draw.circle(self.screen, (0, 0, 0), (left_eye_x, left_eye_y), eye_radius)
         pygame.draw.circle(
             self.screen, (0, 0, 0), (right_eye_x, right_eye_y), eye_radius
         )

@@ -55,7 +55,6 @@ while running:
         ):
             running = False
 
-
     keys = pygame.key.get_pressed()
 
     player.x += (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * vel

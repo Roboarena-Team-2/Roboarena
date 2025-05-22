@@ -210,8 +210,7 @@ def zeichne_text(text_str, farbe, y_offset=0, shadow=True):
                 HEIGHT // 2 + 2 + y_offset,
             ),
         )
-    screen.blit(text, (WIDTH // 2 - text.get_width() // 2,
-                       HEIGHT // 2 + y_offset))
+    screen.blit(text, (WIDTH // 2 - text.get_width() // 2, HEIGHT // 2 + y_offset))
 
 
 def zeichne_spur(farbe):
@@ -285,16 +284,11 @@ while running:
 
     elif game_state == "playing":
         chosen_level.zeichne_welt()
-        chosen_level.strahl.x += (
-                chosen_level.direction[0] * chosen_level.strahl_speed
-        )
-        chosen_level.strahl.y += (
-                chosen_level.direction[1] * chosen_level.strahl_speed
-        )
+        chosen_level.strahl.x += chosen_level.direction[0] * chosen_level.strahl_speed
+        chosen_level.strahl.y += chosen_level.direction[1] * chosen_level.strahl_speed
 
         trail.append(
-            pygame.Rect(chosen_level.strahl.x + 2,
-                        chosen_level.strahl.y + 2, 6, 6)
+            pygame.Rect(chosen_level.strahl.x + 2, chosen_level.strahl.y + 2, 6, 6)
         )
         if not chosen_level.is_slowed:
             zeichne_spur(FARBE_SPUR)
@@ -329,8 +323,7 @@ while running:
         if chosen_level.strahl.colliderect(chosen_level.ziel_chip):
             game_state = "win"
 
-        screen.blit(font.render(f"Leben: {leben}", True,
-                                (255, 255, 255)), (20, 20))
+        screen.blit(font.render(f"Leben: {leben}", True, (255, 255, 255)), (20, 20))
 
     elif game_state == "gameover":
         zeichne_spur(FARBE_SPUR_GAMEOVER)

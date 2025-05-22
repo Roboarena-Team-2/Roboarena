@@ -16,8 +16,7 @@ class Arena:
         for r in range(self.rows):
             current_row = []
             for c in range(self.columns):
-                if (c == 0 or r == 0 or r == self.rows - 1
-                        or c == self.columns - 1):
+                if c == 0 or r == 0 or r == self.rows - 1 or c == self.columns - 1:
                     current_row.append("rand")  # outer edges
                 else:
                     current_row.append("boden")  # inner tiles
@@ -53,6 +52,5 @@ class Arena:
                 color = self.colors[tile_type]
                 # draw the tile
                 pygame.draw.rect(
-                    self.screen, color,
-                    (x, y, config.TILE_SIZE, config.TILE_SIZE)
+                    self.screen, color, (x, y, config.TILE_SIZE, config.TILE_SIZE)
                 )
