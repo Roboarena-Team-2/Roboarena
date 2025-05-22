@@ -10,6 +10,8 @@ class Arena:
         self.textures = textures  # possible tile textures
         self.grid = None  # will hold the tile data (for drawing)
         self.initialise_map()  # fill grid with floor and outer walls
+        self.map_picture = None  # complete map for the arena, 
+                                 # so has to be rendered only once
 
     def initialise_map(self):
         self.grid = []
@@ -42,16 +44,22 @@ class Arena:
                     c
                 ]  # assign inner tiles of current
                 # map to map_data with format-Offset 1
+        self.draw_map_picture()
 
-    def draw_map(self):
+    def draw_map_picture(self):
+        width = self.columns * config.TILE_SIZE
+        height = self.rows * config.TILE_SIZE
+        self.map_picture = pygame.Surface((width, height))
         for row in range(self.rows):
             for col in range(self.columns):
                 x = col * config.TILE_SIZE
                 y = row * config.TILE_SIZE
                 tile_type = self.grid[row][col]
-                texture = self.textures[tile_type]
-                # draw the tile
-                texture = texture.convert()
+                texture = self.textures[tile_type].convert()
                 texture = pygame.transform.scale(texture,
                                                  (config.TILE_SIZE, config.TILE_SIZE))
-                self.screen.blit(texture, (x, y))
+                self.map_picture.blit(texture, (x, y))
+
+    def draw_map(self):
+        if self.map_picture:
+            self.screen.blit(self.map_picture, (0, 0))
