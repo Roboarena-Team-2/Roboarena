@@ -74,7 +74,7 @@ def get_map(input=None):
     lines = file.readlines()
     if len(lines) != config.ROWS - 2:  # check for correct formatting of the input file
         raise ValueError("The file must contain exactly " + str(config.ROWS - 2) +
-                         " lines!")
+                         " lines, but got " + str(len(lines)) + " !")
     map = []
     for line in lines:
         lineList = list(line)
@@ -82,7 +82,8 @@ def get_map(input=None):
             lineList.pop()
         if len(lineList) != config.COLUMNS - 2:
             raise ValueError("Each line in the file must contain exactly "
-                             + str(config.COLUMNS - 2) + " columns!")
+                             + str(config.COLUMNS - 2) + " columns, but got "
+                             + str(len(lineList)) + " !")
         for i in range(len(lineList)):
             if lineList[i] == "g":  # ground
                 lineList[i] = "boden"
