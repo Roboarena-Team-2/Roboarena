@@ -30,7 +30,7 @@ print(f"Fenster: {window_width}x{window_height}")
 print(f"TILE_SIZE: {config.TILE_SIZE}")
 
 # Load map and arena
-arena = Arena(screen, config.ROWS, config.COLUMNS, config.COLORS)
+arena = Arena(screen, config.ROWS, config.COLUMNS, config.TEXTURES)
 arena.create_map(map.get_map("test-level.txt"))
 
 # Create robots

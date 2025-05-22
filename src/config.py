@@ -1,13 +1,16 @@
+import pygame
+
+
 # Global constants
 
-# Tile colors by type
-COLORS = {
-    "boden": (180, 180, 180),  # gray (ground)
-    "rand": (60, 60, 60),  # dark gray (walls)
-    "lava": (255, 0, 0),  # red
-    "eis": (115, 155, 208),  # light blue (ice)
-    "sand": (235, 185, 120),  # orange (sand)
-    "gebuesch": (0, 128, 0),  # green (bush)
+# Tile textures by type
+TEXTURES = {
+    "boden": pygame.image.load("../resources/Textures/Floor.png"),  # ground
+    "rand": pygame.image.load("../resources/Textures/Wall.png"),  # walls
+    "lava": pygame.image.load("../resources/Textures/Lava.png"),  # lava
+    "eis": pygame.image.load("../resources/Textures/Ice.png"),  # ice
+    "sand": pygame.image.load("../resources/Textures/Sand.png"),  # sand
+    "gebuesch": pygame.image.load("../resources/Textures/Bush.png"),  # bush
 }
 
 TILE_SIZE = 0  # will be assigned during runtime in main.py

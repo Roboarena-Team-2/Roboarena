@@ -3,11 +3,11 @@ import config
 
 
 class Arena:
-    def __init__(self, screen, rows, columns, colors):
+    def __init__(self, screen, rows, columns, textures):
         self.screen = screen  # current game screen
         self.rows = rows  # number of rows
         self.columns = columns  # number of columns
-        self.colors = colors  # possible tile colors
+        self.textures = textures  # possible tile textures
         self.grid = None  # will hold the tile data (for drawing)
         self.initialise_map()  # fill grid with floor and outer walls
 
@@ -49,8 +49,8 @@ class Arena:
                 x = col * config.TILE_SIZE
                 y = row * config.TILE_SIZE
                 tile_type = self.grid[row][col]
-                color = self.colors[tile_type]
+                texture = self.textures[tile_type]
                 # draw the tile
-                pygame.draw.rect(
-                    self.screen, color, (x, y, config.TILE_SIZE, config.TILE_SIZE)
-                )
+                texture = texture.convert()
+                texture = pygame.transform.scale(texture, (config.TILE_SIZE, config.TILE_SIZE)) 
+                self.screen.blit(texture, (x, y))
