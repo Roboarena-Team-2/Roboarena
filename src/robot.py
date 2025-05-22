@@ -51,7 +51,7 @@ class Robot:
         pygame.draw.circle(self.screen, (0, 0, 0),
                            (right_eye_x, right_eye_y), eye_radius)
 
-    def update_player(self):
+    def update_player(self, robots):
         self.draw_robot()
 
         keys = pygame.key.get_pressed()
@@ -60,10 +60,12 @@ class Robot:
         self.y += (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * self.v
         self.alpha += (keys[pygame.K_d] - keys[pygame.K_a]) * self.v_alpha
 
+        self.robot_collision(robots)
+
         self.x = max(BOUNDS_X[0], min(self.x, BOUNDS_X[1] - self.r))
         self.y = max(BOUNDS_Y[0], min(self.y, BOUNDS_Y[1] - self.r))
 
-    def update_enemy(self, goal):
+    def update_enemy(self, goal, robots):
         x_to_goal = goal.x-self.x
         y_to_goal = goal.y-self.y
         self.x += math.copysign(self.v, x_to_goal) / 3
@@ -78,9 +80,24 @@ class Robot:
                 angle_to_goal *= -1
         self.alpha += math.copysign(self.v_alpha, angle_to_goal)
         self.draw_robot()
+        self.robot_collision(robots)
 
-    def move_circle(self, point, r, angle):
+    def move_circle(self, point, r, angle, robots):
         self.x = point[0] + r * math.cos(angle * math.pi/180)
         self.y = point[1] + r * math.sin(angle * math.pi/180)
         self.alpha = angle + 90
         self.draw_robot()
+        self.robot_collision(robots)
+
+    def robot_collision(self, robots):
+        for robot in robots:
+            if (robot != self):
+                x_to_robot = robot.x - self.x
+                y_to_robot = robot.y - self.y
+                dist = math.sqrt((x_to_robot) ** 2 + (y_to_robot) ** 2)
+                if (dist <= robot.r + self.r):
+                    rad_to_goal = math.atan2(y_to_robot, x_to_robot)
+                    angle_to_goal = math.degrees(rad_to_goal)+180 % 360
+                    angle_away = angle_to_goal
+                    self.x += 10 * math.cos(angle_away * math.pi/180)
+                    self.y += 10 * math.sin(angle_away * math.pi/180)

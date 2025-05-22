@@ -22,6 +22,8 @@ enemy1 = Robot(screen, 800, 300, 30, 0, (0, 100, 190), 1, 1)
 enemy2 = Robot(screen, 300, 600, 40, 50, (255, 50, 120), 1, 1)
 enemy3 = Robot(screen, 1200, 600, 40, 50, (0, 250, 0), 1, 1)
 
+robots = [player, enemy1, enemy2, enemy3]
+
 circle_tick = 50
 angle = 180
 
@@ -39,13 +41,13 @@ while running:
     screen.fill((220, 220, 220))  # light gray background
     arena.draw_map()
     ticks = pygame.time.get_ticks()
-    player.update_player()
+    player.update_player(robots)
     if ticks > circle_tick:
         circle_tick += 50
         angle = (angle + 3) % 360
-    enemy1.move_circle([800, 300], 50, angle)
-    enemy2.update_enemy(player)
-    enemy3.update_enemy(player)
+    enemy1.move_circle([800, 300], 50, angle, robots)
+    enemy2.update_enemy(player, robots)
+    enemy3.update_enemy(player, robots)
     pygame.display.flip()
     clock.tick(60)
 
