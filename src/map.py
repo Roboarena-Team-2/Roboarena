@@ -66,24 +66,37 @@ def get_map1():
 def get_map(input=None):
     # error handling: if no file is provided, the default map from above will be used
     if input is None:
-        print("Note: Since no map file was provided for the level,"
-              "a default map will be used.")
+        print(
+            "Note: Since no map file was provided for the level,"
+            "a default map will be used."
+        )
         return get_map1()
     # if a file is provided
     file = open(input, "r", encoding="utf-8")
     lines = file.readlines()
     if len(lines) != config.ROWS - 2:  # check for correct formatting of the input file
-        raise ValueError("The file must contain exactly " + str(config.ROWS - 2) +
-                         " lines, but got " + str(len(lines)) + " !")
+        raise ValueError(
+            "The file must contain exactly "
+            + str(config.ROWS - 2)
+            + " lines, but got "
+            + str(len(lines))
+            + " !"
+        )
     map = []
     for line in lines:
-        lineList = list(line) # Convert line to a list of characters
-        if lineList[-1] == "\n": # Remove newline character at the end
+        lineList = list(line)  # Convert line to a list of characters
+        if lineList[-1] == "\n":  # Remove newline character at the end
             lineList.pop()
-        if len(lineList) != config.COLUMNS - 2: # Check that each line has the expected number of columns
-            raise ValueError("Each line in the file must contain exactly "
-                             + str(config.COLUMNS - 2) + " columns, but got "
-                             + str(len(lineList)) + " !")
+        if (
+            len(lineList) != config.COLUMNS - 2
+        ):  # Check that each line has the expected number of columns
+            raise ValueError(
+                "Each line in the file must contain exactly "
+                + str(config.COLUMNS - 2)
+                + " columns, but got "
+                + str(len(lineList))
+                + " !"
+            )
         for i in range(len(lineList)):
             if lineList[i] == "g":  # ground
                 lineList[i] = "ground"
