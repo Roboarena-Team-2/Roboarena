@@ -7,32 +7,32 @@ def get_map1():
     for row in range(25):
         current_row = []
         for col in range(46):
-            current_row.append("boden")
+            current_row.append("ground")
         map1.append(current_row)
         # map[y][x] — first index is Y (row), second is X (column)
 
-    # Obstacles (dark gray = "rand")
+    # Obstacles ("wall")
     for x in range(3, 13):
-        map1[3][x] = "rand"  # top left
+        map1[3][x] = "wall"  # top left
     for y in range(10, 13):
         for x in range(20, 26):
-            map1[y][x] = "rand"  # center block
+            map1[y][x] = "wall"  # center block
     for y in range(19, 22):
         for x in range(38, 39):
-            map1[y][x] = "rand"  # bottom right wall
+            map1[y][x] = "wall"  # bottom right wall
 
-    # Lava spots (red)
+    # Lava spots
     lava_spots = [(4, 21), (2, 42), (8, 2), (14, 40), (16, 31), (21, 17)]
     for y, x in lava_spots:
         map1[y][x] = "lava"  # scattered lava tiles
 
-    # Ice areas (light blue)
+    # Ice areas
     for y in range(14, 17):
         for x in range(9, 13):
-            map1[y][x] = "eis"  # bottom left
+            map1[y][x] = "ice"  # bottom left
     for y in range(4, 7):
         for x in range(35, 38):
-            map1[y][x] = "eis"  # top right
+            map1[y][x] = "ice"  # top right
 
     # Sand zones (orange)
     for y in range(0, 4):
@@ -45,19 +45,19 @@ def get_map1():
         for x in range(38, 46):
             map1[y][x] = "sand"  # bottom right
 
-    # Bush areas (green = "gebuesch")
+    # Bush areas ("bush")
     for y in range(18, 24):
         for x in range(3, 7):
-            map1[y][x] = "gebuesch"  # bottom left area 1
+            map1[y][x] = "bush"  # bottom left area 1
     for y in range(20, 24):
         for x in range(7, 11):
-            map1[y][x] = "gebuesch"  # bottom left area 2
+            map1[y][x] = "bush"  # bottom left area 2
     for y in range(2, 8):
         for x in range(29, 32):
-            map1[y][x] = "gebuesch"  # vertical top right
+            map1[y][x] = "bush"  # vertical top right
     for y in range(18, 21):
         for x in range(22, 29):
-            map1[y][x] = "gebuesch"  # center bottom
+            map1[y][x] = "bush"  # center bottom
 
     return map1
 
@@ -86,19 +86,19 @@ def get_map(input=None):
                              + str(len(lineList)) + " !")
         for i in range(len(lineList)):
             if lineList[i] == "g":  # ground
-                lineList[i] = "boden"
+                lineList[i] = "ground"
             elif lineList[i] == "w":  # wall
-                lineList[i] = "rand"
+                lineList[i] = "wall"
             elif lineList[i] == "l":  # lava
                 lineList[i] = "lava"
             elif lineList[i] == "i":  # ice
-                lineList[i] = "eis"
+                lineList[i] = "ice"
             elif lineList[i] == "s":  # sand
                 lineList[i] = "sand"
             elif lineList[i] == "b":  # bushes
-                lineList[i] = "gebuesch"
+                lineList[i] = "bush"
             else:  # in case of wrong input
-                lineList[i] = "boden"
+                lineList[i] = "ground"
         map.append(lineList)
     file.close()
     return map

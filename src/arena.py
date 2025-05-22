@@ -17,9 +17,9 @@ class Arena:
             current_row = []
             for c in range(self.columns):
                 if c == 0 or r == 0 or r == self.rows - 1 or c == self.columns - 1:
-                    current_row.append("rand")  # outer edges
+                    current_row.append("wall")  # outer edges
                 else:
-                    current_row.append("boden")  # inner tiles
+                    current_row.append("ground")  # inner tiles
             self.grid.append(current_row)
 
     def create_map(self, map_data):
