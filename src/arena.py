@@ -1,5 +1,5 @@
 import pygame
-from config import TILE_SIZE
+import config
 
 
 class Arena:
@@ -16,12 +16,7 @@ class Arena:
         for r in range(self.rows):
             current_row = []
             for c in range(self.columns):
-                if (
-                    c == 0
-                    or r == 0
-                    or r == self.rows - 1
-                    or c == self.columns - 1
-                ):
+                if c == 0 or r == 0 or r == self.rows - 1 or c == self.columns - 1:
                     current_row.append("rand")  # outer edges
                 else:
                     current_row.append("boden")  # inner tiles
@@ -51,10 +46,11 @@ class Arena:
     def draw_map(self):
         for row in range(self.rows):
             for col in range(self.columns):
-                x = col * TILE_SIZE
-                y = row * TILE_SIZE
+                x = col * config.TILE_SIZE
+                y = row * config.TILE_SIZE
                 tile_type = self.grid[row][col]
                 color = self.colors[tile_type]
                 # draw the tile
-                pygame.draw.rect(self.screen, color,
-                                 (x, y, TILE_SIZE, TILE_SIZE))
+                pygame.draw.rect(
+                    self.screen, color, (x, y, config.TILE_SIZE, config.TILE_SIZE)
+                )
