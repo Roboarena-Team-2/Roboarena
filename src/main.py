@@ -43,7 +43,7 @@ while running:
     if ticks > circle_tick:
         circle_tick += 50
         angle = (angle + 3) % 360
-    enemy1.move_circle([800,300],50,angle)
+    enemy1.move_circle([800, 300], 50, angle)
     enemy2.update_enemy(player)
     enemy3.update_enemy(player)
     pygame.display.flip()

@@ -1,6 +1,5 @@
 import pygame
 import math
-import numpy as np
 import config
 
 BOUNDS_X = [0, config.WIDTH]
@@ -8,6 +7,7 @@ BOUNDS_Y = [0, config.HEIGHT]
 
 a_max = 1
 a_alpha_max = 1
+
 
 class Robot:
     def __init__(self, screen, x, y, radius, direction, color, a, a_alpha):
@@ -19,8 +19,8 @@ class Robot:
         self.color = color  # color of the robot
         self.a = a  # current acceleration for moving
         self.a_alpha = a_alpha  # current acceleration for turning
-        self.a_max = a_max  # maximal acceleration for moving    (constant in program)
-        self.a_alpha_max = a_alpha_max  # maximal acceleration for turning     (constant in program)
+        self.a_max = a_max  # maximal acceleration for moving
+        self.a_alpha_max = a_alpha_max  # maximal acceleration for turning
         self.v = 1  # speed for moving
         self.v_alpha = 1  # speed for turning
 
@@ -50,7 +50,6 @@ class Robot:
                            (left_eye_x, left_eye_y), eye_radius)
         pygame.draw.circle(self.screen, (0, 0, 0),
                            (right_eye_x, right_eye_y), eye_radius)
-        
 
     def update_player(self):
         self.draw_robot()
@@ -64,24 +63,24 @@ class Robot:
         self.x = max(BOUNDS_X[0], min(self.x, BOUNDS_X[1] - self.r))
         self.y = max(BOUNDS_Y[0], min(self.y, BOUNDS_Y[1] - self.r))
 
-
-    def update_enemy(self, player):
-        x_to_goal = player.x-self.x
-        y_to_goal = player.y-self.y
-        self.x += math.copysign(self.v, x_to_goal)  / 3
-        self.y += math.copysign(self.v, y_to_goal)  / 3
-        angle_to_player = math.degrees(math.atan2(y_to_goal,x_to_goal))+180%360
-        if(angle_to_player<self.alpha):
-            if(abs(angle_to_player-self.alpha)>180):
-                angle_to_player *= -1
+    def update_enemy(self, goal):
+        x_to_goal = goal.x-self.x
+        y_to_goal = goal.y-self.y
+        self.x += math.copysign(self.v, x_to_goal) / 3
+        self.y += math.copysign(self.v, y_to_goal) / 3
+        rad_to_goal = math.atan2(y_to_goal, x_to_goal)
+        angle_to_goal = math.degrees(rad_to_goal)+180 % 360
+        if (angle_to_goal < self.alpha):
+            if (abs(angle_to_goal - self.alpha) > 180):
+                angle_to_goal *= -1
         else:
-            if(abs(angle_to_player-self.alpha)<180):
-                angle_to_player *= -1
-        self.alpha += math.copysign(self.v_alpha, angle_to_player)
+            if (abs(angle_to_goal - self.alpha) < 180):
+                angle_to_goal *= -1
+        self.alpha += math.copysign(self.v_alpha, angle_to_goal)
         self.draw_robot()
 
-    def move_circle(self,point,r,angle):
-        self.x = point[0] + r * math.cos(angle*math.pi/180)
-        self.y = point[1] + r * math.sin(angle*math.pi/180)
+    def move_circle(self, point, r, angle):
+        self.x = point[0] + r * math.cos(angle * math.pi/180)
+        self.y = point[1] + r * math.sin(angle * math.pi/180)
         self.alpha = angle + 90
         self.draw_robot()
