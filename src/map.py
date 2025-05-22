@@ -77,10 +77,10 @@ def get_map(input=None):
                          " lines, but got " + str(len(lines)) + " !")
     map = []
     for line in lines:
-        lineList = list(line)
-        if lineList[-1] == "\n":
+        lineList = list(line) # Convert line to a list of characters
+        if lineList[-1] == "\n": # Remove newline character at the end
             lineList.pop()
-        if len(lineList) != config.COLUMNS - 2:
+        if len(lineList) != config.COLUMNS - 2: # Check that each line has the expected number of columns
             raise ValueError("Each line in the file must contain exactly "
                              + str(config.COLUMNS - 2) + " columns, but got "
                              + str(len(lineList)) + " !")
