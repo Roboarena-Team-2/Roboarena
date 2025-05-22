@@ -52,5 +52,6 @@ class Arena:
                 texture = self.textures[tile_type]
                 # draw the tile
                 texture = texture.convert()
-                texture = pygame.transform.scale(texture, (config.TILE_SIZE, config.TILE_SIZE)) 
+                texture = pygame.transform.scale(texture,
+                                                 (config.TILE_SIZE, config.TILE_SIZE))
                 self.screen.blit(texture, (x, y))
