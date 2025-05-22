@@ -30,7 +30,7 @@ print(f"Fenster: {window_width}x{window_height}")
 print(f"TILE_SIZE: {config.TILE_SIZE}")
 
 # Load map and arena
-arena = Arena(screen, config.ROWS, config.COLUMNS, map.COLORS)
+arena = Arena(screen, config.ROWS, config.COLUMNS, config.COLORS)
 arena.create_map(map.get_map1())
 
 # Create robots
@@ -42,7 +42,9 @@ robot3 = Robot(screen, 300, 600, 40, 50, (255, 50, 120))
 running = True
 while running:
     for event in pygame.event.get():
-        if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+        if event.type == pygame.QUIT or (
+            event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
+        ):
             running = False
 
     screen.fill((220, 220, 220))
@@ -55,6 +57,3 @@ while running:
 
 pygame.quit()
 sys.exit()
-
-
-

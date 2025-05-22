@@ -1,14 +1,3 @@
-# Possible colors:
-COLORS = {
-    "boden": (180, 180, 180),       # gray (ground)
-    "rand": (60, 60, 60),           # dark gray (walls)
-    "lava": (255, 0, 0),            # red
-    "eis": (115, 155, 208),         # light blue (ice)
-    "sand": (235, 185, 120),        # orange (sand)
-    "gebuesch": (0, 128, 0),        # green (bush)
-}
-
-
 def get_map1():
     # Initialize empty 25 x 46 inner field
     map1 = []
@@ -68,4 +57,3 @@ def get_map1():
             map1[y][x] = "gebuesch"  # center bottom
 
     return map1
-
