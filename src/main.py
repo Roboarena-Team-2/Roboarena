@@ -38,6 +38,14 @@ robot1 = Robot(screen, 500, 500, 20, 180, (255, 255, 255))
 robot2 = Robot(screen, 800, 300, 30, 0, (0, 100, 190))
 robot3 = Robot(screen, 300, 600, 40, 50, (255, 50, 120))
 
+player = robot1
+
+
+# Movement
+vel = 2
+turn_speed = 5
+
+
 # Game loop
 running = True
 while running:
@@ -47,13 +55,19 @@ while running:
         ):
             running = False
 
-    screen.fill((220, 220, 220))
+
+    keys = pygame.key.get_pressed()
+
+    player.x += (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * vel
+    player.y += (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * vel
+    player.alpha += (keys[pygame.K_d] - keys[pygame.K_a]) * turn_speed
+
+    screen.fill((220, 220, 220))  # light gray background
     arena.draw_map()
     robot1.draw_robot()
     robot2.draw_robot()
     robot3.draw_robot()
     pygame.display.flip()
-    clock.tick(60)
 
 pygame.quit()
 sys.exit()
