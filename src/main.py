@@ -33,17 +33,15 @@ print(f"TILE_SIZE: {config.TILE_SIZE}")
 arena = Arena(screen, config.ROWS, config.COLUMNS, config.TEXTURES)
 arena.create_map(map.get_map("test-level.txt"))
 
-# Create robots
-robot1 = Robot(screen, 500, 500, 20, 180, (255, 255, 255))
-robot2 = Robot(screen, 800, 300, 30, 0, (0, 100, 190))
-robot3 = Robot(screen, 300, 600, 40, 50, (255, 50, 120))
+player = Robot(screen, 500, 500, 20, 180, (255, 255, 255), 1, 1)
+enemy1 = Robot(screen, 800, 300, 30, 0, (0, 100, 190), 1, 1)
+enemy2 = Robot(screen, 300, 600, 40, 50, (255, 50, 120), 1, 1)
+enemy3 = Robot(screen, 1200, 600, 40, 50, (0, 250, 0), 1, 1)
 
-player = robot1
+robots = [player, enemy1, enemy2, enemy3]
 
-
-# Movement
-vel = 2
-turn_speed = 5
+circle_tick = 50
+angle = 180
 
 
 # Game loop
@@ -55,18 +53,18 @@ while running:
         ):
             running = False
 
-    keys = pygame.key.get_pressed()
-
-    player.x += (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * vel
-    player.y += (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * vel
-    player.alpha += (keys[pygame.K_d] - keys[pygame.K_a]) * turn_speed
-
     screen.fill((220, 220, 220))  # light gray background
     arena.draw_map()
-    robot1.draw_robot()
-    robot2.draw_robot()
-    robot3.draw_robot()
+    ticks = pygame.time.get_ticks()
+    player.update_player(robots)
+    if ticks > circle_tick:
+        circle_tick += 50
+        angle = (angle + 3) % 360
+    enemy1.move_circle([800, 300], 50, angle, robots)
+    enemy2.update_enemy(player, robots)
+    enemy3.update_enemy(player, robots)
     pygame.display.flip()
+    clock.tick(60)
 
 pygame.quit()
 sys.exit()
