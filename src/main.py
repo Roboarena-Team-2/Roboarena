@@ -5,17 +5,33 @@ import map
 from arena import Arena
 from robot import Robot
 
-# Initialization
+# Initialisation
 pygame.init()
 
-# Create window
-screen = pygame.display.set_mode((config.WIDTH, config.HEIGHT))
+# Get current screen resolution
+info = pygame.display.Info()
+max_width, max_height = info.current_w, info.current_h
+
+# Calculate TILE_SIZE to fit the fixed grid into the screen
+config.TILE_SIZE = min(max_width // config.COLUMNS, max_height // config.ROWS)
+
+# set window size
+window_width = config.TILE_SIZE * config.COLUMNS
+window_height = config.TILE_SIZE * config.ROWS
+
+# Create window (not fullscreen)
+screen = pygame.display.set_mode((window_width, window_height))
 pygame.display.set_caption("Roboarena")
 clock = pygame.time.Clock()
 
-# Game setup
-arena = Arena(screen, config.ROWS, config.COLUMNS, map.COLORS)
-arena.create_map(map.get_map1())
+# Debug info
+print(f"Monitor: {max_width}x{max_height}")
+print(f"Fenster: {window_width}x{window_height}")
+print(f"TILE_SIZE: {config.TILE_SIZE}")
+
+# Load map and arena
+arena = Arena(screen, config.ROWS, config.COLUMNS, config.TEXTURES)
+arena.create_map(map.get_map("test-level.txt"))
 
 player = Robot(screen, 500, 500, 20, 180, (255, 255, 255), 1, 1)
 enemy1 = Robot(screen, 800, 300, 30, 0, (0, 100, 190), 1, 1)
@@ -32,11 +48,10 @@ angle = 180
 running = True
 while running:
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+        if event.type == pygame.QUIT or (
+            event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
+        ):
             running = False
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                running = False
 
     screen.fill((220, 220, 220))  # light gray background
     arena.draw_map()
@@ -51,6 +66,5 @@ while running:
     pygame.display.flip()
     clock.tick(60)
 
-# Cleanup
 pygame.quit()
 sys.exit()

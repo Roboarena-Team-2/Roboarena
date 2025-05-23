@@ -1,30 +1,26 @@
 import pygame
-from config import TILE_SIZE
+import config
 
 
 class Arena:
-    def __init__(self, screen, rows, columns, colors):
+    def __init__(self, screen, rows, columns, textures):
         self.screen = screen  # current game screen
         self.rows = rows  # number of rows
         self.columns = columns  # number of columns
-        self.colors = colors  # possible tile colors
+        self.textures = textures  # possible tile textures
         self.grid = None  # will hold the tile data (for drawing)
         self.initialise_map()  # fill grid with floor and outer walls
+        self.map_picture = None  # complete map for the arena, to render it only once
 
     def initialise_map(self):
         self.grid = []
         for r in range(self.rows):
             current_row = []
             for c in range(self.columns):
-                if (
-                    c == 0
-                    or r == 0
-                    or r == self.rows - 1
-                    or c == self.columns - 1
-                ):
-                    current_row.append("rand")  # outer edges
+                if c == 0 or r == 0 or r == self.rows - 1 or c == self.columns - 1:
+                    current_row.append("wall")  # outer edges
                 else:
-                    current_row.append("boden")  # inner tiles
+                    current_row.append("ground")  # inner tiles
             self.grid.append(current_row)
 
     def create_map(self, map_data):
@@ -47,14 +43,22 @@ class Arena:
                     c
                 ]  # assign inner tiles of current
                 # map to map_data with format-Offset 1
+        self.draw_map_picture()
 
-    def draw_map(self):
+    def draw_map_picture(self):
+        width = self.columns * config.TILE_SIZE
+        height = self.rows * config.TILE_SIZE
+        self.map_picture = pygame.Surface((width, height))
         for row in range(self.rows):
             for col in range(self.columns):
-                x = col * TILE_SIZE
-                y = row * TILE_SIZE
+                x = col * config.TILE_SIZE
+                y = row * config.TILE_SIZE
                 tile_type = self.grid[row][col]
-                color = self.colors[tile_type]
-                # draw the tile
-                pygame.draw.rect(self.screen, color,
-                                 (x, y, TILE_SIZE, TILE_SIZE))
+                texture = self.textures[tile_type].convert()
+                texture = pygame.transform.scale(texture,
+                                                 (config.TILE_SIZE, config.TILE_SIZE))
+                self.map_picture.blit(texture, (x, y))
+
+    def draw_map(self):
+        if self.map_picture:
+            self.screen.blit(self.map_picture, (0, 0))
