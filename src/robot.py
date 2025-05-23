@@ -1,10 +1,5 @@
 import pygame
 import math
-import config
-
-# Boundaries for movement
-BOUNDS_X = [0, config.WIDTH]
-BOUNDS_Y = [0, config.HEIGHT]
 
 # Maximum acceleration values
 a_max = 1
@@ -62,10 +57,6 @@ class Robot:
 
         # Check for collisions
         self.robot_collision(robots)
-
-        # Keep the robot within the screen boundaries
-        self.x = max(BOUNDS_X[0], min(self.x, BOUNDS_X[1] - self.r))
-        self.y = max(BOUNDS_Y[0], min(self.y, BOUNDS_Y[1] - self.r))
 
     def update_enemy(self, goal, robots):
         # Move towards a goal position
