@@ -53,13 +53,30 @@
         </li>
     </ul>
     <h3>AI-tool</h3>
+    <ul>
+    <li>
+        Zuerst wurde der Code zur Map-Erstellung mit kurzen, leicht verständlichen Kommentaren mithilfe von ChatGPT dokumentiert.
+        Auch der Code für die Bewegungslogik der Roboter wurde kommentiert – hier waren die Kommentare besonders hilfreich.<br><br>
+        <br><img src="screenshots/Documentation.png" alt="externe Dokumentation hinzugefügt" width="50%"><br>
+        Das Parsen einer <code>.txt</code>-Datei zur Map-Erstellung wurde erfolgreich getestet. Die Testdatei war schnell erstellt und funktionierte einwandfrei.
+        <br><img src="screenshots/screenshot_text_for_map2.png" alt=".txt Datei für die 2. Test-Map" width="20%"><br>
+        Allerdings konnte die KI bei der konkreten Erstellung dieser Datei nicht sinnvoll unterstützen.<br><br>
+        Die gezeichnete Test-Map, die per KI generiert wurde diente als Inspiration.<br><br>
+        <br><img src="screenshots/skizze.png" alt="Inspiration" width="20%"><br>
+        <br><img src="screenshots/screenshot_map2.png" alt="Inspiration" width="50%"><br>
+        Um Flake8 besser an die automatische Formatierung mit Black anzupassen, wurde mit Hilfe von ChatGPT eine <code>.flake8</code>-Datei erstellt.
+        Diese dient als Konfigurationsdatei und legt unter anderem die maximale Zeilenlänge für GitHub-Aktionen fest.
+        Die gewählte Länge passt perfekt zur Formatierung von Black, sodass keine Konflikte mehr auftreten und alles automatisch formatiert werden kann.<br><br>
+        (Walid)
+    </li>
+</ul>
 
     <h3>Sonstiges (Absprachen, Probleme, Fragen etc.)</h3>
     <ul>
         <li>
             Unser Größenproblem aus dem voherigen Sprint wurde gelöst. Wir arbeiten mit einer festen Anzahl an tiles
             (nötig, damit man die Arena in der text-Datei gestalten kann). Die Größe der tiles wird aber flexibel an die
-            Bildschirmgröße angepasst, so dass die Arena den kompletten Bildschirm überdeckt und man unseren gewünschten
+            Bildschirmgröße angepasst, sodass die Arena den kompletten Bildschirm überdeckt und man unseren gewünschten
             full-screen Eindruck hat.<br>
             (Walid)
     </ul>
