@@ -41,41 +41,41 @@ class RobotRenderer:
         self.frame_duration = 0.3  # seconds per frame
 
         # Load animation frames for each robot type
-        self.load_robot_type("Spider")
         self.load_robot_type("Tank")
+        self.load_robot_type("Spider")
 
     def load_robot_type(self, robot_type: str):
-        def load_robot_type(self, robot_type: str):
-            # Load and cut spritesheet for the given robot type
-            spritesheet_path = f"../resources/{robot_type}/{robot_type.lower()}_spritesheet.png"
-            spritesheet = pygame.image.load(spritesheet_path).convert_alpha()
 
-            if robot_type == "Tank":
-                # 1 column + 36 rows
-                frame_width = spritesheet.get_width()
-                frame_height = spritesheet.get_height() // 36
-                frames = []
-                for row in range(36):
-                    x = 0
+        # Load and cut spritesheet for the given robot type
+        spritesheet_path = f"../resources/{robot_type}/{robot_type.lower()}_spritesheet.png"
+        spritesheet = pygame.image.load(spritesheet_path).convert_alpha()
+
+        if robot_type == "Tank":
+            # 1 column + 36 rows
+            frame_width = spritesheet.get_width()
+            frame_height = spritesheet.get_height() // 36
+            frames = []
+            for row in range(36):
+                x = 0
+                y = row * frame_height
+                rect = pygame.Rect(x, y, frame_width, frame_height)
+                frame = spritesheet.subsurface(rect)
+                frames.append(frame)
+
+        else:  # if robot_type == "spider"
+            # 4 columns × 36 rows
+            frame_width = spritesheet.get_width() // 4
+            frame_height = spritesheet.get_height() // 36
+            frames = []
+            for row in range(36):  # direction
+                for col in range(4):  # animation frame
+                    x = col * frame_width
                     y = row * frame_height
                     rect = pygame.Rect(x, y, frame_width, frame_height)
                     frame = spritesheet.subsurface(rect)
                     frames.append(frame)
 
-            else: # if robot_type == "spider"
-                # 4 columns × 36 rows
-                frame_width = spritesheet.get_width() // 4
-                frame_height = spritesheet.get_height() // 36
-                frames = []
-                for row in range(36):  # direction
-                    for col in range(4):  # animation frame
-                        x = col * frame_width
-                        y = row * frame_height
-                        rect = pygame.Rect(x, y, frame_width, frame_height)
-                        frame = spritesheet.subsurface(rect)
-                        frames.append(frame)
-
-            self.animations[robot_type] = frames
+        self.animations[robot_type] = frames
 
     def update_animation(self, robot, dt):
         # Update animation based on time + movement
@@ -173,15 +173,15 @@ class RobotRenderer:
                 self.camera_surface,
                 robot.color,
                 camera.apply(robot.x, robot.y),
-                robot.r,
+                robot.hitbox_radius,
             )
 
             # Eyes
-            eye_radius = robot.r * 0.1
+            eye_radius = robot.hitbox_radius * 0.1
             eye_offset_deg = 30
             eye_offset_rad = math.radians(eye_offset_deg)
             alpha_rad = math.radians(robot.alpha)
-            eye_distance = robot.r * 0.6
+            eye_distance = robot.hitbox_radius * 0.6
             left_eye = (
                 robot.x + eye_distance * math.cos(alpha_rad - eye_offset_rad),
                 robot.y + eye_distance * math.sin(alpha_rad - eye_offset_rad),
@@ -215,7 +215,8 @@ class RobotRenderer:
         bg_power_rect = pygame.Rect(power_x, power_y, power_width, power_height)
 
         # Draw background bar
-        pygame.draw.rect(self.camera_surface, bg_color_power, bg_power_rect)
+        if not robot.in_bush:
+            pygame.draw.rect(self.camera_surface, bg_color_power, bg_power_rect)
 
         # Draw outline for background bar
         bg_outline_color = (
@@ -223,29 +224,32 @@ class RobotRenderer:
             min(bg_color_power[1] + 30, 255),
             min(bg_color_power[2] + 30, 255),
         )
-        pygame.draw.rect(
-            self.camera_surface,
-            bg_outline_color,
-            bg_power_rect,
-            robot.hitbox_radius // 25,
-        )
+        if not robot.in_bush:
+            pygame.draw.rect(
+                self.camera_surface,
+                bg_outline_color,
+                bg_power_rect,
+                robot.hitbox_radius // 25,
+            )
 
         # Draw fill bar
-        pygame.draw.rect(
-            self.camera_surface,
-            POWER_BAR_COLOR,
-            pygame.Rect(power_x, power_y, fill_width, power_height),
-        )
+        if not robot.in_bush:
+            pygame.draw.rect(
+                self.camera_surface,
+                POWER_BAR_COLOR,
+                pygame.Rect(power_x, power_y, fill_width, power_height),
+            )
 
         # Draw outline for fill bar
         r, g, b = POWER_BAR_COLOR
         highlight_color = (min(r + 40, 255), min(g + 40, 255), min(b + 40, 255))
-        pygame.draw.rect(
-            self.camera_surface,
-            highlight_color,
-            pygame.Rect(power_x, power_y, fill_width, power_height),
-            robot.hitbox_radius // 25,
-        )
+        if not robot.in_bush:
+            pygame.draw.rect(
+                self.camera_surface,
+                highlight_color,
+                pygame.Rect(power_x, power_y, fill_width, power_height),
+                robot.hitbox_radius // 25,
+            )
 
         # Draw power value text
         font = pygame.font.SysFont("Arial", int(power_height * 1.5), bold=True)
@@ -256,7 +260,8 @@ class RobotRenderer:
         power_text_y = power_y + (power_height - p_nrect.height) // 2
 
         if config.SHOW_STATS:
-            self.draw_text_with_outline(font, text, power_text_x, power_text_y)
+            if not robot.in_bush:
+                self.draw_text_with_outline(font, text, power_text_x, power_text_y)
 
         # Draw power icon (lightning)
         icon_power = pygame.transform.scale(
@@ -264,7 +269,8 @@ class RobotRenderer:
         )
         icon_x = power_x - icon_power.get_width() - 5
         icon_y = power_y
-        self.camera_surface.blit(icon_power, (icon_x, icon_y))
+        if not robot.in_bush:
+            self.camera_surface.blit(icon_power, (icon_x, icon_y))
 
         # --- Life bar (above power bar) ---
         max_life_height = power_height  # same height as power bar
@@ -295,7 +301,8 @@ class RobotRenderer:
         bg_rect = pygame.Rect(life_x, life_y, max_life_widht, max_life_height)
 
         # Draw background
-        pygame.draw.rect(self.camera_surface, bg_color_rgb, bg_rect)
+        if not robot.in_bush:
+            pygame.draw.rect(self.camera_surface, bg_color_rgb, bg_rect)
 
         # Draw outline for background bar
         bg_outline_color = (
@@ -303,27 +310,33 @@ class RobotRenderer:
             min(bg_color_rgb[1] + 50, 255),
             min(bg_color_rgb[2] + 30, 255),
         )
-        pygame.draw.rect(
-            self.camera_surface, bg_outline_color, bg_rect, robot.hitbox_radius // 20
-        )
+        if not robot.in_bush:
+            pygame.draw.rect(
+                self.camera_surface,
+                bg_outline_color,
+                bg_rect,
+                robot.hitbox_radius // 20,
+            )
 
         # Draw fill bar
-        pygame.draw.rect(
-            self.camera_surface,
-            bar_color,
-            pygame.Rect(life_x, life_y, fill_life_width, max_life_height),
-        )
+        if not robot.in_bush:
+            pygame.draw.rect(
+                self.camera_surface,
+                bar_color,
+                pygame.Rect(life_x, life_y, fill_life_width, max_life_height),
+            )
 
         # Draw outline for fill bar
         r, g, b = bar_color
         highlight_color = (min(r + 30, 255), min(g + 30, 255), min(b + 40, 255))
 
-        pygame.draw.rect(
-            self.camera_surface,
-            highlight_color,
-            pygame.Rect(life_x, life_y, fill_life_width, max_life_height),
-            robot.hitbox_radius // 25,
-        )
+        if not robot.in_bush:
+            pygame.draw.rect(
+                self.camera_surface,
+                highlight_color,
+                pygame.Rect(life_x, life_y, fill_life_width, max_life_height),
+                robot.hitbox_radius // 25,
+            )
 
         # Draw text (HP number)
         life_text = str(int(robot.hp))
@@ -335,7 +348,8 @@ class RobotRenderer:
 
         # Only show HP text if SHOW_STATS is active
         if config.SHOW_STATS:
-            self.draw_text_with_outline(font, life_text, text_x, text_y)
+            if not robot.in_bush:
+                self.draw_text_with_outline(font, life_text, text_x, text_y)
 
         # Draw life icon (heart)
         icon_size = max_life_height
@@ -344,4 +358,38 @@ class RobotRenderer:
         )
         icon_x = life_x - icon_heart.get_width() - 5
         icon_y = life_y
-        self.camera_surface.blit(icon_heart, (icon_x, icon_y))
+        if not robot.in_bush:
+            self.camera_surface.blit(icon_heart, (icon_x, icon_y))
+
+        # Draw Explosion for shooting
+        fire_height = robot.hitbox_radius * 0.15
+        fire_width = robot.hitbox_radius * 0.15
+        fire_x, fire_y = camera.apply(
+            robot.x
+            - ((fire_width / 2) / camera.zoom)
+            + (
+                math.cos(math.radians(robot.alpha - 90))
+                * (robot.hitbox_radius * 0.35 + (fire_width))
+                # / camera.zoom
+            ),
+            robot.y
+            - ((fire_height / 2) / camera.zoom)
+            + (
+                math.sin(math.radians(robot.alpha - 90))
+                * (robot.hitbox_radius * 0.35 + (fire_height))
+                # / camera.zoom
+            ),
+        )
+
+        icon_size = fire_height
+        icon_fire = pygame.transform.scale(
+            config.ICONS["explosion"], (int(icon_size + 3), int(icon_size + 3))
+        ).convert_alpha()
+
+        icon_fire = pygame.transform.rotate(
+            icon_fire, -robot.alpha - 90
+        )  # angle image to fit robot.angle
+
+        current_time = pygame.time.get_ticks()
+        if current_time - robot.last_shot_time < 30:
+            self.camera_surface.blit(icon_fire, (fire_x, fire_y))
