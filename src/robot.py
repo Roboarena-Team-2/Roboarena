@@ -59,6 +59,7 @@ class Robot:
             []
         )  # List of bush tile positions robot is currently overlapping
         self.robot_type = robot_type
+        self.rotation_frame = 0 # current rotation angle
 
     # Lets the player move the robot on map
     def update_player(
@@ -378,14 +379,17 @@ class Robot:
             return None
         # shoot, if there is enough time and power
 
-        alpha_rad = math.radians(self.alpha)
+        # adjust angle to match robots directions
+        direction_offset = -90
+        adjusted_alpha = (self.alpha + direction_offset) % 360
+        alpha_rad = math.radians(adjusted_alpha)
         offset = self.hitbox_radius * 0.2  # start the bullet closer to center
-        start_x = self.x + offset * math.cos(alpha_rad)  # start outsinde of the robot
+        start_x = self.x + offset * math.cos(alpha_rad)  # start outside of the robot
         start_y = self.y + offset * math.sin(alpha_rad)
         bullet = Bullet(
             int(start_x),
             int(start_y),
-            self.alpha,
+            adjusted_alpha,
             7 * camera.zoom,
             (0, 0, 0),
             self,

@@ -430,7 +430,7 @@ def game_loop(map_file: str | None = None):
         4 * camera.zoom,
         6 * camera.zoom,
         True,
-        "Tank",
+        "Spider",
     )
     enemy1 = Robot(
         camera.surface,
@@ -441,7 +441,7 @@ def game_loop(map_file: str | None = None):
         4 * camera.zoom,
         6 * camera.zoom,
         False,
-        "Spider",
+        "Tank",
     )
     enemy2 = Robot(
         camera.surface,
@@ -479,6 +479,13 @@ def game_loop(map_file: str | None = None):
     while running:
         dt = clock.tick(60) / 300  # animation speed
         camera.follow_dynamic_center(robots, player)
+
+        # Rotate Player by 10° steps using a/d
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_a]:  # cw
+            player.rotation_frame = (player.rotation_frame + 10) % 360
+        if keys[pygame.K_d]:  # ccw
+            player.rotation_frame = (player.rotation_frame - 10) % 360
 
         # Event handling
         for event in pygame.event.get():

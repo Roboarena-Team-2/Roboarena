@@ -45,31 +45,71 @@ class RobotRenderer:
         self.load_robot_type("Tank")
 
     def load_robot_type(self, robot_type: str):
-        frames = []
-        base_path = f"../resources/{robot_type}"
-        for i in range(1, 5):
-            img = pygame.image.load(
-                os.path.join(base_path, f"d{i}.png")
-            ).convert_alpha()
-            frames.append(img)
-        self.animations[robot_type] = frames
+        def load_robot_type(self, robot_type: str):
+            # Load and cut spritesheet for the given robot type
+            spritesheet_path = f"../resources/{robot_type}/{robot_type.lower()}_spritesheet.png"
+            spritesheet = pygame.image.load(spritesheet_path).convert_alpha()
+
+            if robot_type == "Tank":
+                # 1 column + 36 rows
+                frame_width = spritesheet.get_width()
+                frame_height = spritesheet.get_height() // 36
+                frames = []
+                for row in range(36):
+                    x = 0
+                    y = row * frame_height
+                    rect = pygame.Rect(x, y, frame_width, frame_height)
+                    frame = spritesheet.subsurface(rect)
+                    frames.append(frame)
+
+            else: # if robot_type == "spider"
+                # 4 columns × 36 rows
+                frame_width = spritesheet.get_width() // 4
+                frame_height = spritesheet.get_height() // 36
+                frames = []
+                for row in range(36):  # direction
+                    for col in range(4):  # animation frame
+                        x = col * frame_width
+                        y = row * frame_height
+                        rect = pygame.Rect(x, y, frame_width, frame_height)
+                        frame = spritesheet.subsurface(rect)
+                        frames.append(frame)
+
+            self.animations[robot_type] = frames
 
     def update_animation(self, robot, dt):
-        if not robot.moving:
-            self.frame_indices[robot] = 0  # reset to first frame (default sprite)
-            self.timers[robot] = 0.0
-            return
-
+        # Update animation based on time + movement
         if robot not in self.frame_indices:
             self.frame_indices[robot] = 0
             self.timers[robot] = 0.0
 
-        self.timers[robot] += dt
-        if self.timers[robot] >= self.frame_duration:
-            self.timers[robot] = 0.0
-            self.frame_indices[robot] = (self.frame_indices[robot] + 1) % len(
-                self.animations[robot.robot_type]
-            )
+        if robot.moving:
+            self.timers[robot] += dt
+            if self.timers[robot] >= self.frame_duration:
+                self.timers[robot] = 0.0
+                if robot.robot_type == "Spider":
+                    self.frame_indices[robot] = (self.frame_indices[robot] + 1) % 4
+                else:
+                    self.frame_indices[robot] = (self.frame_indices[robot] + 1) % len(
+                        self.animations[robot.robot_type]
+                    )
+        else:
+            # Spider resets to frame 0 when not moving
+            if robot.robot_type == "Spider":
+                self.frame_indices[robot] = 0
+            # Tank keeps last frame
+
+    def draw_soft_shadow(self, robot, camera):
+        # draw circle shadow below robot
+        radius = robot.hitbox_radius * camera.zoom * 0.3
+        shadow_surface = pygame.Surface((radius * 2, radius * 2), pygame.SRCALPHA)
+        pygame.draw.circle(shadow_surface, (0, 0, 0, 60), (radius, radius), radius)
+
+        # compute shadow offset
+        shadow_pos = camera.apply(robot.x, robot.y + robot.hitbox_radius * 0.22)
+        rect = shadow_surface.get_rect(center=shadow_pos)
+
+        self.camera_surface.blit(shadow_surface, rect)
 
     def draw_text_with_outline(
         self, font, text, x, y, color=(255, 255, 255), outline_color=(0, 0, 0)
@@ -98,18 +138,28 @@ class RobotRenderer:
         life count and power bar using the camera system"""
 
         self.update_animation(robot, dt)
+        self.draw_soft_shadow(robot, camera)
 
         if robot.robot_type in self.animations:
-            # Get current animation frame
-            frame = self.animations[robot.robot_type][self.frame_indices.get(robot, 0)]
+            # Get current animation frame based on class type
+            if robot.robot_type == "Spider":
+                direction_index = int((-robot.alpha + 90) / 10) % 36
+                animation_index = self.frame_indices[robot] % 4
+                index = direction_index * 4 + animation_index
 
-            scaled_size = int(robot.hitbox_radius * camera.zoom)
+            elif robot.robot_type == "Tank":
+                direction_index = int((-robot.alpha + 90) / 10) % 36
+                index = direction_index
+
+            frame = self.animations[robot.robot_type][index]
+            scale_factor = 2.0
+            scaled_size = int(robot.hitbox_radius * camera.zoom * scale_factor)
             scaled_image = pygame.transform.smoothscale(
                 frame, (scaled_size, scaled_size)
             )
 
-            # Rotate after scaling
-            rotated_image = pygame.transform.rotate(scaled_image, -robot.alpha)
+            # Rotation is already handled in the animation frames
+            rotated_image = scaled_image
 
             # Center rotated image at the robot's position
             rect = rotated_image.get_rect(center=camera.apply(robot.x, robot.y))
