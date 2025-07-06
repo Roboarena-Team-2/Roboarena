@@ -509,6 +509,7 @@ def game_loop(map_file: str | None = None):
     ]
     powerup_tick: int = 10000
     enemy_behaviour_tick: int = 0
+    start_tick = pygame.time.get_ticks()
 
     # show countdown before game starts
     countdown(screen, camera, map_renderer, robot_renderer, robots, player)
@@ -538,7 +539,7 @@ def game_loop(map_file: str | None = None):
         ticks = pygame.time.get_ticks()
 
         # Enemy behavior update every 3 seconds
-        if ticks > enemy_behaviour_tick:
+        if ticks - start_tick > enemy_behaviour_tick:
             enemy_behaviour_tick += 3000  # 3 sec
             goals: list[Robot | None] = []
             for robot in robots:
@@ -614,7 +615,7 @@ def game_loop(map_file: str | None = None):
                 bullets.remove(bullet)
 
         # Powerup appearing
-        if ticks > powerup_tick:
+        if ticks - start_tick > powerup_tick:
             powerup_tick += 10000  # 10 sec
             random_powerup_type = random.choice(powerup_types)
             powerups.append(Powerup(random_powerup_type, game_map))
