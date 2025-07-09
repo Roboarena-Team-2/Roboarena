@@ -643,18 +643,18 @@ class Robot:
                     self.time_left_with_powerup = double_speed_time
                     self.v *= 2
                     self.v_alpha *= 2
-                    if self.is_player:  # for evtl. sound
-                        pass
+                    if self.is_player:
+                        self.sounds.play_sound("powerup_sound")
                 if powerup.type == "health_boost":
                     self.hp = min(100, self.hp + 50)
-                    if self.is_player:  # for evtl. sound
-                        pass
+                    if self.is_player:
+                        self.sounds.play_sound("powerup_sound")
                 if powerup.type == "power_boost":
                     self.power = min(100, self.power + 50)
-                    if self.is_player:  # for evtl. sound
-                        pass
+                    if self.is_player:
+                        self.sounds.play_sound("powerup_sound")
                 if powerup.type == "indestructible":
                     self.powerup = "indestructible"
                     self.time_left_with_powerup = indestructible_time
-                    if self.is_player:  # for evtl. sound
-                        pass
+                    if self.is_player:
+                        self.sounds.play_sound("powerup_sound")

@@ -26,6 +26,7 @@ class Sounds:
                 "../resources/sounds/game_over_bad_chest.wav"
             ),
             "win_sound": pygame.mixer.Sound("../resources/sounds/tadaa-47995.mp3"),
+            "powerup_sound": pygame.mixer.Sound("../resources/sounds/power_up_sound_v1.ogg")
         }
 
         self.channel_move = pygame.mixer.Channel(1)
@@ -41,6 +42,7 @@ class Sounds:
             "gameover_sound",
             "win_sound",
             "countdown_sound",
+            "powerup_sound"
         }
         self.current_loop = None
         self.move_playing = False
