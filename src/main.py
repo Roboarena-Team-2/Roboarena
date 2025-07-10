@@ -9,6 +9,7 @@ from button import Button
 from sounds import Sounds
 from camera import Camera
 from robot_renderer import RobotRenderer
+import random
 
 # Initialisation
 pygame.init()
@@ -61,43 +62,24 @@ def difficulty_easy(camera, game_map) -> list[Robot]:
     robot_size = int(config.TILE_SIZE * 1.3)
     speed = 3 * camera.zoom
     turnspeed = 4 * camera.zoom
-    player = Robot(
-        camera.surface,
-        spawn_positions[0][0],
-        spawn_positions[0][1],
-        robot_size,
-        0,
-        (255, 255, 255),
-        speed,
-        turnspeed,
-        True,
-        type,
-    )
-    enemy1 = Robot(
-        camera.surface,
-        spawn_positions[1][0],
-        spawn_positions[1][1],
-        robot_size,
-        0,
-        (0, 100, 190),
-        speed,
-        turnspeed,
-        False,
-        "Spider",
-    )
-    enemy2 = Robot(
-        camera.surface,
-        spawn_positions[2][0],
-        spawn_positions[2][1],
-        robot_size,
-        50,
-        (255, 50, 120),
-        speed,
-        turnspeed,
-        False,
-        "Spider",
-    )
-    robots: list[Robot] = [player, enemy1, enemy2]
+    robots: list[Robot] = []
+    for i in range(game_map.player_count):
+        robots.append(
+            Robot(
+                camera.surface,
+                spawn_positions[i][0],
+                spawn_positions[i][1],
+                robot_size,
+                0,
+                (255, 255, 255),
+                speed,
+                turnspeed,
+                False,
+                random.choice(("Spider", "Tank")),
+            )
+        )
+    robots[0].is_player = True
+    robots[0].robot_type = type
     for robot in robots:
         robot.shot_break_duration = 2000
         robot.recharge_rate = 0.05
@@ -110,55 +92,24 @@ def difficulty_medium(camera, game_map) -> list[Robot]:
     robot_size = int(config.TILE_SIZE * 1.3)
     speed = 4 * camera.zoom
     turnspeed = 5 * camera.zoom
-    player = Robot(
-        camera.surface,
-        spawn_positions[0][0],
-        spawn_positions[0][1],
-        robot_size,
-        0,
-        (255, 255, 255),
-        speed,
-        turnspeed,
-        True,
-        type,
-    )
-    enemy1 = Robot(
-        camera.surface,
-        spawn_positions[1][0],
-        spawn_positions[1][1],
-        robot_size,
-        0,
-        (0, 100, 190),
-        speed,
-        turnspeed,
-        False,
-        "Spider",
-    )
-    enemy2 = Robot(
-        camera.surface,
-        spawn_positions[2][0],
-        spawn_positions[2][1],
-        robot_size,
-        50,
-        (255, 50, 120),
-        speed,
-        turnspeed,
-        False,
-        "Spider",
-    )
-    enemy3 = Robot(
-        camera.surface,
-        spawn_positions[3][0],
-        spawn_positions[3][1],
-        robot_size,
-        50,
-        (0, 250, 0),
-        speed,
-        turnspeed,
-        False,
-        "Tank",
-    )
-    robots: list[Robot] = [player, enemy1, enemy2, enemy3]
+    robots: list[Robot] = []
+    for i in range(game_map.player_count):
+        robots.append(
+            Robot(
+                camera.surface,
+                spawn_positions[i][0],
+                spawn_positions[i][1],
+                robot_size,
+                0,
+                (255, 255, 255),
+                speed,
+                turnspeed,
+                False,
+                random.choice(("Spider", "Tank")),
+            )
+        )
+    robots[0].is_player = True
+    robots[0].robot_type = type
     for robot in robots:
         robot.shot_break_duration = 1500
         robot.recharge_rate = 0.1
@@ -171,67 +122,24 @@ def difficulty_hard(camera, game_map) -> list[Robot]:
     robot_size = int(config.TILE_SIZE * 1.3)
     speed = 5 * camera.zoom
     turnspeed = 6 * camera.zoom
-    player = Robot(
-        camera.surface,
-        spawn_positions[0][0],
-        spawn_positions[0][1],
-        robot_size,
-        0,
-        (255, 255, 255),
-        speed,
-        turnspeed,
-        True,
-        type,
-    )
-    enemy1 = Robot(
-        camera.surface,
-        spawn_positions[1][0],
-        spawn_positions[1][1],
-        robot_size,
-        0,
-        (0, 100, 190),
-        speed,
-        turnspeed,
-        False,
-        "Spider",
-    )
-    enemy2 = Robot(
-        camera.surface,
-        spawn_positions[2][0],
-        spawn_positions[2][1],
-        robot_size,
-        50,
-        (255, 50, 120),
-        speed,
-        turnspeed,
-        False,
-        "Spider",
-    )
-    enemy3 = Robot(
-        camera.surface,
-        spawn_positions[3][0],
-        spawn_positions[3][1],
-        robot_size,
-        80,
-        (0, 250, 0),
-        speed,
-        turnspeed,
-        False,
-        "Tank",
-    )
-    enemy4 = Robot(
-        camera.surface,
-        spawn_positions[4][0],
-        spawn_positions[4][1],
-        robot_size,
-        150,
-        (0, 0, 250),
-        speed,
-        turnspeed,
-        False,
-        "Tank",
-    )
-    robots: list[Robot] = [player, enemy1, enemy2, enemy3, enemy4]
+    robots: list[Robot] = []
+    for i in range(game_map.player_count):
+        robots.append(
+            Robot(
+                camera.surface,
+                spawn_positions[i][0],
+                spawn_positions[i][1],
+                robot_size,
+                0,
+                (255, 255, 255),
+                speed,
+                turnspeed,
+                False,
+                random.choice(("Spider", "Tank")),
+            )
+        )
+    robots[0].is_player = True
+    robots[0].robot_type = type
     for robot in robots:
         robot.shot_break_duration = 1000
         robot.recharge_rate = 0.2
