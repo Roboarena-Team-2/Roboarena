@@ -26,22 +26,21 @@ class Sounds:
                 "../resources/sounds/game_over_bad_chest.wav"
             ),
             "win_sound": pygame.mixer.Sound("../resources/sounds/tadaa-47995.mp3"),
+            "powerup_sound": pygame.mixer.Sound(
+                "../resources/sounds/power_up_sound_v1.ogg"
+            ),
         }
 
+        # different channels fot different sound categories
         self.channel_move = pygame.mixer.Channel(1)
         self.channel_loop = pygame.mixer.Channel(2)
-        self.channel_single = pygame.mixer.Channel(3)
+        self.channel_single_texture = pygame.mixer.Channel(3)
+        self.channel_shooting = pygame.mixer.Channel(4)
+        self.channel_other = pygame.mixer.Channel(5)
         self.loops = {"bush_sound", "sand_sound"}
-        self.singles = {
-            "wall_hit_sound",
-            "lava_sound",
-            "ice_sound",
-            "shot_sound",
-            "player_hit_sound",
-            "gameover_sound",
-            "win_sound",
-            "countdown_sound",
-        }
+        self.single_textures = {"wall_hit_sound", "lava_sound", "ice_sound"}
+        self.shooting = {"shot_sound", "player_hit_sound"}
+        self.other = {"gameover_sound", "win_sound", "countdown_sound", "powerup_sound"}
         self.current_loop = None
         self.move_playing = False
         self.drive = False
@@ -61,7 +60,7 @@ class Sounds:
             self.spider = True
         if action in self.loops:
             if action != self.current_loop:
-                self.stop_loop(action)
+                self.stop_loop(self.current_loop)
                 if self.move_playing:
                     if self.drive:
                         self.sounds["drive_sound"].set_volume(
@@ -69,23 +68,31 @@ class Sounds:
                         )  # make drive sound quieter while other loop sound is playing
                     if self.spider:
                         self.sounds["spider_sound"].set_volume(
-                            0.4
+                            0.7
                         )  # make spider sound quieter while other loop sound is playing
                 if not self.channel_loop.get_busy():
                     self.channel_loop.play(self.sounds[action], loops=-1)
                 self.current_loop = action
-        if action in self.singles:
+        if action in self.single_textures:
             if (
-                not self.channel_single.get_busy()
-                and not self.channel_single.get_sound == self.sounds[action]
+                not self.channel_single_texture.get_busy()
+                and not self.channel_single_texture.get_sound == self.sounds[action]
             ):
-                if action == "player_hit":
-                    self.channel_single.set_volume(0.3)
+                self.channel_single_texture.play(self.sounds[action], loops=0)
+        if action in self.shooting:
+            if not self.channel_shooting.get_busy():
+                if action == "player_hit_sound":
+                    self.channel_shooting.set_volume(0.3)
                 else:
-                    self.channel_single.set_volume(1.0)
-                self.channel_single.play(self.sounds[action], loops=0)
+                    self.channel_shooting.set_volume(1.0)
+                self.channel_shooting.play(self.sounds[action], loops=0)
+        if action in self.other:
+            if not self.channel_other.get_busy():
+                self.channel_other.play(self.sounds[action], loops=0)
 
-    def stop_loop(self, action: str):
+    def stop_loop(self, action: str | None):
+        if action is None:
+            return
         if action == "drive_sound":
             self.move_playing = False
             self.drive = False
@@ -112,8 +119,12 @@ class Sounds:
                     self.channel_move.stop()
             if sound in self.loops and self.channel_loop.get_busy():
                 self.channel_loop.stop()
-            if sound in self.singles and self.channel_single.get_busy():
-                self.channel_single.stop()
+            if sound in self.single_textures and self.channel_single_texture.get_busy():
+                self.channel_single_texture.stop()
+            if sound in self.shooting and self.channel_shooting.get_busy():
+                self.channel_shooting.stop()
+            if sound in self.other and self.channel_other.get_busy():
+                self.channel_other.stop()
             self.current_loop = None
             self.move_playing = False
             self.drive = False

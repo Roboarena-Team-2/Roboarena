@@ -9,6 +9,7 @@ from button import Button
 from sounds import Sounds
 from camera import Camera
 from robot_renderer import RobotRenderer
+from power_up import Powerup
 import random
 
 # Initialisation
@@ -624,7 +625,16 @@ def game_loop(map_file: str | None = None):
 
     # Bullet and movement setup
     bullets: list[Bullet] = []
+    powerups: list[Powerup] = []
+    powerup_types: list[str] = [
+        "ram",
+        "power_boost",
+        "health_boost",
+        "indestructible",
+    ]
+    powerup_tick: int = 10000
     enemy_behaviour_tick: int = 0
+    start_tick = pygame.time.get_ticks()
 
     # show countdown before game starts
     countdown(screen, camera, map_renderer, robot_renderer, robots, player)
@@ -654,7 +664,7 @@ def game_loop(map_file: str | None = None):
         ticks = pygame.time.get_ticks()
 
         # Enemy behavior update every 3 seconds
-        if ticks > enemy_behaviour_tick:
+        if ticks - start_tick > enemy_behaviour_tick:
             enemy_behaviour_tick += 3000  # 3 sec
             goals: list[Robot | None] = []
             for robot in robots:
@@ -663,7 +673,7 @@ def game_loop(map_file: str | None = None):
                 goals.append(robot.get_robot_with_distance_prob(game_map, robots))
         for robot in robots:
             if robot is player:  # player
-                player.update_player(robots, game_map, walls, bullets, camera)
+                player.update_player(robots, game_map, walls, bullets, camera, powerups)
                 if player.hp <= 0:
                     player.hp = 0  # set to 0, so it does not show a negativ number
 
@@ -691,6 +701,7 @@ def game_loop(map_file: str | None = None):
                     walls,
                     bullets,
                     camera,
+                    powerups,
                 )
                 if robot.hp <= 0:
                     robots.remove(robot)
@@ -727,6 +738,18 @@ def game_loop(map_file: str | None = None):
             bullet.update_bullet(game_map, camera)
             if not bullet.alive:
                 bullets.remove(bullet)
+
+        # Powerup appearing
+        if ticks - start_tick > powerup_tick:
+            powerup_tick += 10000  # 10 sec
+            random_powerup_type = random.choice(powerup_types)
+            powerups.append(Powerup(random_powerup_type, game_map))
+
+        # Powerups updates
+        for powerup in powerups:
+            powerup.draw_powerup(camera)
+            if not powerup.alive:
+                powerups.remove(powerup)
 
         screen.blit(camera.surface, (0, 0))
         pygame.display.flip()
