@@ -55,7 +55,7 @@ class RobotRenderer:
             frames.append(img)
         self.animations[robot_type] = frames
 
-    def update_animation(self, robot, dt):
+    def update_animation(self, robot: Robot, dt):
         if not robot.moving:
             self.frame_indices[robot] = 0  # reset to first frame (default sprite)
             self.timers[robot] = 0.0
@@ -100,7 +100,7 @@ class RobotRenderer:
         pygame.draw.circle(shape_surf, color, (radius, radius), radius)
         self.camera_surface.blit(shape_surf, target_rect)
 
-    def draw(self, robot, camera, dt):
+    def draw(self, robot: Robot, camera, dt):
         """Renders the robot sprite (or default shape), eyes,
         life count and power bar using the camera system"""
 
@@ -130,15 +130,15 @@ class RobotRenderer:
                 self.camera_surface,
                 robot.color,
                 camera.apply(robot.x, robot.y),
-                robot.r,
+                robot.hitbox_radius,
             )
 
             # Eyes
-            eye_radius = robot.r * 0.1
+            eye_radius = robot.hitbox_radius * 0.1
             eye_offset_deg = 30
             eye_offset_rad = math.radians(eye_offset_deg)
             alpha_rad = math.radians(robot.alpha)
-            eye_distance = robot.r * 0.6
+            eye_distance = robot.hitbox_radius * 0.6
             left_eye = (
                 robot.x + eye_distance * math.cos(alpha_rad - eye_offset_rad),
                 robot.y + eye_distance * math.sin(alpha_rad - eye_offset_rad),
