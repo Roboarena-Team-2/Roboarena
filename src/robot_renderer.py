@@ -156,12 +156,16 @@ class RobotRenderer:
 
         if robot.powerup == "indestructible":
             self.draw_circle_alpha(
-                (75, 166, 232, 120), camera.apply(robot.x, robot.y), robot.hitbox_radius
+                (75, 166, 232, 120),
+                camera.apply(robot.x, robot.y),
+                robot.hitbox_radius * 0.8,
             )
 
         if robot.powerup == "ram":
             self.draw_circle_alpha(
-                (245, 55, 55, 120), camera.apply(robot.x, robot.y), robot.hitbox_radius
+                (245, 55, 55, 120),
+                camera.apply(robot.x, robot.y),
+                robot.hitbox_radius * 0.8,
             )
 
         # Power bar

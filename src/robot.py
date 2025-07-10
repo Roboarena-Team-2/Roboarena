@@ -472,8 +472,8 @@ class Robot:
                 bullet.alive = False
                 if self.powerup != "indestructible":
                     self.hp = self.hp - 15
-                if self.is_player:
-                    self.sounds.play_sound("player_hit_sound")
+                    if self.is_player:
+                        self.sounds.play_sound("player_hit_sound")
 
     # helper-function to get list of robots with probability corresponding to its distance
     def dist_to_prob(

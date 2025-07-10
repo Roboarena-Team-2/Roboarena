@@ -17,7 +17,7 @@ class Powerup:
     def draw_powerup(self, camera: Camera) -> None:
         # draw powerup
         draw_x, draw_y = camera.apply(int(self.rect.x), int(self.rect.y))
-        if self.type == "double_speed":
+        if self.type == "ram":
             icon_fire = pygame.transform.scale(
                 config.ICONS["explosion"],
                 (
