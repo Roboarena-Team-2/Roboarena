@@ -502,7 +502,7 @@ def game_loop(map_file: str | None = None):
     bullets: list[Bullet] = []
     powerups: list[Powerup] = []
     powerup_types: list[str] = [
-        "double_speed",
+        "ram",
         "power_boost",
         "health_boost",
         "indestructible",

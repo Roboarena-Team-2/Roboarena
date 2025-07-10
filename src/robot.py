@@ -16,7 +16,7 @@ sand_acceleration: float = 1 / 2
 recharge_rate: float = 0.05
 
 # Time with powerups
-double_speed_time: int = 300
+ram_time: int = 300
 indestructible_time: int = 300
 
 
@@ -191,6 +191,8 @@ class Robot:
             self.hitbox_radius * 2,
             self.hitbox_radius * 2,
         )
+        if self.powerup == "ram":
+            robot.hp -= 5
         # moves robot to direct wanted path if no wall
         if newRect.collidelist(walls) == -1:
             self.x = xnew
@@ -275,14 +277,14 @@ class Robot:
         if "ice" in touched_textures:
             self.v = self.speed * ice_acceleration
             self.v_alpha = self.speed_alpha * ice_acceleration
-            if (self.powerup is not None) or (self.powerup == "double_speed"):
+            if self.powerup == "ram":
                 self.v *= 2
             if self.is_player and self.moving:
                 self.sounds.play_sound("ice_sound")
         elif "sand" in touched_textures:
             self.v = self.speed * sand_acceleration
             self.v_alpha = self.speed_alpha * sand_acceleration
-            if (self.powerup is not None) or (self.powerup == "double_speed"):
+            if self.powerup == "ram":
                 self.v *= 2
             if self.is_player and self.moving:
                 self.sounds.play_sound("sand_sound")
@@ -291,7 +293,7 @@ class Robot:
         else:
             self.v = self.speed
             self.v_alpha = self.speed_alpha
-            if (self.powerup is not None) or (self.powerup == "double_speed"):
+            if self.powerup == "ram":
                 self.v *= 2
         if "lava" in touched_textures:
             self.get_spawn_position(game_map, robots)
@@ -468,7 +470,7 @@ class Robot:
             max_dist = bullet.radius + self.hitbox_radius * 0.35
             if dist < max_dist:
                 bullet.alive = False
-                if (self.powerup is None) or (self.powerup != "indestructible"):
+                if self.powerup != "indestructible":
                     self.hp = self.hp - 15
                 if self.is_player:
                     self.sounds.play_sound("player_hit_sound")
@@ -638,9 +640,9 @@ class Robot:
         for powerup in powerups:
             if powerup.rect.colliderect(robot_box):
                 powerup.alive = False
-                if powerup.type == "double_speed":
-                    self.powerup = "double_speed"
-                    self.time_left_with_powerup = double_speed_time
+                if powerup.type == "ram":
+                    self.powerup = "ram"
+                    self.time_left_with_powerup = ram_time
                     self.v *= 2
                     self.v_alpha *= 2
                     if self.is_player:
