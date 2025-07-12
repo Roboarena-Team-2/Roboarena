@@ -579,7 +579,7 @@ def game_loop(map_file: str | None = None):
         "health_boost",
         "indestructible",
     ]
-    powerup_tick: int = 10000
+    powerup_tick: int = 5000
     enemy_behaviour_tick: int = 0
     start_tick = pygame.time.get_ticks()
 
@@ -688,7 +688,7 @@ def game_loop(map_file: str | None = None):
 
         # Powerup appearing
         if ticks - start_tick > powerup_tick:
-            powerup_tick += 10000  # 10 sec
+            powerup_tick += 5000  # 5 sec
             random_powerup_type = random.choice(powerup_types)
             powerups.append(Powerup(random_powerup_type, game_map))
 
