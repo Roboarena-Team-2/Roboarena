@@ -81,7 +81,40 @@ class Robot:
         self.exist(game_map, robots, bullets, powerups)
 
         if self.robot_type == "Tank":
-            return
+            keys = pygame.key.get_pressed()
+            # rotate
+            self.alpha += (keys[pygame.K_d] - keys[pygame.K_a]) * self.v_alpha
+            self.alpha = self.alpha % 360
+
+            # move
+            alpha_rad = math.radians(self.alpha)
+            x = 0
+            y = 0
+            if keys[pygame.K_w]:  # forward
+                x = math.cos(alpha_rad) * self.v
+                y = math.sin(alpha_rad) * self.v
+            if keys[pygame.K_s]:  # backwards
+                x = -1 * math.cos(alpha_rad) * self.v
+                y = -1 * math.sin(alpha_rad) * self.v
+            self.move_if_no_walls(x, y, walls, robots, game_map)
+
+            # shoot
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_x, mouse_y = pygame.mouse.get_pos()
+                    mouse_world_x, mouse_world_y = camera.screen_to_world(
+                        mouse_x, mouse_y
+                    )
+                    dx = mouse_world_x - self.x
+                    dy = mouse_world_y - self.y
+                    shooting_angle = math.degrees(math.atan2(dy, dx)) % 360
+                    diff = (shooting_angle - self.alpha + 180) % 360 - 180
+                    alpha = self.alpha
+                    if diff >= 0:
+                        alpha += min(45, diff)
+                    else:
+                        alpha += max(-45, diff)
+                    self.shoot(alpha, bullets, camera, walls, robots, game_map)
 
         else:
             # Update player direction based on mouse position
@@ -133,7 +166,7 @@ class Robot:
             # check, if user used a key for shooting
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    self.shoot(bullets, camera, walls, robots, game_map)
+                    self.shoot(self.alpha, bullets, camera, walls, robots, game_map)
 
     # Lets a robot follow another robot
     def update_enemy(
@@ -178,7 +211,7 @@ class Robot:
         # shoot if angle to goal is under 10°
         angle_diff = abs(abs(angle_to_goal - 180) - self.alpha) % 360
         if (angle_diff <= 10) or (angle_diff >= 350):
-            self.shoot(bullets, camera, walls, robots, game_map)
+            self.shoot(self.alpha, bullets, camera, walls, robots, game_map)
 
         # avoid being in range of other robots
         self.move_if_in_range(robots, walls, game_map)
@@ -435,6 +468,7 @@ class Robot:
 
     def shoot(
         self,
+        alpha,
         bullets: list[Bullet],
         camera: Camera,
         walls: list[pygame.Rect],
@@ -457,7 +491,7 @@ class Robot:
         bullet = Bullet(
             int(start_x),
             int(start_y),
-            self.alpha,
+            alpha,
             int(7 * camera.zoom),
             (0, 0, 0),
             self,
@@ -648,10 +682,10 @@ class Robot:
     # checks and react if robot is touching a powerup
     def getting_powerup(self, powerups: list[Powerup]) -> None:
         robot_box = pygame.Rect(
-            self.x,
-            self.y,
-            self.hitbox_radius * 2,
-            self.hitbox_radius * 2,
+            int(self.x),
+            int(self.y),
+            int(self.hitbox_radius * 2),
+            int(self.hitbox_radius * 2),
         )
         for powerup in powerups:
             if powerup.rect.colliderect(robot_box):
