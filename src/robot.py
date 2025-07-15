@@ -27,7 +27,7 @@ class Robot:
         x: int,
         y: int,
         hitbox_radius: int,
-        direction: int,
+        direction: float,
         color: tuple[int, int, int],
         speed: float,
         speed_alpha: float,
@@ -66,10 +66,6 @@ class Robot:
             []
         )  # List of bush tile positions robot is currently overlapping
         self.robot_type = robot_type
-        # if robot_type == "Spider":
-        #   self.player_sound = "spider_sound"
-        # else:
-        #   self.player_sound = "drive_sound"
 
     # Lets the player move the robot on map
     def update_player(
@@ -84,40 +80,60 @@ class Robot:
         # Check for effect
         self.exist(game_map, robots, bullets, powerups)
 
-        # Update player position based on key inputs
-        keys = pygame.key.get_pressed()
+        if self.robot_type == "Tank":
+            return
 
-        x = (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * self.v
-        y = (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * self.v
-        self.move_if_no_walls(x, y, walls, robots, game_map)
-        self.alpha += (keys[pygame.K_d] - keys[pygame.K_a]) * self.v_alpha
-        self.alpha = self.alpha % 360
-
-        # sound for moving
-        currently_moving = (
-            keys[pygame.K_RIGHT]
-            or keys[pygame.K_LEFT]
-            or keys[pygame.K_DOWN]
-            or keys[pygame.K_UP]
-            or keys[pygame.K_a]
-            or keys[pygame.K_d]
-        )
-        if currently_moving and not self.moving:
-            if self.robot_type == "Spider":
-                self.sounds.play_sound("spider_sound")
+        else:
+            # Update player direction based on mouse position
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            mouse_world_x, mouse_world_y = camera.screen_to_world(mouse_x, mouse_y)
+            dx = mouse_world_x - self.x
+            dy = mouse_world_y - self.y
+            new_direction_rad = math.atan2(dy, dx)
+            new_direction_deg = math.degrees(new_direction_rad) % 360
+            diff = (new_direction_deg - self.alpha + 180) % 360 - 180
+            if abs(diff) > 2:  # to avoid jittering when its very close
+                if diff > 0:
+                    self.alpha += self.v_alpha
+                else:
+                    self.alpha += self.v_alpha * (-1)
             else:
-                self.sounds.play_sound("drive_sound")
-            self.moving = True
-        if not currently_moving and self.moving:
-            if self.robot_type == "Spider":
-                self.sounds.stop_loop("spider_sound")
-            else:
-                self.sounds.stop_loop("drive_sound")
-            self.moving = False
+                self.alpha = new_direction_deg
+            # check that alpha is always between 0 and 360 degrees
+            self.alpha %= 360
 
-        # check, if user used a key for shooting
-        if keys[pygame.K_s]:
-            self.shoot(bullets, camera, walls, robots, game_map)
+            # Update player position based on key inputs
+            keys = pygame.key.get_pressed()
+
+            x = (keys[pygame.K_d] - keys[pygame.K_a]) * self.v
+            y = (keys[pygame.K_s] - keys[pygame.K_w]) * self.v
+            self.move_if_no_walls(x, y, walls, robots, game_map)
+
+            # sound for moving
+            currently_moving = (
+                keys[pygame.K_d]
+                or keys[pygame.K_a]
+                or keys[pygame.K_s]
+                or keys[pygame.K_w]
+                or abs(diff) > 2
+            )
+            if currently_moving and not self.moving:
+                if self.robot_type == "Spider":
+                    self.sounds.play_sound("spider_sound")
+                else:
+                    self.sounds.play_sound("drive_sound")
+                self.moving = True
+            if not currently_moving and self.moving:
+                if self.robot_type == "Spider":
+                    self.sounds.stop_loop("spider_sound")
+                else:
+                    self.sounds.stop_loop("drive_sound")
+                self.moving = False
+
+            # check, if user used a key for shooting
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.shoot(bullets, camera, walls, robots, game_map)
 
     # Lets a robot follow another robot
     def update_enemy(
