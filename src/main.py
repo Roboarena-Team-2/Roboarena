@@ -939,8 +939,8 @@ def gameover(camera, map_renderer, robot_renderer, robots, player, score=-1):
             global highscore
             if highscore < score:  # set new highscore
                 highscore = score
-            draw_text(screen, "Highscore: {highscore}s", 0, 400, 100, center=True)
-            draw_text(screen, "Score: {score}s", 0, 450, 100, center=True)
+            draw_text(screen, f"Highscore: {highscore}s", 0, 400, 100, center=True)
+            draw_text(screen, f"Score: {score}s", 0, 500, 100, center=True)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
