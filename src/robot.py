@@ -98,6 +98,20 @@ class Robot:
                 y = -1 * math.sin(alpha_rad) * self.v
             self.move_if_no_walls(x, y, walls, robots, game_map)
 
+            # sound
+            currently_moving = (
+                keys[pygame.K_d]
+                or keys[pygame.K_a]
+                or keys[pygame.K_w]
+                or keys[pygame.K_s]
+            )
+            if currently_moving and not self.moving:
+                self.sounds.play_sound("drive_sound")
+                self.moving = True
+            if not currently_moving and self.moving:
+                self.sounds.stop_loop("drive_sound")
+                self.moving = False
+
             # shoot
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -126,12 +140,14 @@ class Robot:
             new_direction_deg = math.degrees(new_direction_rad) % 360
             diff = (new_direction_deg - self.alpha + 180) % 360 - 180
             if abs(diff) > 2:  # to avoid jittering when its very close
+                turning = True
                 if diff > 0:
                     self.alpha += self.v_alpha
                 else:
                     self.alpha += self.v_alpha * (-1)
             else:
                 self.alpha = new_direction_deg
+                turning = False
             # check that alpha is always between 0 and 360 degrees
             self.alpha %= 360
 
@@ -148,7 +164,7 @@ class Robot:
                 or keys[pygame.K_a]
                 or keys[pygame.K_s]
                 or keys[pygame.K_w]
-                or abs(diff) > 2
+                or turning
             )
             if currently_moving and not self.moving:
                 if self.robot_type == "Spider":
