@@ -790,7 +790,9 @@ def game_loop(map_file: str | None = None):
 
                     # call gameover function
                     if difficulty == "survival1" or difficulty == "survival2":
-                        gameover(camera, map_renderer, robot_renderer, robots, player, score)
+                        gameover(
+                            camera, map_renderer, robot_renderer, robots, player, score
+                        )
                     else:
                         gameover(camera, map_renderer, robot_renderer, robots, player)
             else:  # enemies
@@ -935,7 +937,7 @@ def gameover(camera, map_renderer, robot_renderer, robots, player, score=-1):
 
         if difficulty == "survival1" or difficulty == "survival2":
             global highscore
-            if highscore < score: # set new highscore
+            if highscore < score:  # set new highscore
                 highscore = score
             draw_text(screen, "Highscore: {highscore}s", 0, 400, 100, center=True)
             draw_text(screen, "Score: {score}s", 0, 450, 100, center=True)
