@@ -715,7 +715,6 @@ def game_loop(map_file: str | None = None):
         robot_tick: int = 10000
     if difficulty == "survival2":
         robots = difficulty_survival_faster(camera, game_map)
-        increasing_speed_variable: float = 0.0
     player = robots[0]
 
     # Bullet and movement setup
@@ -730,6 +729,8 @@ def game_loop(map_file: str | None = None):
     powerup_tick: int = 10000
     enemy_behaviour_tick: int = 0
     start_tick = pygame.time.get_ticks()
+    increasing_speed_variable: float = 0.5
+    enemy_base_speed: float = robots[1].speed
 
     # show countdown before game starts
     countdown(screen, camera, map_renderer, robot_renderer, robots, player)
@@ -887,14 +888,14 @@ def game_loop(map_file: str | None = None):
                         player.hitbox_radius,
                         random.randint(0, 359),
                         (255, 255, 255),
-                        player.speed + increasing_speed_variable,
-                        player.speed_alpha + increasing_speed_variable,
+                        enemy_base_speed + increasing_speed_variable,
+                        enemy_base_speed + increasing_speed_variable,
                         False,
                         random.choice(("Spider", "Tank")),
                     )
                 )
                 robots[len(robots) - 1].get_spawn_position(game_map, robots)
-                increasing_speed_variable += 0.01
+                increasing_speed_variable += 0.5
 
         # Powerups updates
         for powerup in powerups:
