@@ -39,6 +39,7 @@ print(f"Fenster: {window_width}x{window_height}")
 print(f"TILE_SIZE: {config.TILE_SIZE}")
 
 # Map data
+current_map = "test-level.txt"
 random_map = False
 
 
@@ -302,6 +303,7 @@ def level_selection():
     clock = pygame.time.Clock()
     font = pygame.font.SysFont(None, 40)
     global random_map
+    global current_map
     random_map = False  # reset this variable each time level selection is called
 
     start_button = Button(
@@ -333,7 +335,7 @@ def level_selection():
 
     level3_button = Button(
         rect=(screen.get_width() // 2 - 250, 370, 200, 50),
-        text="Level 3",
+        text="Lava River",
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -342,7 +344,7 @@ def level_selection():
 
     level4_button = Button(
         rect=(screen.get_width() // 2 + 50, 370, 200, 50),
-        text="Level 4",
+        text="Four Elements",
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -378,15 +380,15 @@ def level_selection():
                 pygame.quit()
                 sys.exit()
             if start_button.is_clicked(event):
-                game_loop()
+                game_loop(current_map)
             if level1_button.is_clicked(event):
-                game_loop("test-level.txt")
+                current_map = "test-level.txt"
             if level2_button.is_clicked(event):
-                game_loop("test-level2.txt")
+                current_map = "test-level2.txt"
             if level3_button.is_clicked(event):
-                pass
+                current_map = "lavariver.txt"
             if level4_button.is_clicked(event):
-                pass
+                current_map = "fourelements.txt"
             if random_button.is_clicked(event):
                 random_map = True
                 game_loop()
@@ -471,7 +473,7 @@ def countdown(surface, camera, map_renderer, robot_renderer, robots, player):
 
 def game_loop(map_file: str | None = None):
     if map_file is None:
-        map_file = "test-level.txt"
+        map_file = current_map
 
     # Map setup
     if random_map:
@@ -688,7 +690,7 @@ def gameover(camera, map_renderer, robot_renderer, robots, player):
                 if event.key == pygame.K_ESCAPE:
                     main_menu()
                 elif event.key == pygame.K_RETURN:
-                    game_loop()
+                    game_loop(current_map)
 
         pygame.display.flip()
         clock.tick(60)
@@ -729,7 +731,7 @@ def victory(camera, map_renderer, robot_renderer, robots, player):
                 if event.key == pygame.K_ESCAPE:
                     main_menu()
                 elif event.key == pygame.K_RETURN:
-                    game_loop()
+                    game_loop(current_map)
 
         pygame.display.flip()
         clock.tick(60)
