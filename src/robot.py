@@ -58,6 +58,7 @@ class Robot:
         # how often there was no bus in touched_textures in a row
         # while the robot was in a bush
         self.time_left_with_powerup = 0  # variable for powerups with limited time
+        self.ram_pause = 0  # variable to avoid instant death with ram collision
         self.powerup = None  # current Powerup
         self.sounds = Sounds()  # loading the sounds
 
@@ -191,8 +192,9 @@ class Robot:
             self.hitbox_radius * 2,
             self.hitbox_radius * 2,
         )
-        if self.powerup == "ram":
+        if self.powerup == "ram" and self.ram_pause == 0:
             robot.hp -= 5
+            self.ram_pause = 50
         # moves robot to direct wanted path if no wall
         if newRect.collidelist(walls) == -1:
             self.x = xnew
@@ -558,6 +560,8 @@ class Robot:
         # set time left with powerup
         if self.time_left_with_powerup > 0:
             self.time_left_with_powerup -= 1
+            if self.ram_pause != 0:
+                self.ram_pause -= 1
             if self.time_left_with_powerup == 0:
                 # Set back
                 self.powerup = None
@@ -578,10 +582,12 @@ class Robot:
                     bush_tiles.append((i, j))
         sorted_bush_tiles = []
         for i, j in bush_tiles:
-            tile_x = (i + 1 / 2) * config.TILE_SIZE
-            tile_y = (j + 1 / 2) * config.TILE_SIZE
+            tile_x = i * config.TILE_SIZE
+            tile_y = j * config.TILE_SIZE
+            # distance from robot to middle of tile
             dist = math.sqrt((tile_x - self.x) ** 2 + (tile_y - self.y) ** 2)
             sorted_bush_tiles.append((i, j, dist))
+        # sort by incresing distance
         sorted_bush_tiles = sorted(sorted_bush_tiles, key=lambda tile: tile[2])
         nearest_bush_middle = None
         for i, j, d in sorted_bush_tiles:
@@ -593,9 +599,10 @@ class Robot:
                 else:
                     break
             while (2 * self.get_hitbox().height) >= (yn * config.TILE_SIZE):
-                if j + yn <= config.ROWS:
-                    if (((i + n, j + yn) in bush_tiles) for n in range(xn)):
-                        yn += 1
+                if j + yn <= config.ROWS and all(
+                    list(((i + n, j + yn) in bush_tiles) for n in range(xn))
+                ):
+                    yn += 1
                 else:
                     break
             if (
