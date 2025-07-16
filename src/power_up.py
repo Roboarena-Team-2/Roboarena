@@ -6,6 +6,7 @@ from camera import Camera
 
 # Constants
 size: int = 30
+time_before_disappearing: int = 7000
 
 
 class Powerup:
@@ -13,6 +14,7 @@ class Powerup:
         self.rect = self.spawn_pos(game_map)
         self.type = powerup_type
         self.alive = True  # if bullet is there
+        self.time_left = time_before_disappearing
 
     def draw_powerup(self, camera: Camera) -> None:
         # draw powerup

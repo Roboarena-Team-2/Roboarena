@@ -48,7 +48,7 @@ def draw_text(
     surface, text, x, y, font_size, color=(255, 255, 255), font_name=None, center=False
 ):
     font = pygame.font.SysFont(font_name, font_size)
-    text_surface = font.render(text, True, color)
+    text_surface = font.render(text, False, color)
     text_rect = text_surface.get_rect(center=(screen.get_width() // 2, y))
     if center:
         surface.blit(text_surface, text_rect)
@@ -579,7 +579,7 @@ def game_loop(map_file: str | None = None):
         "health_boost",
         "indestructible",
     ]
-    powerup_tick: int = 5000
+    powerup_tick: int = 8000
     enemy_behaviour_tick: int = 0
     start_tick = pygame.time.get_ticks()
 
@@ -688,14 +688,15 @@ def game_loop(map_file: str | None = None):
 
         # Powerup appearing
         if ticks - start_tick > powerup_tick:
-            powerup_tick += 5000  # 5 sec
+            powerup_tick += 8000  # 8 sec
             random_powerup_type = random.choice(powerup_types)
             powerups.append(Powerup(random_powerup_type, game_map))
 
         # Powerups updates
         for powerup in powerups:
             powerup.draw_powerup(camera)
-            if not powerup.alive:
+            powerup.time_left -= 10
+            if (not powerup.alive) or (powerup.time_left <= 0):
                 powerups.remove(powerup)
 
         screen.blit(camera.surface, (0, 0))
