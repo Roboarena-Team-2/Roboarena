@@ -503,9 +503,7 @@ def settings():
     active_slider = None
 
     running = True
-    draging = False
     while running:
-        mx, my = pygame.mouse.get_pos()
         screen.fill((30, 30, 30))
 
         draw_text(screen, "Settings", 0, 150, 80, center=True)
