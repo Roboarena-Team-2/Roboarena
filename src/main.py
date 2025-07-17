@@ -6,6 +6,7 @@ from map_renderer import MapRenderer
 from robot import Robot
 from bullet import Bullet
 from button import Button
+from slider import Slider
 from sounds import Sounds
 from camera import Camera
 from robot_renderer import RobotRenderer
@@ -42,6 +43,8 @@ print(f"TILE_SIZE: {config.TILE_SIZE}")
 
 # Player variables
 type: str = "Tank"
+language: str = "English"
+volume: int = 100
 
 
 def draw_text(
@@ -61,7 +64,7 @@ def main_menu():
     font = pygame.font.SysFont(None, 40)
 
     start_button = Button(
-        rect=(screen.get_width() // 2 - 100, 300, 200, 50),
+        rect=(screen.get_width() // 2 - 100, 250, 200, 50),
         text="Start Game",
         font=font,
         bg_color=(20, 130, 200),
@@ -69,9 +72,9 @@ def main_menu():
         hover_color=(40, 160, 255),
     )
 
-    options_button = Button(
-        rect=(screen.get_width() // 2 - 100, 370, 200, 50),
-        text="Options",
+    difficulty_button = Button(
+        rect=(screen.get_width() // 2 - 100, 320, 200, 50),
+        text="Difficulty",
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -79,7 +82,7 @@ def main_menu():
     )
 
     instructions_button = Button(
-        rect=(screen.get_width() // 2 - 100, 440, 200, 50),
+        rect=(screen.get_width() // 2 - 100, 390, 200, 50),
         text="How to play",
         font=font,
         bg_color=(20, 130, 200),
@@ -88,7 +91,7 @@ def main_menu():
     )
 
     level_button = Button(
-        rect=(screen.get_width() // 2 - 100, 510, 200, 50),
+        rect=(screen.get_width() // 2 - 100, 460, 200, 50),
         text="Level selection",
         font=font,
         bg_color=(20, 130, 200),
@@ -96,8 +99,17 @@ def main_menu():
         hover_color=(40, 160, 255),
     )
 
+    settings_button = Button(
+        rect=(screen.get_width() // 2 - 100, 530, 200, 50),
+        text="Settings",
+        font=font,
+        bg_color=(20, 130, 200),
+        text_color=(255, 255, 255),
+        hover_color=(40, 160, 255),
+    )
+
     quit_button = Button(
-        rect=(screen.get_width() // 2 - 100, 580, 200, 50),
+        rect=(screen.get_width() // 2 - 100, 600, 200, 50),
         text="Exit Game",
         font=font,
         bg_color=(200, 50, 50),
@@ -121,20 +133,23 @@ def main_menu():
 
             if start_button.is_clicked(event):
                 class_selection()
-            if options_button.is_clicked(event):
-                options()
+            if difficulty_button.is_clicked(event):
+                difficulty()
             if instructions_button.is_clicked(event):
                 instructions_menu()
             if level_button.is_clicked(event):
                 level_selection()
+            if settings_button.is_clicked(event):
+                settings()
             if quit_button.is_clicked(event):
                 pygame.quit()
                 sys.exit()
 
         start_button.draw(screen)
-        options_button.draw(screen)
+        difficulty_button.draw(screen)
         instructions_button.draw(screen)
         level_button.draw(screen)
+        settings_button.draw(screen)
         quit_button.draw(screen)
 
         pygame.display.flip()
@@ -163,9 +178,9 @@ def pause_menu():
         hover_color=(40, 160, 255),
     )
 
-    options_button = Button(
+    difficulty_button = Button(
         rect=(screen.get_width() // 2 - 100, 370, 200, 50),
-        text="Options",
+        text="Difficulty",
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -211,8 +226,8 @@ def pause_menu():
                 paused = False
             if menu_button.is_clicked(event):
                 main_menu()
-            if options_button.is_clicked(event):
-                options()
+            if difficulty_button.is_clicked(event):
+                difficulty()
             if instructions_button.is_clicked(event):
                 instructions_menu()
             if quit_button.is_clicked(event):
@@ -221,7 +236,7 @@ def pause_menu():
 
         continue_button.draw(screen)
         menu_button.draw(screen)
-        options_button.draw(screen)
+        difficulty_button.draw(screen)
         instructions_button.draw(screen)
         quit_button.draw(screen)
 
@@ -229,7 +244,7 @@ def pause_menu():
         clock.tick(60)
 
 
-def options():
+def difficulty():
     clock = pygame.time.Clock()
     font = pygame.font.SysFont(None, 40)
 
@@ -273,9 +288,9 @@ def options():
     while running:
         screen.fill((30, 30, 30))
 
-        draw_text(screen, "Options", 0, 150, 80, center=True)
+        draw_text(screen, "Difficulty", 0, 150, 80, center=True)
 
-        draw_text(screen, "Difficulty", 0, 250, 50, center=True)
+        draw_text(screen, "Normal-mode", 0, 250, 50, center=True)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -431,6 +446,113 @@ def level_selection():
         start_button.draw(screen)
         level1_button.draw(screen)
         level2_button.draw(screen)
+        back_button.draw(screen)
+
+        pygame.display.flip()
+        clock.tick(60)
+
+
+def settings():
+    clock = pygame.time.Clock()
+    font = pygame.font.SysFont(None, 40)
+
+    volume_slider = Slider(
+        rect=(screen.get_width() // 2 - 100, 290, 200, 10),
+        current_percentage=100,
+        slider_color=(20, 130, 200),
+        circle_color=(200, 50, 50),
+        hover_color=(255, 80, 80),
+    )
+
+    english_button = Button(
+        rect=(screen.get_width() // 2 - 225, 390, 200, 50),
+        text="English",
+        font=font,
+        bg_color=(20, 130, 200),
+        text_color=(255, 255, 255),
+        hover_color=(40, 160, 255),
+    )
+
+    german_button = Button(
+        rect=(screen.get_width() // 2 + 25, 390, 200, 50),
+        text="German",
+        font=font,
+        bg_color=(20, 130, 200),
+        text_color=(255, 255, 255),
+        hover_color=(40, 160, 255),
+    )
+
+    credits_button = Button(
+        rect=(screen.get_width() // 2 - 100, 520, 200, 50),
+        text="Show them",
+        font=font,
+        bg_color=(20, 130, 200),
+        text_color=(255, 255, 255),
+        hover_color=(40, 160, 255),
+    )
+
+    back_button = Button(
+        rect=(screen.get_width() // 2 - 100, 600, 200, 50),
+        text="Back",
+        font=font,
+        bg_color=(200, 50, 50),
+        text_color=(255, 255, 255),
+        hover_color=(255, 80, 80),
+    )
+
+    active_slider = None
+
+    running = True
+    draging = False
+    while running:
+        mx, my = pygame.mouse.get_pos()
+        screen.fill((30, 30, 30))
+
+        draw_text(screen, "Settings", 0, 150, 80, center=True)
+
+        draw_text(screen, "Volume", 0, 250, 50, center=True)
+
+        draw_text(screen, "Language", 0, 350, 50, center=True)
+
+        draw_text(screen, "Credits", 0, 490, 50, center=True)
+
+        global language
+        global volume
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if volume_slider.circle_rect.collidepoint(event.pos):
+                        active_slider = volume_slider.circle_rect
+
+            if event.type == pygame.MOUSEBUTTONUP:
+                if event.button == 1:
+                    active_slider = None
+                    volume = volume_slider.percentage
+
+            if event.type == pygame.MOUSEMOTION:
+                if active_slider != None:
+                    volume_slider.update(
+                        event.rel[0] / (volume_slider.rect.width / 100)
+                    )
+
+            if english_button.is_clicked(event):
+                language = "English"
+            if german_button.is_clicked(event):
+                language = "German"
+            if credits_button.is_clicked(event):
+                game_credits()
+            if back_button.is_clicked(event):
+                return
+
+        volume_slider.draw(screen)
+        english_button.draw(screen)
+        german_button.draw(screen)
+        credits_button.draw(screen)
         back_button.draw(screen)
 
         pygame.display.flip()
@@ -782,6 +904,41 @@ def victory(camera, map_renderer, robot_renderer, robots, player):
                     main_menu()
                 elif event.key == pygame.K_RETURN:
                     game_loop()
+
+        pygame.display.flip()
+        clock.tick(60)
+
+
+def game_credits():
+    clock = pygame.time.Clock()
+    font = pygame.font.SysFont(None, 40)
+
+    back_button = Button(
+        rect=(screen.get_width() // 2 - 100, 510, 200, 50),
+        text="Back",
+        font=font,
+        bg_color=(200, 50, 50),
+        text_color=(255, 255, 255),
+        hover_color=(255, 80, 80),
+    )
+
+    running = True
+    while running:
+        screen.fill((30, 30, 30))
+
+        draw_text(screen, "Difficulty", 0, 150, 80, center=True)
+
+        draw_text(screen, "Normal-mode", 0, 250, 50, center=True)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if back_button.is_clicked(event):
+                return
+
+        back_button.draw(screen)
 
         pygame.display.flip()
         clock.tick(60)
