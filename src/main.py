@@ -208,7 +208,7 @@ def pause_menu():
     paused = True
     while paused:
 
-        sounds = Sounds()
+        sounds = Sounds(volume / 100)
         sounds.stop_all_sounds()
         screen.fill((30, 30, 30))
 
@@ -453,12 +453,13 @@ def level_selection():
 
 
 def settings():
+    global volume
     clock = pygame.time.Clock()
     font = pygame.font.SysFont(None, 40)
 
     volume_slider = Slider(
         rect=(screen.get_width() // 2 - 100, 290, 200, 10),
-        current_percentage=100,
+        current_percentage=volume,
         slider_color=(20, 130, 200),
         circle_color=(200, 50, 50),
         hover_color=(255, 80, 80),
@@ -515,7 +516,6 @@ def settings():
         draw_text(screen, "Credits", 0, 490, 50, center=True)
 
         global language
-        global volume
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -596,7 +596,7 @@ def countdown(surface, camera, map_renderer, robot_renderer, robots, player):
     font = pygame.font.SysFont(None, 150)
     countdown_numbers = ["3", "2", "1", "GO!"]
 
-    sounds = Sounds()
+    sounds = Sounds(volume / 100)
     sounds.play_sound("countdown_sound")
 
     # player can see whole arena during countdown
@@ -717,7 +717,7 @@ def game_loop(map_file: str | None = None):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-                sounds = Sounds()
+                sounds = Sounds(volume / 100)
                 sounds.stop_all_sounds()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
@@ -827,7 +827,7 @@ def game_loop(map_file: str | None = None):
 
 
 def gameover(camera, map_renderer, robot_renderer, robots, player):
-    sounds = Sounds()
+    sounds = Sounds(volume / 100)
     sounds.stop_all_sounds()
     sounds.play_sound("gameover_sound")
 
@@ -868,7 +868,7 @@ def gameover(camera, map_renderer, robot_renderer, robots, player):
 
 def victory(camera, map_renderer, robot_renderer, robots, player):
 
-    sounds = Sounds()
+    sounds = Sounds(volume / 100)
     sounds.stop_all_sounds()
     sounds.play_sound("win_sound")
 
@@ -924,9 +924,9 @@ def game_credits():
     while running:
         screen.fill((30, 30, 30))
 
-        draw_text(screen, "Difficulty", 0, 150, 80, center=True)
+        draw_text(screen, "Credits", 0, 150, 80, center=True)
 
-        draw_text(screen, "Normal-mode", 0, 250, 50, center=True)
+        draw_text(screen, "...", 0, 250, 30, center=True)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
