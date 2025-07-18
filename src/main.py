@@ -97,7 +97,7 @@ def main_menu():
     font = pygame.font.SysFont(None, 40)
 
     start_button = Button(
-        rect=(screen.get_width() // 2 - 100, 250, 200, 50),
+        rect=(screen.get_width() // 2 - 125, 250, 250, 50),
         text=texts["start_text"],
         font=font,
         bg_color=(20, 130, 200),
@@ -106,7 +106,7 @@ def main_menu():
     )
 
     difficulty_button = Button(
-        rect=(screen.get_width() // 2 - 100, 320, 200, 50),
+        rect=(screen.get_width() // 2 - 125, 320, 250, 50),
         text=texts["difficulty_text"],
         font=font,
         bg_color=(20, 130, 200),
@@ -115,7 +115,7 @@ def main_menu():
     )
 
     instructions_button = Button(
-        rect=(screen.get_width() // 2 - 100, 390, 200, 50),
+        rect=(screen.get_width() // 2 - 125, 390, 250, 50),
         text=texts["instructions_text"],
         font=font,
         bg_color=(20, 130, 200),
@@ -124,7 +124,7 @@ def main_menu():
     )
 
     level_button = Button(
-        rect=(screen.get_width() // 2 - 100, 460, 200, 50),
+        rect=(screen.get_width() // 2 - 125, 460, 250, 50),
         text=texts["level_text"],
         font=font,
         bg_color=(20, 130, 200),
@@ -133,7 +133,7 @@ def main_menu():
     )
 
     settings_button = Button(
-        rect=(screen.get_width() // 2 - 100, 530, 200, 50),
+        rect=(screen.get_width() // 2 - 125, 530, 250, 50),
         text=texts["settings_text"],
         font=font,
         bg_color=(20, 130, 200),
@@ -142,7 +142,7 @@ def main_menu():
     )
 
     quit_button = Button(
-        rect=(screen.get_width() // 2 - 100, 600, 200, 50),
+        rect=(screen.get_width() // 2 - 125, 600, 250, 50),
         text=texts["quit_text"],
         font=font,
         bg_color=(200, 50, 50),
@@ -194,7 +194,7 @@ def pause_menu():
     font = pygame.font.SysFont(None, 40)
 
     continue_button = Button(
-        rect=(screen.get_width() // 2 - 100, 230, 200, 50),
+        rect=(screen.get_width() // 2 - 125, 230, 250, 50),
         text=texts["continue_text"],
         font=font,
         bg_color=(20, 130, 200),
@@ -203,7 +203,7 @@ def pause_menu():
     )
 
     menu_button = Button(
-        rect=(screen.get_width() // 2 - 100, 300, 200, 50),
+        rect=(screen.get_width() // 2 - 125, 300, 250, 50),
         text=texts["main_menu_text"],
         font=font,
         bg_color=(20, 130, 200),
@@ -212,7 +212,7 @@ def pause_menu():
     )
 
     difficulty_button = Button(
-        rect=(screen.get_width() // 2 - 100, 370, 200, 50),
+        rect=(screen.get_width() // 2 - 125, 370, 250, 50),
         text=texts["difficulty_text"],
         font=font,
         bg_color=(20, 130, 200),
@@ -221,7 +221,7 @@ def pause_menu():
     )
 
     instructions_button = Button(
-        rect=(screen.get_width() // 2 - 100, 440, 200, 50),
+        rect=(screen.get_width() // 2 - 125, 440, 250, 50),
         text=texts["instructions_text"],
         font=font,
         bg_color=(20, 130, 200),
@@ -230,7 +230,7 @@ def pause_menu():
     )
 
     quit_button = Button(
-        rect=(screen.get_width() // 2 - 100, 510, 200, 50),
+        rect=(screen.get_width() // 2 - 125, 510, 250, 50),
         text=texts["quit_text"],
         font=font,
         bg_color=(200, 50, 50),
@@ -282,7 +282,7 @@ def difficulty():
     font = pygame.font.SysFont(None, 40)
 
     easy_button = Button(
-        rect=(screen.get_width() // 2 - 350, 300, 200, 50),
+        rect=(screen.get_width() // 2 - 425, 300, 250, 50),
         text=texts["easy_text"],
         font=font,
         bg_color=(20, 130, 200),
@@ -291,7 +291,7 @@ def difficulty():
     )
 
     medium_button = Button(
-        rect=(screen.get_width() // 2 - 100, 300, 200, 50),
+        rect=(screen.get_width() // 2 - 125, 300, 250, 50),
         text=texts["medium_text"],
         font=font,
         bg_color=(20, 130, 200),
@@ -300,7 +300,7 @@ def difficulty():
     )
 
     hard_button = Button(
-        rect=(screen.get_width() // 2 + 150, 300, 200, 50),
+        rect=(screen.get_width() // 2 + 175, 300, 250, 50),
         text=texts["hard_text"],
         font=font,
         bg_color=(20, 130, 200),
@@ -309,7 +309,7 @@ def difficulty():
     )
 
     back_button = Button(
-        rect=(screen.get_width() // 2 - 100, 510, 200, 50),
+        rect=(screen.get_width() // 2 - 125, 510, 250, 50),
         text=texts["back_text"],
         font=font,
         bg_color=(200, 50, 50),
@@ -354,7 +354,7 @@ def class_selection():
     global type
 
     start_button = Button(
-        rect=(screen.get_width() // 2 - 100, 400, 200, 50),
+        rect=(screen.get_width() // 2 - 125, 400, 250, 50),
         text=texts["start_text"],
         font=font,
         bg_color=(20, 130, 200),
@@ -363,7 +363,7 @@ def class_selection():
     )
 
     tank_button = Button(
-        rect=(screen.get_width() // 2 - 250, 300, 200, 50),
+        rect=(screen.get_width() // 2 - 300, 300, 250, 50),
         text=texts["tank_text"],
         font=font,
         bg_color=(20, 130, 200),
@@ -372,7 +372,7 @@ def class_selection():
     )
 
     spider_button = Button(
-        rect=(screen.get_width() // 2 + 50, 300, 200, 50),
+        rect=(screen.get_width() // 2 + 50, 300, 250, 50),
         text=texts["spider_text"],
         font=font,
         bg_color=(20, 130, 200),
@@ -381,7 +381,7 @@ def class_selection():
     )
 
     back_button = Button(
-        rect=(screen.get_width() // 2 - 100, 570, 200, 50),
+        rect=(screen.get_width() // 2 - 125, 570, 250, 50),
         text=texts["back_text"],
         font=font,
         bg_color=(200, 50, 50),
@@ -422,7 +422,7 @@ def level_selection():
     font = pygame.font.SysFont(None, 40)
 
     start_button = Button(
-        rect=(screen.get_width() // 2 - 100, 400, 200, 50),
+        rect=(screen.get_width() // 2 - 125, 400, 250, 50),
         text=texts["start_text"],
         font=font,
         bg_color=(20, 130, 200),
@@ -431,7 +431,7 @@ def level_selection():
     )
 
     level1_button = Button(
-        rect=(screen.get_width() // 2 - 250, 300, 200, 50),
+        rect=(screen.get_width() // 2 - 275, 300, 250, 50),
         text=texts["map1_text"],
         font=font,
         bg_color=(20, 130, 200),
@@ -440,7 +440,7 @@ def level_selection():
     )
 
     level2_button = Button(
-        rect=(screen.get_width() // 2 + 50, 300, 200, 50),
+        rect=(screen.get_width() // 2 + 25, 300, 250, 50),
         text=texts["map2_text"],
         font=font,
         bg_color=(20, 130, 200),
@@ -449,7 +449,7 @@ def level_selection():
     )
 
     back_button = Button(
-        rect=(screen.get_width() // 2 - 100, 570, 200, 50),
+        rect=(screen.get_width() // 2 - 125, 570, 250, 50),
         text=texts["back_text"],
         font=font,
         bg_color=(200, 50, 50),
@@ -499,7 +499,7 @@ def settings():
     )
 
     english_button = Button(
-        rect=(screen.get_width() // 2 - 225, 390, 200, 50),
+        rect=(screen.get_width() // 2 - 275, 390, 250, 50),
         text=texts["english_text"],
         font=font,
         bg_color=(20, 130, 200),
@@ -508,7 +508,7 @@ def settings():
     )
 
     german_button = Button(
-        rect=(screen.get_width() // 2 + 25, 390, 200, 50),
+        rect=(screen.get_width() // 2 + 25, 390, 250, 50),
         text=texts["german_text"],
         font=font,
         bg_color=(20, 130, 200),
@@ -517,7 +517,7 @@ def settings():
     )
 
     credits_button = Button(
-        rect=(screen.get_width() // 2 - 100, 520, 200, 50),
+        rect=(screen.get_width() // 2 - 125, 520, 250, 50),
         text=texts["show_credits_text"],
         font=font,
         bg_color=(20, 130, 200),
@@ -526,7 +526,7 @@ def settings():
     )
 
     back_button = Button(
-        rect=(screen.get_width() // 2 - 100, 600, 200, 50),
+        rect=(screen.get_width() // 2 - 125, 600, 250, 50),
         text=texts["back_text"],
         font=font,
         bg_color=(200, 50, 50),
@@ -601,7 +601,7 @@ def instructions_menu():
     font = pygame.font.SysFont(None, 40)
 
     back_button = Button(
-        rect=(screen.get_width() // 2 - 100, 500, 200, 50),
+        rect=(screen.get_width() // 2 - 125, 500, 250, 50),
         text=texts["back_text"],
         font=font,
         bg_color=(200, 50, 50),
@@ -952,7 +952,7 @@ def game_credits():
     font = pygame.font.SysFont(None, 40)
 
     back_button = Button(
-        rect=(screen.get_width() // 2 - 100, 510, 200, 50),
+        rect=(screen.get_width() // 2 - 125, 510, 250, 50),
         text=texts["back_text"],
         font=font,
         bg_color=(200, 50, 50),
