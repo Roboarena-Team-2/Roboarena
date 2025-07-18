@@ -46,6 +46,39 @@ type: str = "Tank"
 language: str = "English"
 volume: int = 100
 
+texts = {
+    "start_text" : "Start Game",
+    "difficulty_text" : "Difficulty",
+    "instructions_text" : "How to play",
+    "level_text" : "Level selection",
+    "settings_text" : "Settings",
+    "quit_text" : "Exit Game",
+    "main_menu_text" : "Main Menu",
+    "easy_text" : "Easy",
+    "medium_text" : "Medium",
+    "hard_text" : "Hard",
+    "normal_mode_text" : "Normal",
+    "back_text" : "Back",
+    "continue_text" : "Continue",
+    "paused_text" : "Paused",
+    "spider_text" : "Spider",
+    "tank_text" : "Tank",
+    "class_selection_text" : "Robot selection",
+    "map1_text" : "Map 1",
+    "map2_text" : "Map 2",
+    "level_selection_text" : "Map selection",
+    "english_text" : "English",
+    "german_text" : "German",
+    "show_credits_text" : "Show them",
+    "volume_text" : "Volume",
+    "language_text" : "Language",
+    "credits_text" : "Credits",
+    "victory_text" : "VICTORY",
+    "endgame_text" : "Press ECS to return to main menu or ENTER to play again",
+    "gameover_text" : "GAME OVER",
+    "go_text" : "GO!"
+    }
+
 
 def draw_text(
     surface, text, x, y, font_size, color=(255, 255, 255), font_name=None, center=False
@@ -65,7 +98,7 @@ def main_menu():
 
     start_button = Button(
         rect=(screen.get_width() // 2 - 100, 250, 200, 50),
-        text="Start Game",
+        text=texts["start_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -74,7 +107,7 @@ def main_menu():
 
     difficulty_button = Button(
         rect=(screen.get_width() // 2 - 100, 320, 200, 50),
-        text="Difficulty",
+        text=texts["difficulty_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -83,7 +116,7 @@ def main_menu():
 
     instructions_button = Button(
         rect=(screen.get_width() // 2 - 100, 390, 200, 50),
-        text="How to play",
+        text=texts["instructions_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -92,7 +125,7 @@ def main_menu():
 
     level_button = Button(
         rect=(screen.get_width() // 2 - 100, 460, 200, 50),
-        text="Level selection",
+        text=texts["level_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -101,7 +134,7 @@ def main_menu():
 
     settings_button = Button(
         rect=(screen.get_width() // 2 - 100, 530, 200, 50),
-        text="Settings",
+        text=texts["settings_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -110,7 +143,7 @@ def main_menu():
 
     quit_button = Button(
         rect=(screen.get_width() // 2 - 100, 600, 200, 50),
-        text="Exit Game",
+        text=texts["quit_text"],
         font=font,
         bg_color=(200, 50, 50),
         text_color=(255, 255, 255),
@@ -122,7 +155,7 @@ def main_menu():
         screen.fill((30, 30, 30))
 
         title_font = pygame.font.SysFont(None, 80)
-        title_surf = title_font.render("Main Menu", True, (255, 255, 255))
+        title_surf = title_font.render(texts["main_menu_text"], True, (255, 255, 255))
         title_rect = title_surf.get_rect(center=(screen.get_width() // 2, 150))
         screen.blit(title_surf, title_rect)
 
@@ -162,7 +195,7 @@ def pause_menu():
 
     continue_button = Button(
         rect=(screen.get_width() // 2 - 100, 230, 200, 50),
-        text="Continue",
+        text=texts["continue_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -171,7 +204,7 @@ def pause_menu():
 
     menu_button = Button(
         rect=(screen.get_width() // 2 - 100, 300, 200, 50),
-        text="Main Menu",
+        text=texts["main_menu_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -180,7 +213,7 @@ def pause_menu():
 
     difficulty_button = Button(
         rect=(screen.get_width() // 2 - 100, 370, 200, 50),
-        text="Difficulty",
+        text=texts["difficulty_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -189,7 +222,7 @@ def pause_menu():
 
     instructions_button = Button(
         rect=(screen.get_width() // 2 - 100, 440, 200, 50),
-        text="How to play",
+        text=texts["instructions_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -198,7 +231,7 @@ def pause_menu():
 
     quit_button = Button(
         rect=(screen.get_width() // 2 - 100, 510, 200, 50),
-        text="Exit Game",
+        text=texts["quit_text"],
         font=font,
         bg_color=(200, 50, 50),
         text_color=(255, 255, 255),
@@ -213,7 +246,7 @@ def pause_menu():
         screen.fill((30, 30, 30))
 
         title_font = pygame.font.SysFont(None, 80)  # große Schrift
-        title_surf = title_font.render("Paused", True, (255, 255, 255))
+        title_surf = title_font.render(texts["paused_text"], True, (255, 255, 255))
         title_rect = title_surf.get_rect(center=(screen.get_width() // 2, 150))
         screen.blit(title_surf, title_rect)
 
@@ -250,7 +283,7 @@ def difficulty():
 
     easy_button = Button(
         rect=(screen.get_width() // 2 - 350, 300, 200, 50),
-        text="Easy",
+        text=texts["easy_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -259,7 +292,7 @@ def difficulty():
 
     medium_button = Button(
         rect=(screen.get_width() // 2 - 100, 300, 200, 50),
-        text="Medium",
+        text=texts["medium_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -268,7 +301,7 @@ def difficulty():
 
     hard_button = Button(
         rect=(screen.get_width() // 2 + 150, 300, 200, 50),
-        text="Hard",
+        text=texts["hard_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -277,7 +310,7 @@ def difficulty():
 
     back_button = Button(
         rect=(screen.get_width() // 2 - 100, 510, 200, 50),
-        text="Back",
+        text=texts["back_text"],
         font=font,
         bg_color=(200, 50, 50),
         text_color=(255, 255, 255),
@@ -288,9 +321,9 @@ def difficulty():
     while running:
         screen.fill((30, 30, 30))
 
-        draw_text(screen, "Difficulty", 0, 150, 80, center=True)
+        draw_text(screen, texts["difficulty_text"], 0, 150, 80, center=True)
 
-        draw_text(screen, "Normal-mode", 0, 250, 50, center=True)
+        draw_text(screen, texts["normal_mode_text"], 0, 250, 50, center=True)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -322,7 +355,7 @@ def class_selection():
 
     start_button = Button(
         rect=(screen.get_width() // 2 - 100, 400, 200, 50),
-        text="Start Game",
+        text=texts["start_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -331,7 +364,7 @@ def class_selection():
 
     tank_button = Button(
         rect=(screen.get_width() // 2 - 250, 300, 200, 50),
-        text="Tank",
+        text=texts["tank_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -340,7 +373,7 @@ def class_selection():
 
     spider_button = Button(
         rect=(screen.get_width() // 2 + 50, 300, 200, 50),
-        text="Spider",
+        text=texts["spider_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -349,7 +382,7 @@ def class_selection():
 
     back_button = Button(
         rect=(screen.get_width() // 2 - 100, 570, 200, 50),
-        text="Back",
+        text=texts["back_text"],
         font=font,
         bg_color=(200, 50, 50),
         text_color=(255, 255, 255),
@@ -360,7 +393,7 @@ def class_selection():
     while running:
         screen.fill((30, 30, 30))
 
-        draw_text(screen, "Class Selection", 0, 150, 80, center=True)
+        draw_text(screen, texts["class_selection_text"], 0, 150, 80, center=True)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -390,7 +423,7 @@ def level_selection():
 
     start_button = Button(
         rect=(screen.get_width() // 2 - 100, 400, 200, 50),
-        text="Start Game",
+        text=texts["start_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -399,7 +432,7 @@ def level_selection():
 
     level1_button = Button(
         rect=(screen.get_width() // 2 - 250, 300, 200, 50),
-        text="Level 1",
+        text=texts["map1_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -408,7 +441,7 @@ def level_selection():
 
     level2_button = Button(
         rect=(screen.get_width() // 2 + 50, 300, 200, 50),
-        text="Level 2",
+        text=texts["map2_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -417,7 +450,7 @@ def level_selection():
 
     back_button = Button(
         rect=(screen.get_width() // 2 - 100, 570, 200, 50),
-        text="Back",
+        text=texts["back_text"],
         font=font,
         bg_color=(200, 50, 50),
         text_color=(255, 255, 255),
@@ -428,7 +461,7 @@ def level_selection():
     while running:
         screen.fill((30, 30, 30))
 
-        draw_text(screen, "Level Selection", 0, 150, 80, center=True)
+        draw_text(screen, texts["level_selection_text"], 0, 150, 80, center=True)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -467,7 +500,7 @@ def settings():
 
     english_button = Button(
         rect=(screen.get_width() // 2 - 225, 390, 200, 50),
-        text="English",
+        text=texts["english_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -476,7 +509,7 @@ def settings():
 
     german_button = Button(
         rect=(screen.get_width() // 2 + 25, 390, 200, 50),
-        text="German",
+        text=texts["german_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -485,7 +518,7 @@ def settings():
 
     credits_button = Button(
         rect=(screen.get_width() // 2 - 100, 520, 200, 50),
-        text="Show them",
+        text=texts["show_credits_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -494,7 +527,7 @@ def settings():
 
     back_button = Button(
         rect=(screen.get_width() // 2 - 100, 600, 200, 50),
-        text="Back",
+        text=texts["back_text"],
         font=font,
         bg_color=(200, 50, 50),
         text_color=(255, 255, 255),
@@ -507,13 +540,13 @@ def settings():
     while running:
         screen.fill((30, 30, 30))
 
-        draw_text(screen, "Settings", 0, 150, 80, center=True)
+        draw_text(screen, texts["settings_text"], 0, 150, 80, center=True)
 
-        draw_text(screen, "Volume", 0, 250, 50, center=True)
+        draw_text(screen, texts["volume_text"], 0, 250, 50, center=True)
 
-        draw_text(screen, "Language", 0, 350, 50, center=True)
+        draw_text(screen, texts["language_text"], 0, 350, 50, center=True)
 
-        draw_text(screen, "Credits", 0, 490, 50, center=True)
+        draw_text(screen, texts["credits_text"], 0, 490, 50, center=True)
 
         global language
 
@@ -540,11 +573,18 @@ def settings():
 
             if english_button.is_clicked(event):
                 language = "English"
+                update_language()
+                settings()
+                return
             if german_button.is_clicked(event):
                 language = "German"
+                update_language()
+                settings()
+                return
             if credits_button.is_clicked(event):
                 game_credits()
             if back_button.is_clicked(event):
+                main_menu()
                 return
 
         volume_slider.draw(screen)
@@ -562,7 +602,7 @@ def instructions_menu():
 
     back_button = Button(
         rect=(screen.get_width() // 2 - 100, 500, 200, 50),
-        text="Back",
+        text=texts["back_text"],
         font=font,
         bg_color=(200, 50, 50),
         text_color=(255, 255, 255),
@@ -574,7 +614,7 @@ def instructions_menu():
     running = True
     while running:
         screen.fill((30, 30, 30))
-        draw_text(screen, "How to play", 0, 150, 80, center=True)
+        draw_text(screen, texts["instructions_text"], 0, 150, 80, center=True)
 
         for i, line in enumerate(instructions):
             draw_text(screen, line, 50, 200 + i * 35, 30)
@@ -594,7 +634,7 @@ def instructions_menu():
 
 def countdown(surface, camera, map_renderer, robot_renderer, robots, player):
     font = pygame.font.SysFont(None, 150)
-    countdown_numbers = ["3", "2", "1", "GO!"]
+    countdown_numbers = ["3", "2", "1", texts["go_text"]]
 
     sounds = Sounds(volume / 100)
     sounds.play_sound("countdown_sound")
@@ -841,11 +881,11 @@ def gameover(camera, map_renderer, robot_renderer, robots, player):
         for robot in robots:
             robot_renderer.draw(robot, camera, 0)
 
-        draw_text(screen, "GAME OVER", 0, 200, 100, center=True)
+        draw_text(screen, texts["gameover_text"], 0, 200, 100, center=True)
 
         draw_text(
             screen,
-            "Press ESC to return to Main Menu or press ENTER to restart",
+            texts["endgame_text"],
             0,
             250,
             50,
@@ -882,11 +922,11 @@ def victory(camera, map_renderer, robot_renderer, robots, player):
         for robot in robots:
             robot_renderer.draw(robot, camera, 0)
 
-        draw_text(screen, "VICTORY", 0, 200, 100, center=True)
+        draw_text(screen, texts["victory_text"], 0, 200, 100, center=True)
 
         draw_text(
             screen,
-            "Press ESC to return to Main Menu or press ENTER to restart",
+            texts["endgame_text"],
             0,
             250,
             50,
@@ -913,7 +953,7 @@ def game_credits():
 
     back_button = Button(
         rect=(screen.get_width() // 2 - 100, 510, 200, 50),
-        text="Back",
+        text=texts["back_text"],
         font=font,
         bg_color=(200, 50, 50),
         text_color=(255, 255, 255),
@@ -924,7 +964,7 @@ def game_credits():
     while running:
         screen.fill((30, 30, 30))
 
-        draw_text(screen, "Credits", 0, 150, 80, center=True)
+        draw_text(screen, texts["credits_text"], 0, 150, 80, center=True)
 
         draw_text(screen, "...", 0, 250, 30, center=True)
 
@@ -940,6 +980,75 @@ def game_credits():
 
         pygame.display.flip()
         clock.tick(60)
+
+def update_language():
+    global texts
+    if language == "German":
+        texts = {
+            "start_text" : "Spiel starten",
+            "difficulty_text" : "Schwierigkeit",
+            "instructions_text" : "Anleitung",
+            "level_text" : "Level-Auswahl",
+            "settings_text" : "Einstellungen",
+            "quit_text" : "Spiel beenden",
+            "main_menu_text" : "Hauptmenü",
+            "easy_text" : "Leicht",
+            "medium_text" : "Mittel",
+            "hard_text" : "Schwer",
+            "normal_mode_text" : "Normal",
+            "back_text" : "Zurück",
+            "continue_text" : "Fortsetzen",
+            "paused_text" : "Pausiert",
+            "spider_text" : "Spinne",
+            "tank_text" : "Panzer",
+            "class_selection_text" : "Roboter Auswahl",
+            "map1_text" : "Karte 1",
+            "map2_text" : "Karte 2",
+            "level_selection_text" : "Karten Auswahl",
+            "english_text" : "Englisch",
+            "german_text" : "Deutsch",
+            "show_credits_text" : "Zeig's mir",
+            "volume_text" : "Lautstärke",
+            "language_text" : "Sprache",
+            "credits_text" : "Credits",
+            "victory_text" : "Sieg",
+            "endgame_text" : "Drücke ESC um ins Hauptmenü zurückgehen oder ENTER um nochmal zu spielen",
+            "gameover_text" : "Verloren",
+            "go_text" : "LOS!"
+            }
+    else:
+        texts = {
+            "start_text" : "Start Game",
+            "difficulty_text" : "Difficulty",
+            "instructions_text" : "How to play",
+            "level_text" : "Level selection",
+            "settings_text" : "Settings",
+            "quit_text" : "Exit Game",
+            "main_menu_text" : "Main Menu",
+            "easy_text" : "Easy",
+            "medium_text" : "Medium",
+            "hard_text" : "Hard",
+            "normal_mode_text" : "Normal",
+            "back_text" : "Back",
+            "continue_text" : "Continue",
+            "paused_text" : "Paused",
+            "spider_text" : "Spider",
+            "tank_text" : "Tank",
+            "class_selection_text" : "Robot selection",
+            "map1_text" : "Map 1",
+            "map2_text" : "Map 2",
+            "level_selection_text" : "Map selection",
+            "english_text" : "English",
+            "german_text" : "German",
+            "show_credits_text" : "Show them",
+            "volume_text" : "Volume",
+            "language_text" : "Language",
+            "credits_text" : "Credits",
+            "victory_text" : "VICTORY",
+            "endgame_text" : "Press ECS to return to main menu or ENTER to play again",
+            "gameover_text" : "GAME OVER",
+            "go_text" : "GO!"
+            }
 
 
 main_menu()
