@@ -74,7 +74,7 @@ texts = {
     "language_text": "Language",
     "credits_text": "Credits",
     "victory_text": "VICTORY",
-    "endgame_text": "Press ECS to return to main menu or ENTER to play again",
+    "endgame_text": ["Press ECS to return to main menu", "or ENTER to play again"],
     "gameover_text": "GAME OVER",
     "go_text": "GO!",
     "instructions": ["Game instructions here..."],
@@ -176,6 +176,8 @@ def main_menu():
                 level_selection()
             if settings_button.is_clicked(event):
                 settings()
+                main_menu()
+                return
             if quit_button.is_clicked(event):
                 pygame.quit()
                 sys.exit()
@@ -213,9 +215,9 @@ def pause_menu():
         hover_color=(40, 160, 255),
     )
 
-    difficulty_button = Button(
+    settings_button = Button(
         rect=(screen.get_width() // 2 - 125, 370, 250, 50),
-        text=texts["difficulty_text"],
+        text=texts["settings_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -261,8 +263,10 @@ def pause_menu():
                 paused = False
             if menu_button.is_clicked(event):
                 main_menu()
-            if difficulty_button.is_clicked(event):
-                difficulty()
+            if settings_button.is_clicked(event):
+                settings()
+                pause_menu()
+                return
             if instructions_button.is_clicked(event):
                 instructions_menu()
             if quit_button.is_clicked(event):
@@ -271,7 +275,7 @@ def pause_menu():
 
         continue_button.draw(screen)
         menu_button.draw(screen)
-        difficulty_button.draw(screen)
+        settings_button.draw(screen)
         instructions_button.draw(screen)
         quit_button.draw(screen)
 
@@ -586,7 +590,6 @@ def settings():
             if credits_button.is_clicked(event):
                 game_credits()
             if back_button.is_clicked(event):
-                main_menu()
                 return
 
         volume_slider.draw(screen)
@@ -649,7 +652,7 @@ def countdown(surface, camera, map_renderer, robot_renderer, robots, player):
         for robot in robots:
             robot_renderer.draw(robot, camera, 0)
 
-        text_surface = font.render(count, True, (255, 255, 255))
+        text_surface = font.render(count, False, (255, 255, 255))
         text_rect = text_surface.get_rect(
             center=(surface.get_width() // 2, surface.get_height() // 2)
         )
@@ -883,14 +886,8 @@ def gameover(camera, map_renderer, robot_renderer, robots, player):
 
         draw_text(screen, texts["gameover_text"], 0, 200, 100, center=True)
 
-        draw_text(
-            screen,
-            texts["endgame_text"],
-            0,
-            250,
-            50,
-            center=True,
-        )
+        for i, line in enumerate(texts["endgame_text"]):
+            draw_text(screen, line, 0, 300 + i * 55, 50, center=True)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -924,14 +921,8 @@ def victory(camera, map_renderer, robot_renderer, robots, player):
 
         draw_text(screen, texts["victory_text"], 0, 200, 100, center=True)
 
-        draw_text(
-            screen,
-            texts["endgame_text"],
-            0,
-            250,
-            50,
-            center=True,
-        )
+        for i, line in enumerate(texts["endgame_text"]):
+            draw_text(screen, line, 0, 300 + i * 55, 50, center=True)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -1014,8 +1005,10 @@ def update_language():
             "language_text": "Sprache",
             "credits_text": "Credits",
             "victory_text": "Sieg",
-            "endgame_text":
-            "Drücke ESC um ins Hauptmenü zurückgehen oder ENTER um nochmal zu spielen",
+            "endgame_text": [
+                "Drücke ESC um ins Hauptmenü zurückgehen",
+                "oder ENTER um nochmal zu spielen",
+            ],
             "gameover_text": "Verloren",
             "go_text": "LOS!",
             "instructions": ["Game instructions here..."],
@@ -1050,7 +1043,10 @@ def update_language():
             "language_text": "Language",
             "credits_text": "Credits",
             "victory_text": "VICTORY",
-            "endgame_text": "Press ECS to return to main menu or ENTER to play again",
+            "endgame_text": [
+                "Press ECS to return to main menu",
+                "or ENTER to play again",
+            ],
             "gameover_text": "GAME OVER",
             "go_text": "GO!",
             "instructions": ["Game instructions here..."],
