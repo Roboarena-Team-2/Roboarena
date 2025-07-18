@@ -77,6 +77,8 @@ texts = {
     "endgame_text": "Press ECS to return to main menu or ENTER to play again",
     "gameover_text": "GAME OVER",
     "go_text": "GO!",
+    "instructions": ["Game instructions here..."],
+    "credits": ["Credits here... ", " Credit 1 ", " Credit 2"],
 }
 
 
@@ -609,14 +611,12 @@ def instructions_menu():
         hover_color=(255, 80, 80),
     )
 
-    instructions = ["Game instructions here..."]
-
     running = True
     while running:
         screen.fill((30, 30, 30))
         draw_text(screen, texts["instructions_text"], 0, 150, 80, center=True)
 
-        for i, line in enumerate(instructions):
+        for i, line in enumerate(texts["instructions"]):
             draw_text(screen, line, 50, 200 + i * 35, 30)
 
         for event in pygame.event.get():
@@ -966,7 +966,8 @@ def game_credits():
 
         draw_text(screen, texts["credits_text"], 0, 150, 80, center=True)
 
-        draw_text(screen, "...", 0, 250, 30, center=True)
+        for i, line in enumerate(texts["credits"]):
+            draw_text(screen, line, 50, 200 + i * 35, 30)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -1013,10 +1014,11 @@ def update_language():
             "language_text": "Sprache",
             "credits_text": "Credits",
             "victory_text": "Sieg",
-            "endgame_text":
-            "Drücke ESC um ins Hauptmenü zurückgehen oder ENTER um nochmal zu spielen",
+            "endgame_text": "Drücke ESC um ins Hauptmenü zurückgehen oder ENTER um nochmal zu spielen",
             "gameover_text": "Verloren",
             "go_text": "LOS!",
+            "instructions": ["Game instructions here..."],
+            "credits": ["Credits here... ", " Credit 1 ", " Credit 2"],
         }
     else:
         texts = {
@@ -1050,6 +1052,8 @@ def update_language():
             "endgame_text": "Press ECS to return to main menu or ENTER to play again",
             "gameover_text": "GAME OVER",
             "go_text": "GO!",
+            "instructions": ["Game instructions here..."],
+            "credits": ["Credits here... ", " Credit 1 ", " Credit 2"],
         }
 
 

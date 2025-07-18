@@ -21,7 +21,7 @@ class Slider:
         self.circle_radius = self.rect.height
         self.circle_rect = pygame.Rect(
             self.x - self.circle_radius,
-            self.rect.top,
+            self.rect.centery - self.circle_radius,
             self.circle_radius * 2,
             self.circle_radius * 2,
         )
@@ -54,20 +54,7 @@ class Slider:
         self.circle_radius = self.rect.height
         self.circle_rect = pygame.Rect(
             self.x - self.circle_radius,
-            self.rect.centery,
+            self.rect.centery - self.circle_radius,
             self.circle_radius * 2,
             self.circle_radius * 2,
         )
-
-    def is_clicked(self, event):
-        """
-        Prüft, ob der Button per Maus geklickt wurde.
-        event: pygame.event.Event-Objekt
-        Rückgabe: True, wenn geklickt, sonst False
-        """
-        if (
-            event.type == pygame.MOUSEBUTTONDOWN and event.button == 1
-        ):  # Linke Maustaste
-            if self.circle_rect.collidepoint(event.pos):
-                return True
-        return False
