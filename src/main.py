@@ -1014,7 +1014,8 @@ def update_language():
             "language_text": "Sprache",
             "credits_text": "Credits",
             "victory_text": "Sieg",
-            "endgame_text": "Drücke ESC um ins Hauptmenü zurückgehen oder ENTER um nochmal zu spielen",
+            "endgame_text":
+            "Drücke ESC um ins Hauptmenü zurückgehen oder ENTER um nochmal zu spielen",
             "gameover_text": "Verloren",
             "go_text": "LOS!",
             "instructions": ["Game instructions here..."],
