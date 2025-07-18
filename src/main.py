@@ -566,7 +566,7 @@ def settings():
                     volume = volume_slider.percentage
 
             if event.type == pygame.MOUSEMOTION:
-                if active_slider != None:
+                if active_slider:
                     volume_slider.update(
                         event.rel[0] / (volume_slider.rect.width / 100)
                     )
@@ -1013,7 +1013,8 @@ def update_language():
             "language_text": "Sprache",
             "credits_text": "Credits",
             "victory_text": "Sieg",
-            "endgame_text": "Drücke ESC um ins Hauptmenü zurückgehen oder ENTER um nochmal zu spielen",
+            "endgame_text": 
+            "Drücke ESC um ins Hauptmenü zurückgehen oder ENTER um nochmal zu spielen",
             "gameover_text": "Verloren",
             "go_text": "LOS!",
         }
