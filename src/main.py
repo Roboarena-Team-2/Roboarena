@@ -69,7 +69,7 @@ texts = {
     "level_selection_text": "Map selection",
     "english_text": "English",
     "german_text": "German",
-    "show_credits_text": "Show them",
+    "show_credits_text": "Show Credits",
     "volume_text": "Volume",
     "language_text": "Language",
     "credits_text": "Credits",
@@ -77,8 +77,22 @@ texts = {
     "endgame_text": ["Press ECS to return to main menu", "or ENTER to play again"],
     "gameover_text": "GAME OVER",
     "go_text": "GO!",
-    "instructions": ["Game instructions here..."],
-    "credits": ["Credits here... ", " Credit 1 ", " Credit 2"],
+    "credits": ["Team ...", "", "Other credits:", " Credit 1 ", " Credit 2"],
+    "controls_text": "Controls:",
+    "tank_move_explanation_text": "up/down arrow keys for moving forward/backward",
+    "tank_turn_explanation_text": "left/right arrow keys for turning left/right",
+    "tank_shoot_explanation_text": "mouse can aim +/- 45° and click for shooting",
+    "spider_move_explanation_text": "arrow keys for moving",
+    "spider_shoot_explanation_text": "mouse for aiming and click for shooting",
+    "powerups_text": "Power-ups:",
+    "ram_text": "Ram",
+    "ram_explanation_text": "2x Speed and collision attack for 5 sec",
+    "health_boost_text": "Health-boost",
+    "health_boost_explanation_text": "+ 50 health",
+    "power_boost_text": "Power-boost",
+    "power_boost_explanation_text": "+ 50 power",
+    "shield_text": "Shield",
+    "shield_explanation_text": "indestructible (still lava damage) for 5 sec",
 }
 
 
@@ -606,7 +620,7 @@ def instructions_menu():
     font = pygame.font.SysFont(None, 40)
 
     back_button = Button(
-        rect=(screen.get_width() // 2 - 125, 500, 250, 50),
+        rect=(screen.get_width() // 2 - 125, 550, 250, 50),
         text=texts["back_text"],
         font=font,
         bg_color=(200, 50, 50),
@@ -619,8 +633,81 @@ def instructions_menu():
         screen.fill((30, 30, 30))
         draw_text(screen, texts["instructions_text"], 0, 150, 80, center=True)
 
-        for i, line in enumerate(texts["instructions"]):
-            draw_text(screen, line, 50, 200 + i * 35, 30)
+        half_x = screen.get_width() // 2
+
+        draw_text(screen, texts["controls_text"], half_x - 550, 200, 50)
+        draw_text(screen, texts["powerups_text"], half_x + 50, 200, 50)
+
+        # Controls
+        draw_text(screen, f"{texts["tank_text"]}:", half_x - 550, 250, 40)
+        draw_text(screen, texts["tank_move_explanation_text"], half_x - 550, 290, 30)
+        draw_text(screen, texts["tank_turn_explanation_text"], half_x - 550, 320, 30)
+        draw_text(screen, texts["tank_shoot_explanation_text"], half_x - 550, 350, 30)
+        draw_text(screen, f"{texts["spider_text"]}:", half_x - 550, 400, 40)
+        draw_text(screen, texts["spider_move_explanation_text"], half_x - 550, 440, 30)
+        draw_text(screen, texts["spider_shoot_explanation_text"], half_x - 550, 470, 30)
+
+        # Powerups
+        icon_fire = pygame.transform.scale(
+            config.ICONS["explosion"],
+            (
+                40,
+                40,
+            ),
+        ).convert_alpha()
+        screen.blit(icon_fire, (half_x + 50, 250))
+        draw_text(
+            screen,
+            f"{texts["ram_text"]}: {texts["ram_explanation_text"]}",
+            half_x + 100,
+            260,
+            30,
+        )
+        icon_health = pygame.transform.scale(
+            config.ICONS["heart"],
+            (
+                40,
+                40,
+            ),
+        ).convert_alpha()
+        screen.blit(icon_health, (half_x + 50, 300))
+        draw_text(
+            screen,
+            f"{texts["health_boost_text"]}: {texts["health_boost_explanation_text"]}",
+            half_x + 100,
+            310,
+            30,
+        )
+        icon_power = pygame.transform.scale(
+            config.ICONS["power"],
+            (
+                40,
+                40,
+            ),
+        ).convert_alpha()
+        screen.blit(icon_power, (half_x + 50, 350))
+        draw_text(
+            screen,
+            f"{texts["power_boost_text"]}: {texts["power_boost_explanation_text"]}",
+            half_x + 100,
+            360,
+            30,
+        )
+        icon_shield = pygame.transform.scale(
+            config.ICONS["shield"],
+            (
+                40,
+                40,
+            ),
+        ).convert_alpha()
+        screen.blit(icon_shield, (half_x + 50, 400))
+        draw_text(
+            screen,
+            f"{texts["shield_text"]}: {texts["shield_explanation_text"]}",
+            half_x + 100,
+            410,
+            30,
+        )
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -1000,7 +1087,7 @@ def update_language():
             "level_selection_text": "Karten Auswahl",
             "english_text": "Englisch",
             "german_text": "Deutsch",
-            "show_credits_text": "Zeig's mir",
+            "show_credits_text": "Zeig die Credits",
             "volume_text": "Lautstärke",
             "language_text": "Sprache",
             "credits_text": "Credits",
@@ -1011,9 +1098,23 @@ def update_language():
             ],
             "gameover_text": "Verloren",
             "go_text": "LOS!",
-            "instructions": ["Game instructions here..."],
-            "credits": ["Credits here... ", " Credit 1 ", " Credit 2"],
-        }
+            "credits": ["Team ...", "", "Other credits:", " Credit 1 ", " Credit 2"],
+            "controls_text": "Steuerung:",
+            "tank_move_explanation_text": "Oben/Unten Pfeiltasten fürs vorwärts/rückwärts Bewegen",
+            "tank_turn_explanation_text": "Links/Rechts Pfeiltasten fürs links/rechts Drehen",
+            "tank_shoot_explanation_text": "Maus zum +/- 45° Zielen und Klicken zum Schießen",
+            "spider_move_explanation_text": "Pfeiltasten fürs Bewegen",
+            "spider_shoot_explanation_text": "Maus zum Zielen und Klicken zum Schießen",
+            "powerups_text": "Power-ups:",
+            "ram_text": "Rammbock",
+            "ram_explanation_text": "2x Schnelligkeit und kleine Kollisionsattacke for 5 sec",
+            "health_boost_text": "Gesundheitsbooster",
+            "health_boost_explanation_text": "+ 50 Gesundheit",
+            "power_boost_text": "Kraftbooster",
+            "power_boost_explanation_text": "+ 50 Kraft",
+            "shield_text": "Schild",
+            "shield_explanation_text": "unzerstörbar (Lava bleibt schädlich) für 5 Sek",
+            }
     else:
         texts = {
             "start_text": "Start Game",
@@ -1038,7 +1139,7 @@ def update_language():
             "level_selection_text": "Map selection",
             "english_text": "English",
             "german_text": "German",
-            "show_credits_text": "Show them",
+            "show_credits_text": "Show Credits",
             "volume_text": "Volume",
             "language_text": "Language",
             "credits_text": "Credits",
@@ -1049,9 +1150,23 @@ def update_language():
             ],
             "gameover_text": "GAME OVER",
             "go_text": "GO!",
-            "instructions": ["Game instructions here..."],
-            "credits": ["Credits here... ", " Credit 1 ", " Credit 2"],
-        }
+            "credits": ["Team ...", "", "Other credits:", " Credit 1 ", " Credit 2"],
+            "controls_text": "Controls:",
+            "tank_move_explanation_text": "up/down arrow keys for moving forward/backward",
+            "tank_turn_explanation_text": "left/right arrow keys for turning left/right",
+            "tank_shoot_explanation_text": "mouse can aim +/- 45° and click for shooting",
+            "spider_move_explanation_text": "arrow keys for moving",
+            "spider_shoot_explanation_text": "mouse for aiming and click for shooting",
+            "powerups_text": "Power-ups:",
+            "ram_text": "Ram",
+            "ram_explanation_text": "2x Speed and collision attack for 5 sec",
+            "health_boost_text": "Health-boost",
+            "health_boost_explanation_text": "+ 50 health",
+            "power_boost_text": "Power-boost",
+            "power_boost_explanation_text": "+ 50 power",
+            "shield_text": "Shield",
+            "shield_explanation_text": "indestructible (still lava damage) for 5 sec",
+            }
 
 
 main_menu()
