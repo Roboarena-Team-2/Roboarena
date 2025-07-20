@@ -1100,9 +1100,12 @@ def update_language():
             "go_text": "LOS!",
             "credits": ["Team ...", "", "Other credits:", " Credit 1 ", " Credit 2"],
             "controls_text": "Steuerung:",
-            "tank_move_explanation_text": "Oben/Unten Pfeiltasten fürs vorwärts/rückwärts Bewegen",
-            "tank_turn_explanation_text": "Links/Rechts Pfeiltasten fürs links/rechts Drehen",
-            "tank_shoot_explanation_text": "Maus zum +/- 45° Zielen und Klicken zum Schießen",
+            "tank_move_explanation_text":
+            "Oben/Unten Pfeiltasten fürs vorwärts/rückwärts Bewegen",
+            "tank_turn_explanation_text":
+            "Links/Rechts Pfeiltasten fürs links/rechts Drehen",
+            "tank_shoot_explanation_text":
+            "Maus zum +/- 45° Zielen und Klicken zum Schießen",
             "spider_move_explanation_text": "Pfeiltasten fürs Bewegen",
             "spider_shoot_explanation_text": "Maus zum Zielen und Klicken zum Schießen",
             "powerups_text": "Power-ups:",
@@ -1152,7 +1155,8 @@ def update_language():
             "go_text": "GO!",
             "credits": ["Team ...", "", "Other credits:", " Credit 1 ", " Credit 2"],
             "controls_text": "Controls:",
-            "tank_move_explanation_text": "up/down arrow keys for moving forward/backward",
+            "tank_move_explanation_text":
+            "up/down arrow keys for moving forward/backward",
             "tank_turn_explanation_text": "left/right arrow keys for turning left/right",
             "tank_shoot_explanation_text": "mouse can aim +/- 45° and click for shooting",
             "spider_move_explanation_text": "arrow keys for moving",
