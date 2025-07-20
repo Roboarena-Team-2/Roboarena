@@ -86,13 +86,13 @@ texts = {
     "spider_shoot_explanation_text": "mouse for aiming and click for shooting",
     "powerups_text": "Power-ups:",
     "ram_text": "Ram",
-    "ram_explanation_text": "2x Speed and collision attack for 5 sec",
+    "ram_explanation_text": "2x Speed and collision attack",
     "health_boost_text": "Health-boost",
     "health_boost_explanation_text": "+ 50 health",
     "power_boost_text": "Power-boost",
     "power_boost_explanation_text": "+ 50 power",
     "shield_text": "Shield",
-    "shield_explanation_text": "indestructible (still lava damage) for 5 sec",
+    "shield_explanation_text": "indestructible (still lava damage)",
 }
 
 
@@ -639,11 +639,11 @@ def instructions_menu():
         draw_text(screen, texts["powerups_text"], half_x + 50, 200, 50)
 
         # Controls
-        draw_text(screen, f"{texts["tank_text"]}:", half_x - 550, 250, 40)
+        draw_text(screen, f"{texts['tank_text']}:", half_x - 550, 250, 40)
         draw_text(screen, texts["tank_move_explanation_text"], half_x - 550, 290, 30)
         draw_text(screen, texts["tank_turn_explanation_text"], half_x - 550, 320, 30)
         draw_text(screen, texts["tank_shoot_explanation_text"], half_x - 550, 350, 30)
-        draw_text(screen, f"{texts["spider_text"]}:", half_x - 550, 400, 40)
+        draw_text(screen, f"{texts['spider_text']}:", half_x - 550, 400, 40)
         draw_text(screen, texts["spider_move_explanation_text"], half_x - 550, 440, 30)
         draw_text(screen, texts["spider_shoot_explanation_text"], half_x - 550, 470, 30)
 
@@ -658,7 +658,7 @@ def instructions_menu():
         screen.blit(icon_fire, (half_x + 50, 250))
         draw_text(
             screen,
-            f"{texts["ram_text"]}: {texts["ram_explanation_text"]}",
+            f"{texts['ram_text']}: {texts['ram_explanation_text']}",
             half_x + 100,
             260,
             30,
@@ -673,7 +673,7 @@ def instructions_menu():
         screen.blit(icon_health, (half_x + 50, 300))
         draw_text(
             screen,
-            f"{texts["health_boost_text"]}: {texts["health_boost_explanation_text"]}",
+            f"{texts['health_boost_text']}: {texts['health_boost_explanation_text']}",
             half_x + 100,
             310,
             30,
@@ -688,7 +688,7 @@ def instructions_menu():
         screen.blit(icon_power, (half_x + 50, 350))
         draw_text(
             screen,
-            f"{texts["power_boost_text"]}: {texts["power_boost_explanation_text"]}",
+            f"{texts['power_boost_text']}: {texts['power_boost_explanation_text']}",
             half_x + 100,
             360,
             30,
@@ -703,7 +703,7 @@ def instructions_menu():
         screen.blit(icon_shield, (half_x + 50, 400))
         draw_text(
             screen,
-            f"{texts["shield_text"]}: {texts["shield_explanation_text"]}",
+            f"{texts['shield_text']}: {texts['shield_explanation_text']}",
             half_x + 100,
             410,
             30,
@@ -1107,13 +1107,13 @@ def update_language():
             "spider_shoot_explanation_text": "Maus zum Zielen und Klicken zum Schießen",
             "powerups_text": "Power-ups:",
             "ram_text": "Rammbock",
-            "ram_explanation_text": "2x Schnelligkeit und kleine Kollisionsattacke for 5 sec",
+            "ram_explanation_text": "2x Schnelligkeit und Kollisionsattacke",
             "health_boost_text": "Gesundheitsbooster",
             "health_boost_explanation_text": "+ 50 Gesundheit",
             "power_boost_text": "Kraftbooster",
             "power_boost_explanation_text": "+ 50 Kraft",
             "shield_text": "Schild",
-            "shield_explanation_text": "unzerstörbar (Lava bleibt schädlich) für 5 Sek",
+            "shield_explanation_text": "unzerstörbar (Lava bleibt schädlich)",
         }
     else:
         texts = {
@@ -1159,13 +1159,13 @@ def update_language():
             "spider_shoot_explanation_text": "mouse for aiming and click for shooting",
             "powerups_text": "Power-ups:",
             "ram_text": "Ram",
-            "ram_explanation_text": "2x Speed and collision attack for 5 sec",
+            "ram_explanation_text": "2x Speed and collision attack",
             "health_boost_text": "Health-boost",
             "health_boost_explanation_text": "+ 50 health",
             "power_boost_text": "Power-boost",
             "power_boost_explanation_text": "+ 50 power",
             "shield_text": "Shield",
-            "shield_explanation_text": "indestructible (still lava damage) for 5 sec",
+            "shield_explanation_text": "indestructible (still lava damage)",
         }
 
 
