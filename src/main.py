@@ -1114,7 +1114,7 @@ def update_language():
             "power_boost_explanation_text": "+ 50 Kraft",
             "shield_text": "Schild",
             "shield_explanation_text": "unzerstörbar (Lava bleibt schädlich) für 5 Sek",
-            }
+        }
     else:
         texts = {
             "start_text": "Start Game",
@@ -1166,7 +1166,7 @@ def update_language():
             "power_boost_explanation_text": "+ 50 power",
             "shield_text": "Shield",
             "shield_explanation_text": "indestructible (still lava damage) for 5 sec",
-            }
+        }
 
 
 main_menu()
