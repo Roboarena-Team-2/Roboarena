@@ -504,6 +504,12 @@ class Robot:
         offset = self.hitbox_radius * 0.2  # start the bullet closer to center
         start_x = self.x + offset * math.cos(alpha_rad)  # start outsinde of the robot
         start_y = self.y + offset * math.sin(alpha_rad)
+        if self.robot_type == "Tank":
+            velocity = 25 * camera.zoom
+            reach = 800
+        else:  # Spider and back-up robot
+            velocity = 20 * camera.zoom
+            reach = 600
         bullet = Bullet(
             int(start_x),
             int(start_y),
@@ -511,8 +517,8 @@ class Robot:
             int(7 * camera.zoom),
             (0, 0, 0),
             self,
-            20 * camera.zoom,
-            800,  # reach
+            velocity,
+            reach,
         )  # create bullet
         # recoil
         direction_rad = math.radians(self.alpha)
@@ -537,7 +543,10 @@ class Robot:
             if dist < max_dist:
                 bullet.alive = False
                 if self.powerup != "indestructible":
-                    self.hp = self.hp - 15
+                    if bullet.shooter.robot_type == "Tank":
+                        self.hp = self.hp - 30
+                    else:
+                        self.hp = self.hp - 15  # robot is spider or back-up robot
                     if self.is_player:
                         self.sounds.play_sound("player_hit_sound")
 
