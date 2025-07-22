@@ -208,7 +208,6 @@ class Robot:
         x_to_goal = goal.x - self.x
         y_to_goal = goal.y - self.y
 
-
         if self.robot_type == "Tank":
             # Adjust rotation to face the goal
             rad_to_goal = math.atan2(y_to_goal, x_to_goal)
@@ -465,7 +464,7 @@ class Robot:
             if check_for_lava:
                 touched_textures = self.touched_textures(game_map)
                 if "lava" in touched_textures:
-                    if self.robot_type == "Tank": # avoid that tank moves diagonally
+                    if self.robot_type == "Tank":  # avoid that tank moves diagonally
                         self.x -= x
                         self.y -= y
                     else:
@@ -496,7 +495,7 @@ class Robot:
             if self.is_player and (current_time - self.last_wall_hit_time > 3000):
                 self.sounds.play_sound("wall_hit_sound")
                 self.last_wall_hit_time = current_time
-            if self.robot_type != "Tank": # tank cant move sideways along a wall
+            if self.robot_type != "Tank":  # tank cant move sideways along a wall
                 # check and move if only in x direction is no wall
                 xnew = self.x + x
                 ynew = self.y
@@ -765,7 +764,9 @@ class Robot:
             forward_vector = (math.cos(rad_alpha), math.sin(rad_alpha))
             dx = nearest_bush_middle[0] - self.x
             dy = nearest_bush_middle[1] - self.y
-            dot = dx * forward_vector[0] + dy * forward_vector[1] # dot product to determine if bush is in front, back or at the side
+            dot = (
+                dx * forward_vector[0] + dy * forward_vector[1]
+            )  # dot product to determine if bush is in front, back or at the side
             if abs(dot) > 0.5:
                 # move forwards or backwards (depending on dot)
                 x = math.copysign(self.v, dot) * forward_vector[0]
@@ -776,7 +777,7 @@ class Robot:
         else:
             x = math.copysign(self.v, nearest_bush_middle[0] - self.x)
             y = math.copysign(self.v, nearest_bush_middle[1] - self.y)
-        
+
         self.move_if_no_walls(x, y, walls, robots, game_map, check_for_lava=True)
 
     # checks and react if robot is touching a powerup
