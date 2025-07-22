@@ -741,11 +741,8 @@ class Robot:
                 y = (j + (yn - 1)) * config.TILE_SIZE
                 nearest_bush_middle = (x, y)
                 break
-        # go to bush
         if not nearest_bush_middle:
             return None
-        x = math.copysign(self.v, nearest_bush_middle[0] - self.x)
-        y = math.copysign(self.v, nearest_bush_middle[1] - self.y)
         # Adjust rotation to face the goal
         rad_to_goal = math.atan2(
             nearest_bush_middle[1] - self.y, nearest_bush_middle[0] - self.x
@@ -761,6 +758,25 @@ class Robot:
                 angle_to_goal *= -1
         self.alpha += math.copysign(self.v_alpha, angle_to_goal)
         self.alpha = self.alpha % 360
+
+        # go to bush
+        if self.robot_type == "Tank":
+            rad_alpha = math.radians(self.alpha)
+            forward_vector = (math.cos(rad_alpha), math.sin(rad_alpha))
+            dx = nearest_bush_middle[0] - self.x
+            dy = nearest_bush_middle[1] - self.y
+            dot = dx * forward_vector[0] + dy * forward_vector[1] # dot product to determine if bush is in front, back or at the side
+            if abs(dot) > 0.5:
+                # move forwards or backwards (depending on dot)
+                x = math.copysign(self.v, dot) * forward_vector[0]
+                y = math.copysign(self.v, dot) * forward_vector[1]
+            else:
+                # dont move (bush is sideways)
+                x, y = 0, 0
+        else:
+            x = math.copysign(self.v, nearest_bush_middle[0] - self.x)
+            y = math.copysign(self.v, nearest_bush_middle[1] - self.y)
+        
         self.move_if_no_walls(x, y, walls, robots, game_map, check_for_lava=True)
 
     # checks and react if robot is touching a powerup
