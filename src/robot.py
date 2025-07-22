@@ -465,13 +465,17 @@ class Robot:
             if check_for_lava:
                 touched_textures = self.touched_textures(game_map)
                 if "lava" in touched_textures:
-                    self.y -= y
-                    touched_textures = self.touched_textures(game_map)
-                    if "lava" in touched_textures:
+                    if self.robot_type == "Tank": # avoid that tank moves diagonally
                         self.x -= x
-                        self.y += y
+                        self.y -= y
+                    else:
+                        self.y -= y
+                        touched_textures = self.touched_textures(game_map)
                         if "lava" in touched_textures:
-                            self.y -= y
+                            self.x -= x
+                            self.y += y
+                            if "lava" in touched_textures:
+                                self.y -= y
                 else:
                     (dist, robot) = self.robot_dist(robots)[0]
                     if dist <= 0:
@@ -492,29 +496,30 @@ class Robot:
             if self.is_player and (current_time - self.last_wall_hit_time > 3000):
                 self.sounds.play_sound("wall_hit_sound")
                 self.last_wall_hit_time = current_time
-            # check and move if only in x direction is no wall
-            xnew = self.x + x
-            ynew = self.y
-            hitbox = self.get_hitbox(xnew, ynew)
-            if hitbox.collidelist(walls) == -1:
-                self.x = xnew
-                self.y = ynew
-                (dist, robot) = self.robot_dist(robots)[0]
-                if dist <= 0:
-                    self.x -= x
-                    self.robot_collision(robot, robots, walls)
-            else:
-                # check and move if only in y direction is no wall
-                xnew = self.x
-                ynew = self.y + y
+            if self.robot_type != "Tank": # tank cant move sideways along a wall
+                # check and move if only in x direction is no wall
+                xnew = self.x + x
+                ynew = self.y
                 hitbox = self.get_hitbox(xnew, ynew)
                 if hitbox.collidelist(walls) == -1:
                     self.x = xnew
                     self.y = ynew
                     (dist, robot) = self.robot_dist(robots)[0]
                     if dist <= 0:
-                        self.y -= y
+                        self.x -= x
                         self.robot_collision(robot, robots, walls)
+                else:
+                    # check and move if only in y direction is no wall
+                    xnew = self.x
+                    ynew = self.y + y
+                    hitbox = self.get_hitbox(xnew, ynew)
+                    if hitbox.collidelist(walls) == -1:
+                        self.x = xnew
+                        self.y = ynew
+                        (dist, robot) = self.robot_dist(robots)[0]
+                        if dist <= 0:
+                            self.y -= y
+                            self.robot_collision(robot, robots, walls)
 
     def shoot(
         self,
