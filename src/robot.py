@@ -639,17 +639,37 @@ class Robot:
             rad_to_robot = math.atan2(robot.y - self.y, robot.x - self.x)
             angle_to_robot = (math.degrees(rad_to_robot) + 180) % 360
             angle_diff = abs(abs(angle_to_robot) - robot.alpha) % 360
-            if (angle_diff <= 10) or (angle_diff >= 350):  # in range of robot
+            in_range = False
+            if robot.robot_type == "Tank":
+                if (angle_diff <= 45) or (angle_diff >= 315):
+                    in_range = True
+            else:
+                if (angle_diff <= 10) or (angle_diff >= 350):
+                    in_range = True
+            if in_range:  # in range of robot
                 x_to_goal = robot.x - self.x
                 y_to_goal = robot.y - self.y
-                if abs(y_to_goal) <= 0.5:
-                    x = math.copysign(0, y_to_goal)
+                if self.robot_type == "Tank":
+                    rad_alpha = math.radians(self.alpha)
+                    forward_vector = (math.cos(rad_alpha), math.sin(rad_alpha))
+
+                    # dot product to determine if robot is in front, back or at the side
+                    dot = x_to_goal * forward_vector[0] + y_to_goal * forward_vector[1]
+                    if abs(dot) > 0.5:
+                        # move away
+                        x = -math.copysign(self.v, dot) * forward_vector[0]
+                        y = -math.copysign(self.v, dot) * forward_vector[1]
+                    else:
+                        x, y = 0, 0  # robot is at the side
                 else:
-                    x = math.copysign(self.v, y_to_goal)
-                if abs(x_to_goal) <= 0.5:
-                    y = math.copysign(self.v, x_to_goal * -1)
-                else:
-                    y = math.copysign(0, x_to_goal * -1)
+                    if abs(y_to_goal) <= 0.5:
+                        x = math.copysign(0, y_to_goal)
+                    else:
+                        x = math.copysign(self.v, y_to_goal)
+                    if abs(x_to_goal) <= 0.5:
+                        y = math.copysign(self.v, x_to_goal * -1)
+                    else:
+                        y = math.copysign(0, x_to_goal * -1)
                 self.move_if_no_walls(x, y, walls, robots, game_map)  # move to side
 
     # Robot does nothing (but still experience effects of map and bullets)
