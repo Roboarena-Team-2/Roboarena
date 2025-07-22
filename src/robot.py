@@ -66,6 +66,7 @@ class Robot:
             []
         )  # List of bush tile positions robot is currently overlapping
         self.robot_type = robot_type
+        self.frames_without_turning = 8
 
     # Lets the player move the robot on map
     def update_player(
@@ -130,7 +131,7 @@ class Robot:
                         alpha += max(-45, diff)
                     self.shoot(alpha, bullets, camera, walls, robots, game_map)
 
-        else:
+        else:  # Spider and back-up robot
             # Update player direction based on mouse position
             mouse_x, mouse_y = pygame.mouse.get_pos()
             mouse_world_x, mouse_world_y = camera.screen_to_world(mouse_x, mouse_y)
@@ -139,7 +140,7 @@ class Robot:
             new_direction_rad = math.atan2(dy, dx)
             new_direction_deg = math.degrees(new_direction_rad) % 360
             diff = (new_direction_deg - self.alpha + 180) % 360 - 180
-            if abs(diff) > 2:  # to avoid jittering when its very close
+            if abs(diff) > self.v_alpha:  # to avoid jittering
                 turning = True
                 if diff > 0:
                     self.alpha += self.v_alpha
@@ -203,31 +204,64 @@ class Robot:
             self.go_hide(game_map, walls, robots)
             return None
 
-        # Move towards a goal position
+        # calculate goal direction
         x_to_goal = goal.x - self.x
         y_to_goal = goal.y - self.y
-        x = math.copysign(self.v, x_to_goal)
-        y = math.copysign(self.v, y_to_goal)
-        self.move_if_no_walls(x, y, walls, robots, game_map, check_for_lava=True)
 
-        # Adjust rotation to face the goal
-        rad_to_goal = math.atan2(y_to_goal, x_to_goal)
-        angle_to_goal = (math.degrees(rad_to_goal) + 180) % 360
 
-        # Invert direction if shortest rotation is the other way
-        if angle_to_goal < self.alpha:
-            if abs(angle_to_goal - self.alpha) > 180:
-                angle_to_goal *= -1
-        else:
-            if abs(angle_to_goal - self.alpha) < 180:
-                angle_to_goal *= -1
-        self.alpha += math.copysign(self.v_alpha, angle_to_goal)
-        self.alpha = self.alpha % 360
+        if self.robot_type == "Tank":
+            # Adjust rotation to face the goal
+            rad_to_goal = math.atan2(y_to_goal, x_to_goal)
+            angle_to_goal = math.degrees(rad_to_goal) % 360
+            angle_diff = (angle_to_goal - self.alpha + 180) % 360 - 180
+            if self.frames_without_turning == 0:
+                if abs(angle_diff) < self.v_alpha:
+                    self.alpha = angle_to_goal
+                else:
+                    self.alpha += math.copysign(self.v_alpha, angle_diff)
+                self.alpha = self.alpha % 360
+                self.frames_without_turning = 8
+            else:
+                self.frames_without_turning -= 1
 
-        # shoot if angle to goal is under 10°
-        angle_diff = abs(abs(angle_to_goal - 180) - self.alpha) % 360
-        if (angle_diff <= 10) or (angle_diff >= 350):
-            self.shoot(self.alpha, bullets, camera, walls, robots, game_map)
+            # Move towards a goal position
+            alpha_rad = math.radians(self.alpha)
+            forward_x = math.cos(alpha_rad)  # x-part of direction
+            forward_y = math.sin(alpha_rad)  # y-part of direction
+            dot = x_to_goal * forward_x + y_to_goal * forward_y  # dot product
+            if dot == 0:
+                direction = 0  # dont move (90 degree angle to goal)
+            elif dot > 0:
+                direction = 1  # move forward
+            else:
+                direction = -1  # move backward
+            x = forward_x * self.v * direction
+            y = forward_y * self.v * direction
+            self.move_if_no_walls(x, y, walls, robots, game_map, check_for_lava=True)
+
+            # shoot, if goal is in 45° range
+            if abs(angle_diff) < 45:
+                self.shoot(angle_to_goal, bullets, camera, walls, robots, game_map)
+
+        else:  # spider and back-up robot
+            # Adjust rotation to face the goal
+            rad_to_goal = math.atan2(y_to_goal, x_to_goal)
+            angle_to_goal = math.degrees(rad_to_goal) % 360
+            angle_diff = (angle_to_goal - self.alpha + 180) % 360 - 180
+            if abs(angle_diff) < self.v_alpha:
+                self.alpha = angle_to_goal
+            else:
+                self.alpha += math.copysign(self.v_alpha, angle_diff)
+            self.alpha = self.alpha % 360
+
+            # Move towards a goal position
+            x = math.copysign(self.v, x_to_goal)
+            y = math.copysign(self.v, y_to_goal)
+            self.move_if_no_walls(x, y, walls, robots, game_map, check_for_lava=True)
+
+            # shoot if angle to goal is under 10°
+            if abs(angle_diff) < 10:
+                self.shoot(self.alpha, bullets, camera, walls, robots, game_map)
 
         # avoid being in range of other robots
         self.move_if_in_range(robots, walls, game_map)
