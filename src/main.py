@@ -83,7 +83,7 @@ texts = {
     "tank_turn_explanation_text": "left/right arrow keys for turning left/right",
     "tank_shoot_explanation_text": "mouse can aim +/- 45° and click for shooting",
     "spider_move_explanation_text": "arrow keys for moving",
-    "spider_shoot_explanation_text": "mouse for aiming and click for shooting",
+    "spider_shoot_explanation_text": "mouse for turning/aiming and click for shooting",
     "powerups_text": "Power-ups:",
     "ram_text": "Ram",
     "ram_explanation_text": "2x Speed and collision attack",
@@ -1107,7 +1107,8 @@ def update_language():
             "tank_shoot_explanation_text":
             "Maus zum +/- 45° Zielen und Klicken zum Schießen",
             "spider_move_explanation_text": "Pfeiltasten fürs Bewegen",
-            "spider_shoot_explanation_text": "Maus zum Zielen und Klicken zum Schießen",
+            "spider_shoot_explanation_text":
+            "Maus zum Drehen/Zielen und Klicken zum Schießen",
             "powerups_text": "Power-ups:",
             "ram_text": "Rammbock",
             "ram_explanation_text": "2x Schnelligkeit und Kollisionsattacke",
@@ -1160,7 +1161,8 @@ def update_language():
             "tank_turn_explanation_text": "left/right arrow keys for turning left/right",
             "tank_shoot_explanation_text": "mouse can aim +/- 45° and click for shooting",
             "spider_move_explanation_text": "arrow keys for moving",
-            "spider_shoot_explanation_text": "mouse for aiming and click for shooting",
+            "spider_shoot_explanation_text":
+            "mouse for turning/aiming and click for shooting",
             "powerups_text": "Power-ups:",
             "ram_text": "Ram",
             "ram_explanation_text": "2x Speed and collision attack",

@@ -53,6 +53,7 @@ class Sounds:
 
         self.sounds["drive_sound"].set_volume(0.6)
         self.sounds["countdown_sound"].set_volume(0.3)
+        self.sounds["player_hit_sound"].set_volume(0.3)
 
     def play_sound(self, action: str):
         if action == "drive_sound" and not self.move_playing:
@@ -86,8 +87,6 @@ class Sounds:
                 self.channel_single_texture.play(self.sounds[action], loops=0)
         if action in self.shooting:
             if not self.channel_shooting.get_busy():
-                if action == "player_hit_sound":
-                    self.sounds["player_hit_sound"].set_volume(0.3)
                 self.channel_shooting.play(self.sounds[action], loops=0)
         if action in self.other:
             if not self.channel_other.get_busy():
