@@ -207,8 +207,8 @@ def difficulty_survival_faster(camera, game_map) -> list[Robot]:
                     robot_size,
                     float(random.randint(0, 359)),
                     (255, 255, 255),
-                    speed,
-                    turnspeed,
+                    4 * camera.zoom,
+                    5 * camera.zoom,
                     True,
                     type,
                 )
@@ -228,8 +228,6 @@ def difficulty_survival_faster(camera, game_map) -> list[Robot]:
                     random.choice(("Spider", "Tank")),
                 )
             )
-    robots[0].speed = 4 * camera.zoom
-    robots[0].speed_alpha = 5 * camera.zoom
     for robot in robots:
         robot.shot_break_duration = 2000
         robot.recharge_rate = 0.1
@@ -253,8 +251,8 @@ def difficulty_survival_more(camera, game_map) -> list[Robot]:
                     robot_size,
                     float(random.randint(0, 359)),
                     (255, 255, 255),
-                    speed,
-                    turnspeed,
+                    4 * camera.zoom,
+                    5 * camera.zoom,
                     True,
                     type,
                 )
@@ -274,8 +272,6 @@ def difficulty_survival_more(camera, game_map) -> list[Robot]:
                     random.choice(("Spider", "Tank")),
                 )
             )
-    robots[0].speed = 4 * camera.zoom
-    robots[0].speed_alpha = 5 * camera.zoom
     for robot in robots:
         robot.shot_break_duration = 1000
         robot.recharge_rate = 0.2
