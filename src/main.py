@@ -44,6 +44,7 @@ print(f"TILE_SIZE: {config.TILE_SIZE}")
 type: str = random.choice(["Tank", "Spider"])
 difficulty: str = "medium"
 highscore: int = 0
+highestkills: int = 0
 
 
 def draw_text(
@@ -822,6 +823,7 @@ def game_loop(map_file: str | None = None):
     start_tick = pygame.time.get_ticks()
     increasing_speed_variable: float = 0.2
     enemy_base_speed: float = robots[1].speed
+    kills: int = 0
 
     # show countdown before game starts
     countdown(screen, camera, map_renderer, robot_renderer, robots, player)
@@ -883,7 +885,7 @@ def game_loop(map_file: str | None = None):
                     # call gameover function
                     if difficulty == "survival1" or difficulty == "survival2":
                         gameover(
-                            camera, map_renderer, robot_renderer, robots, player, score
+                            camera, map_renderer, robot_renderer, robots, player, score, kills
                         )
                     else:
                         gameover(camera, map_renderer, robot_renderer, robots, player)
@@ -908,7 +910,10 @@ def game_loop(map_file: str | None = None):
                         camera,
                         powerups,
                     )
+                if robot.hp < 100:
+                    robot.hp = 0
                 if robot.hp <= 0:
+                    kills += 1
                     robots.remove(robot)
                     if len(robots) <= 1:
                         # render everything one last time, so that you can see,
@@ -1002,7 +1007,7 @@ def game_loop(map_file: str | None = None):
     sys.exit()
 
 
-def gameover(camera, map_renderer, robot_renderer, robots, player, score=-1):
+def gameover(camera, map_renderer, robot_renderer, robots, player, score=-1, kills=-1):
     sounds = Sounds()
     sounds.stop_all_sounds()
     sounds.play_sound("gameover_sound")
@@ -1030,10 +1035,15 @@ def gameover(camera, map_renderer, robot_renderer, robots, player, score=-1):
 
         if difficulty == "survival1" or difficulty == "survival2":
             global highscore
+            global highestkills
             if highscore < score:  # set new highscore
                 highscore = score
+            if highestkills < kills:
+                highestkills = kills
             draw_text(screen, f"Highscore: {highscore}s", 0, 400, 100, center=True)
             draw_text(screen, f"Score: {score}s", 0, 500, 100, center=True)
+            draw_text(screen, f"Highest Kills: {highestkills}", 0, 600, 100, center=True)
+            draw_text(screen, f"Kills: {kills}", 0, 700, 100, center=True)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
