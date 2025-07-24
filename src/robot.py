@@ -552,8 +552,8 @@ class Robot:
         start_x = self.x + offset * math.cos(alpha_rad)  # start outsinde of the robot
         start_y = self.y + offset * math.sin(alpha_rad)
         if self.robot_type == "Tank":
-            velocity = 25 * camera.zoom
-            reach = 800
+            velocity = 30 * camera.zoom
+            reach = 1000
         else:  # Spider and back-up robot
             velocity = 20 * camera.zoom
             reach = 600
