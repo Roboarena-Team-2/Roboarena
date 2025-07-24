@@ -2,6 +2,7 @@ import pygame
 import math
 import os
 import config
+from robot import Robot
 
 # Bar colors for different UI elements
 POWER_BAR_COLOR: tuple[int, int, int] = (0, 170, 210)
@@ -41,8 +42,8 @@ class RobotRenderer:
         self.frame_duration = 0.3  # seconds per frame
 
         # Load animation frames for each robot type
-        self.load_robot_type("Tank")
         self.load_robot_type("Spider")
+        self.load_robot_type("Tank")
 
     def load_robot_type(self, robot_type: str):
 
@@ -133,7 +134,13 @@ class RobotRenderer:
         main_text = font.render(text, True, color)
         self.camera_surface.blit(main_text, (x, y))
 
-    def draw(self, robot, camera, dt):
+    def draw_circle_alpha(self, color, center, radius):
+        target_rect = pygame.Rect(center, (0, 0)).inflate((radius * 2, radius * 2))
+        shape_surf = pygame.Surface(target_rect.size, pygame.SRCALPHA)
+        pygame.draw.circle(shape_surf, color, (radius, radius), radius)
+        self.camera_surface.blit(shape_surf, target_rect)
+
+    def draw(self, robot: Robot, camera, dt):
         """Renders the robot sprite (or default shape), eyes,
         life count and power bar using the camera system"""
 
@@ -195,6 +202,20 @@ class RobotRenderer:
             )
             pygame.draw.circle(
                 self.camera_surface, (0, 0, 0), camera.apply(*right_eye), eye_radius
+            )
+
+        if robot.powerup == "indestructible":
+            self.draw_circle_alpha(
+                (75, 166, 232, 120),
+                camera.apply(robot.x, robot.y),
+                robot.hitbox_radius * 0.8,
+            )
+
+        if robot.powerup == "ram":
+            self.draw_circle_alpha(
+                (245, 55, 55, 120),
+                camera.apply(robot.x, robot.y),
+                robot.hitbox_radius * 0.8,
             )
 
         # Power bar
@@ -368,7 +389,7 @@ class RobotRenderer:
             robot.x
             - ((fire_width / 2) / camera.zoom)
             + (
-                math.cos(math.radians(robot.alpha - 90))
+                math.cos(math.radians(robot.alpha))
                 * (robot.hitbox_radius * 0.35 + (fire_width))
                 # / camera.zoom
             ),

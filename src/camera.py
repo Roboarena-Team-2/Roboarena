@@ -89,6 +89,12 @@ class Camera:
         screen_y = (y - self.offset_y) * self.zoom
         return int(screen_x), int(screen_y)
 
+    def screen_to_world(self, screen_x: int, screen_y: int) -> tuple[float, float]:
+        """Converts screen coordinates back to world coordinates"""
+        world_x = screen_x / self.zoom + self.offset_x
+        world_y = screen_y / self.zoom + self.offset_y
+        return world_x, world_y
+
     def set_zoom_to(self, value: float):
         # Set zoom level directly limited between 0.8 and 3.0.
 
