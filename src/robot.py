@@ -41,10 +41,10 @@ class Robot:
         self.alpha = direction % 360  # direction of the robot in degree
         self.color = color  # color of the robot
         if robot_type == "Tank":
-            self.v = speed * 2  # current acceleration for moving
-            self.v_alpha = speed_alpha * 2 # current acceleration for turning
-            self.speed = speed * 2 # speed for moving
-            self.speed_alpha = speed_alpha * 2 # speed for turning
+            self.v = speed * 0.8  # current acceleration for moving
+            self.v_alpha = speed_alpha * 0.6 # current acceleration for turning
+            self.speed = speed * 0.8 # speed for moving
+            self.speed_alpha = speed_alpha * 0.6 # speed for turning
         else:
             self.v = speed  # current acceleration for moving
             self.v_alpha = speed_alpha  # current acceleration for turning
@@ -630,6 +630,11 @@ class Robot:
             # avoiding: 'ValueError: Total of weights must be greater than zero'
             # by removing robots with zero probability before calling random.choices
             prob_robot = [(p, r) for p, r in prob_robot if p > 0]
+
+            if random.choice(range(100)) < 50:
+                for goal in potential_goals:
+                    if goal.is_player:
+                        return goal
 
             robot: "Robot" = random.choices(
                 [r for p, r in prob_robot], weights=[p for p, r in prob_robot], k=1
