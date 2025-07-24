@@ -40,11 +40,11 @@ class Robot:
         self.hitbox_radius = hitbox_radius  # radius of the hitbox
         self.alpha = direction % 360  # direction of the robot in degree
         self.color = color  # color of the robot
-        if robot_type == "tank":
-            self.v = speed * 0.8  # current acceleration for moving
-            self.v_alpha = speed_alpha * 0.8 # current acceleration for turning
-            self.speed = speed * 0.8 # speed for moving
-            self.speed_alpha = speed_alpha * 0.8 # speed for turning
+        if robot_type == "Tank":
+            self.v = speed * 2  # current acceleration for moving
+            self.v_alpha = speed_alpha * 2 # current acceleration for turning
+            self.speed = speed * 2 # speed for moving
+            self.speed_alpha = speed_alpha * 2 # speed for turning
         else:
             self.v = speed  # current acceleration for moving
             self.v_alpha = speed_alpha  # current acceleration for turning

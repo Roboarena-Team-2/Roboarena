@@ -66,22 +66,36 @@ def difficulty_easy(camera, game_map) -> list[Robot]:
     turnspeed = 4 * camera.zoom
     robots: list[Robot] = []
     for i in range(game_map.player_count):
-        robots.append(
-            Robot(
-                camera.surface,
-                spawn_positions[i][0],
-                spawn_positions[i][1],
-                robot_size,
-                float(random.randint(0, 359)),
-                (255, 255, 255),
-                speed,
-                turnspeed,
-                False,
-                random.choice(("Spider", "Tank")),
+        if i == 0:
+            robots.append(
+                Robot(
+                    camera.surface,
+                    spawn_positions[i][0],
+                    spawn_positions[i][1],
+                    robot_size,
+                    float(random.randint(0, 359)),
+                    (255, 255, 255),
+                    speed,
+                    turnspeed,
+                    True,
+                    type,
+                )
             )
-        )
-    robots[0].is_player = True
-    robots[0].robot_type = type
+        else:
+            robots.append(
+                Robot(
+                    camera.surface,
+                    spawn_positions[i][0],
+                    spawn_positions[i][1],
+                    robot_size,
+                    float(random.randint(0, 359)),
+                    (255, 255, 255),
+                    speed,
+                    turnspeed,
+                    False,
+                    random.choice(("Spider", "Tank")),
+                )
+            )
     for robot in robots:
         robot.shot_break_duration = 2000
         robot.recharge_rate = 0.05
@@ -140,22 +154,36 @@ def difficulty_hard(camera, game_map) -> list[Robot]:
     turnspeed = 6 * camera.zoom
     robots: list[Robot] = []
     for i in range(game_map.player_count):
-        robots.append(
-            Robot(
-                camera.surface,
-                spawn_positions[i][0],
-                spawn_positions[i][1],
-                robot_size,
-                float(random.randint(0, 359)),
-                (255, 255, 255),
-                speed,
-                turnspeed,
-                False,
-                random.choice(("Spider", "Tank")),
+        if i == 0:
+            robots.append(
+                Robot(
+                    camera.surface,
+                    spawn_positions[i][0],
+                    spawn_positions[i][1],
+                    robot_size,
+                    float(random.randint(0, 359)),
+                    (255, 255, 255),
+                    speed,
+                    turnspeed,
+                    True,
+                    type,
+                )
             )
-        )
-    robots[0].is_player = True
-    robots[0].robot_type = type
+        else:
+            robots.append(
+                Robot(
+                    camera.surface,
+                    spawn_positions[i][0],
+                    spawn_positions[i][1],
+                    robot_size,
+                    float(random.randint(0, 359)),
+                    (255, 255, 255),
+                    speed,
+                    turnspeed,
+                    False,
+                    random.choice(("Spider", "Tank")),
+                )
+            )
     for robot in robots:
         robot.shot_break_duration = 1000
         robot.recharge_rate = 0.2
@@ -170,22 +198,36 @@ def difficulty_survival_faster(camera, game_map) -> list[Robot]:
     turnspeed = 1 * camera.zoom
     robots: list[Robot] = []
     for i in range(game_map.player_count):
-        robots.append(
-            Robot(
-                camera.surface,
-                spawn_positions[i][0],
-                spawn_positions[i][1],
-                robot_size,
-                float(random.randint(0, 359)),
-                (255, 255, 255),
-                speed,
-                turnspeed,
-                False,
-                random.choice(("Spider", "Tank")),
+        if i == 0:
+            robots.append(
+                Robot(
+                    camera.surface,
+                    spawn_positions[i][0],
+                    spawn_positions[i][1],
+                    robot_size,
+                    float(random.randint(0, 359)),
+                    (255, 255, 255),
+                    speed,
+                    turnspeed,
+                    True,
+                    type,
+                )
             )
-        )
-    robots[0].is_player = True
-    robots[0].robot_type = type
+        else:
+            robots.append(
+                Robot(
+                    camera.surface,
+                    spawn_positions[i][0],
+                    spawn_positions[i][1],
+                    robot_size,
+                    float(random.randint(0, 359)),
+                    (255, 255, 255),
+                    speed,
+                    turnspeed,
+                    False,
+                    random.choice(("Spider", "Tank")),
+                )
+            )
     robots[0].speed = 4 * camera.zoom
     robots[0].speed_alpha = 5 * camera.zoom
     for robot in robots:
@@ -202,22 +244,36 @@ def difficulty_survival_more(camera, game_map) -> list[Robot]:
     turnspeed = 2 * camera.zoom
     robots: list[Robot] = []
     for i in range(game_map.player_count):
-        robots.append(
-            Robot(
-                camera.surface,
-                spawn_positions[i][0],
-                spawn_positions[i][1],
-                robot_size,
-                float(random.randint(0, 359)),
-                (255, 255, 255),
-                speed,
-                turnspeed,
-                False,
-                random.choice(("Spider", "Tank")),
+        if i == 0:
+            robots.append(
+                Robot(
+                    camera.surface,
+                    spawn_positions[i][0],
+                    spawn_positions[i][1],
+                    robot_size,
+                    float(random.randint(0, 359)),
+                    (255, 255, 255),
+                    speed,
+                    turnspeed,
+                    True,
+                    type,
+                )
             )
-        )
-    robots[0].is_player = True
-    robots[0].robot_type = type
+        else:
+            robots.append(
+                Robot(
+                    camera.surface,
+                    spawn_positions[i][0],
+                    spawn_positions[i][1],
+                    robot_size,
+                    float(random.randint(0, 359)),
+                    (255, 255, 255),
+                    speed,
+                    turnspeed,
+                    False,
+                    random.choice(("Spider", "Tank")),
+                )
+            )
     robots[0].speed = 4 * camera.zoom
     robots[0].speed_alpha = 5 * camera.zoom
     for robot in robots:
