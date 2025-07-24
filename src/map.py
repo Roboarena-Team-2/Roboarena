@@ -5,6 +5,8 @@ from pathlib import Path
 from math import sqrt, ceil
 from random import randint
 from fallback_map import get_fallback_map
+from perlin import Perlin
+
 
 
 class Map:
@@ -13,11 +15,13 @@ class Map:
         file_path: str | None = None,
         player_count: int = 4,
         random_map: bool = False,
+        seed: int = 1,
     ):
         """Initializes the map with default player-size and optional file input"""
         self.player_count = player_count
         self.file_path = file_path
         self.random_map = random_map
+        self.seed = seed
         self.rows = config.ROWS
         self.cols = config.COLUMNS
 
@@ -27,7 +31,7 @@ class Map:
         # If a file path is provided: load from file, otherwise use the fallback map
 
         if random_map:
-            inner_map = self.generate_random_inner_map()
+            inner_map = self.generate_random_inner_map(seed)
         elif self.file_path is not None:
             try:
                 inner_map = self.get_inner_map()
@@ -52,28 +56,66 @@ class Map:
             map_data.append(row)
         return map_data
 
-    def generate_random_inner_map(self) -> list[list[str]]:
-        inner_map = []
-        for y in range(self.rows - 2):  # ohne Rahmen
-            row = ["ground"] * (self.cols - 2)
-            inner_map.append(row)
+    def generate_random_inner_map(self, seed) -> list[list[str]]:
 
-        # create patches (this can be adjusted manually)
-        self.generate_patch(
-            inner_map, tile="wall", num_patches=5, min_size=2, max_size=15
-        )
-        self.generate_patch(
-            inner_map, tile="bush", num_patches=6, min_size=1, max_size=5
-        )
-        self.generate_patch(
-            inner_map, tile="lava", num_patches=4, min_size=1, max_size=9
-        )
-        self.generate_patch(
-            inner_map, tile="sand", num_patches=5, min_size=3, max_size=7
-        )
-        self.generate_patch(
-            inner_map, tile="ice", num_patches=7, min_size=1, max_size=5
-        )
+        scale = 10.0
+        noise_gen = Perlin(seed=seed)
+
+        layers = [
+            {"octaves": 3, "weight": 1.0},
+            {"octaves": 6, "weight": 0.5},
+            {"octaves": 12, "weight": 0.25},
+            {"octaves": 24, "weight": 0.125},
+        ]
+
+        inner_map = []
+
+        for y in range(self.rows - 2):
+            row = []
+            for x in range(self.cols - 2):
+                nx = x / scale
+                ny = y / scale
+
+                total_noise = 0.0
+                total_weight = 0.0
+
+                for layer in layers:
+                    octaves = layer["octaves"]
+                    weight = layer["weight"]
+
+                    freq = 1.0
+                    amp = 1.0
+                    max_amp = 0.0
+                    layer_noise = 0.0
+
+                    for _ in range(octaves):
+                        val = noise_gen.noise(nx * freq, ny * freq)
+                        layer_noise += val * amp
+                        max_amp += amp
+                        amp *= 0.5
+                        freq *= 2.0
+
+                    layer_noise /= max_amp
+                    total_noise += layer_noise * weight
+                    total_weight += weight
+
+                final_noise = total_noise / total_weight
+
+                if final_noise < -0.22:
+                    tile = "lava"
+                elif final_noise < -0.07:
+                    tile = "sand"
+                elif final_noise < 0.1:
+                    tile = "ground"
+                elif final_noise < 0.2:
+                    tile = "bush"
+                elif final_noise < 0.35:
+                    tile = "ice"
+                else:
+                    tile = "wall"
+
+                row.append(tile)
+            inner_map.append(row)
 
         return inner_map
 

@@ -1,3 +1,5 @@
+from random import randint
+
 import pygame
 import sys
 import config
@@ -41,6 +43,7 @@ print(f"TILE_SIZE: {config.TILE_SIZE}")
 # Map data
 current_map = "test-level.txt"
 random_map = False
+seed = 1
 
 
 def draw_text(
@@ -304,6 +307,7 @@ def level_selection():
     font = pygame.font.SysFont(None, 40)
     global random_map
     global current_map
+    global seed
     random_map = False  # reset this variable each time level selection is called
 
     start_button = Button(
@@ -391,7 +395,7 @@ def level_selection():
                 current_map = "fourelements.txt"
             if random_button.is_clicked(event):
                 random_map = True
-                game_loop()
+                seed = randint(0, 999999)
             if back_button.is_clicked(event):
                 return
 
@@ -477,7 +481,7 @@ def game_loop(map_file: str | None = None):
 
     # Map setup
     if random_map:
-        game_map = Map(random_map=True)
+        game_map = Map(random_map = True, seed = seed)
     else:
         game_map = Map(map_file)
     map_data = game_map.get_map_data()
