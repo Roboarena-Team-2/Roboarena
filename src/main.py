@@ -817,7 +817,7 @@ def game_loop(map_file: str | None = None):
         "health_boost",
         "indestructible",
     ]
-    powerup_tick: int = 8000
+    powerup_tick: int = 7000
     enemy_behaviour_tick: int = 0
     start_tick = pygame.time.get_ticks()
     increasing_speed_variable: float = 0.8
@@ -886,7 +886,13 @@ def game_loop(map_file: str | None = None):
                     # call gameover function
                     if difficulty == "survival1" or difficulty == "survival2":
                         gameover(
-                            camera, map_renderer, robot_renderer, robots, player, score, kills
+                            camera,
+                            map_renderer,
+                            robot_renderer,
+                            robots,
+                            player,
+                            score,
+                            kills,
                         )
                     else:
                         gameover(camera, map_renderer, robot_renderer, robots, player)
@@ -929,7 +935,9 @@ def game_loop(map_file: str | None = None):
 
                             screen.blit(camera.surface, (0, 0))
                             pygame.display.flip()
-                            victory(camera, map_renderer, robot_renderer, robots, player)
+                            victory(
+                                camera, map_renderer, robot_renderer, robots, player
+                            )
 
             # draw robot
             robot_renderer.draw(robot, camera, dt)
@@ -953,7 +961,7 @@ def game_loop(map_file: str | None = None):
 
         # Powerup appearing
         if ticks - start_tick > powerup_tick:
-            powerup_tick += 8000  # 8 sec
+            powerup_tick += 7000  # 7 sec
             random_powerup_type = random.choice(powerup_types)
             powerups.append(Powerup(random_powerup_type, game_map))
 
@@ -1046,7 +1054,9 @@ def gameover(camera, map_renderer, robot_renderer, robots, player, score=-1, kil
                 highestkills = kills
             draw_text(screen, f"Highscore: {highscore}s", 0, 400, 100, center=True)
             draw_text(screen, f"Score: {score}s", 0, 500, 100, center=True)
-            draw_text(screen, f"Highest Kills: {highestkills}", 0, 600, 100, center=True)
+            draw_text(
+                screen, f"Highest Kills: {highestkills}", 0, 600, 100, center=True
+            )
             draw_text(screen, f"Kills: {kills}", 0, 700, 100, center=True)
 
         for event in pygame.event.get():

@@ -42,9 +42,9 @@ class Robot:
         self.color = color  # color of the robot
         if robot_type == "Tank":
             self.v = speed * 0.8  # current acceleration for moving
-            self.v_alpha = speed_alpha * 0.6 # current acceleration for turning
-            self.speed = speed * 0.8 # speed for moving
-            self.speed_alpha = speed_alpha * 0.6 # speed for turning
+            self.v_alpha = speed_alpha * 0.6  # current acceleration for turning
+            self.speed = speed * 0.8  # speed for moving
+            self.speed_alpha = speed_alpha * 0.6  # speed for turning
         else:
             self.v = speed  # current acceleration for moving
             self.v_alpha = speed_alpha  # current acceleration for turning
@@ -495,7 +495,7 @@ class Robot:
                 check_for_lava = False
             else:
                 if len(robots) < 2:
-                        return None
+                    return None
                 (dist, robot) = self.robot_dist(robots)[0]
                 if dist <= 0:
                     self.x -= x
@@ -553,15 +553,15 @@ class Robot:
             powerloss = 15
         if self.power <= powerloss:
             return None
-        # shoot, if there is enough time and power
 
+        # shoot, if there is enough time and power
         alpha_rad = math.radians(self.alpha)
         offset = self.hitbox_radius * 0.2  # start the bullet closer to center
         start_x = self.x + offset * math.cos(alpha_rad)  # start outsinde of the robot
         start_y = self.y + offset * math.sin(alpha_rad)
         if self.robot_type == "Tank":
             velocity = 30 * camera.zoom
-            reach = 1000
+            reach = 800
         else:  # Spider and back-up robot
             velocity = 20 * camera.zoom
             reach = 600
