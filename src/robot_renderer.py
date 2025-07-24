@@ -2,6 +2,7 @@ import pygame
 import math
 import os
 import config
+from robot import Robot
 
 # Bar colors for different UI elements
 POWER_BAR_COLOR: tuple[int, int, int] = (0, 170, 210)
@@ -54,7 +55,7 @@ class RobotRenderer:
             frames.append(img)
         self.animations[robot_type] = frames
 
-    def update_animation(self, robot, dt):
+    def update_animation(self, robot: Robot, dt):
         if not robot.moving:
             self.frame_indices[robot] = 0  # reset to first frame (default sprite)
             self.timers[robot] = 0.0
@@ -93,7 +94,13 @@ class RobotRenderer:
         main_text = font.render(text, True, color)
         self.camera_surface.blit(main_text, (x, y))
 
-    def draw(self, robot, camera, dt):
+    def draw_circle_alpha(self, color, center, radius):
+        target_rect = pygame.Rect(center, (0, 0)).inflate((radius * 2, radius * 2))
+        shape_surf = pygame.Surface(target_rect.size, pygame.SRCALPHA)
+        pygame.draw.circle(shape_surf, color, (radius, radius), radius)
+        self.camera_surface.blit(shape_surf, target_rect)
+
+    def draw(self, robot: Robot, camera, dt):
         """Renders the robot sprite (or default shape), eyes,
         life count and power bar using the camera system"""
 
@@ -123,15 +130,15 @@ class RobotRenderer:
                 self.camera_surface,
                 robot.color,
                 camera.apply(robot.x, robot.y),
-                robot.r,
+                robot.hitbox_radius,
             )
 
             # Eyes
-            eye_radius = robot.r * 0.1
+            eye_radius = robot.hitbox_radius * 0.1
             eye_offset_deg = 30
             eye_offset_rad = math.radians(eye_offset_deg)
             alpha_rad = math.radians(robot.alpha)
-            eye_distance = robot.r * 0.6
+            eye_distance = robot.hitbox_radius * 0.6
             left_eye = (
                 robot.x + eye_distance * math.cos(alpha_rad - eye_offset_rad),
                 robot.y + eye_distance * math.sin(alpha_rad - eye_offset_rad),
@@ -145,6 +152,20 @@ class RobotRenderer:
             )
             pygame.draw.circle(
                 self.camera_surface, (0, 0, 0), camera.apply(*right_eye), eye_radius
+            )
+
+        if robot.powerup == "indestructible":
+            self.draw_circle_alpha(
+                (75, 166, 232, 120),
+                camera.apply(robot.x, robot.y),
+                robot.hitbox_radius * 0.8,
+            )
+
+        if robot.powerup == "ram":
+            self.draw_circle_alpha(
+                (245, 55, 55, 120),
+                camera.apply(robot.x, robot.y),
+                robot.hitbox_radius * 0.8,
             )
 
         # Power bar

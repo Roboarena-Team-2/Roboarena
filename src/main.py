@@ -11,6 +11,8 @@ from button import Button
 from sounds import Sounds
 from camera import Camera
 from robot_renderer import RobotRenderer
+from power_up import Powerup
+import random
 
 # Initialisation
 pygame.init()
@@ -40,6 +42,12 @@ print(f"Monitor: {max_width}x{max_height}")
 print(f"Fenster: {window_width}x{window_height}")
 print(f"TILE_SIZE: {config.TILE_SIZE}")
 
+# Player and game variables
+type: str = random.choice(["Tank", "Spider"])
+difficulty: str = "medium"
+highscore: int = 0
+highestkills: int = 0
+
 # Map data
 current_map = "test-level.txt"
 random_map = False
@@ -50,12 +58,232 @@ def draw_text(
     surface, text, x, y, font_size, color=(255, 255, 255), font_name=None, center=False
 ):
     font = pygame.font.SysFont(font_name, font_size)
-    text_surface = font.render(text, True, color)
+    text_surface = font.render(text, False, color)
     text_rect = text_surface.get_rect(center=(screen.get_width() // 2, y))
     if center:
         surface.blit(text_surface, text_rect)
     else:
         surface.blit(text_surface, (x, y))
+
+
+def difficulty_easy(camera, game_map) -> list[Robot]:
+    game_map.player_count = 3
+    spawn_positions = game_map.generate_spawn_positions()
+    robot_size = int(config.TILE_SIZE * 1.3)
+    speed = 3 * camera.zoom
+    turnspeed = 4 * camera.zoom
+    robots: list[Robot] = []
+    for i in range(game_map.player_count):
+        if i == 0:
+            robots.append(
+                Robot(
+                    camera.surface,
+                    spawn_positions[i][0],
+                    spawn_positions[i][1],
+                    robot_size,
+                    float(random.randint(0, 359)),
+                    (255, 255, 255),
+                    4 * camera.zoom,
+                    5 * camera.zoom,
+                    True,
+                    type,
+                )
+            )
+        else:
+            robots.append(
+                Robot(
+                    camera.surface,
+                    spawn_positions[i][0],
+                    spawn_positions[i][1],
+                    robot_size,
+                    float(random.randint(0, 359)),
+                    (255, 255, 255),
+                    speed,
+                    turnspeed,
+                    False,
+                    random.choice(("Spider", "Tank")),
+                )
+            )
+    for robot in robots:
+        robot.shot_break_duration = 2000
+        robot.recharge_rate = 0.05
+    return robots
+
+
+def difficulty_medium(camera, game_map) -> list[Robot]:
+    game_map.player_count = 4
+    spawn_positions = game_map.generate_spawn_positions()
+    robot_size = int(config.TILE_SIZE * 1.3)
+    speed = 4 * camera.zoom
+    turnspeed = 5 * camera.zoom
+    robots: list[Robot] = []
+    for i in range(game_map.player_count):
+        if i == 0:
+            robots.append(
+                Robot(
+                    camera.surface,
+                    spawn_positions[i][0],
+                    spawn_positions[i][1],
+                    robot_size,
+                    float(random.randint(0, 359)),
+                    (255, 255, 255),
+                    4.5 * camera.zoom,
+                    5.5 * camera.zoom,
+                    True,
+                    type,
+                )
+            )
+        else:
+            robots.append(
+                Robot(
+                    camera.surface,
+                    spawn_positions[i][0],
+                    spawn_positions[i][1],
+                    robot_size,
+                    float(random.randint(0, 359)),
+                    (255, 255, 255),
+                    speed,
+                    turnspeed,
+                    False,
+                    random.choice(("Spider", "Tank")),
+                )
+            )
+    for robot in robots:
+        robot.shot_break_duration = 1500
+        robot.recharge_rate = 0.1
+    return robots
+
+
+def difficulty_hard(camera, game_map) -> list[Robot]:
+    game_map.player_count = 5
+    spawn_positions = game_map.generate_spawn_positions()
+    robot_size = int(config.TILE_SIZE * 1.3)
+    speed = 5 * camera.zoom
+    turnspeed = 6 * camera.zoom
+    robots: list[Robot] = []
+    for i in range(game_map.player_count):
+        if i == 0:
+            robots.append(
+                Robot(
+                    camera.surface,
+                    spawn_positions[i][0],
+                    spawn_positions[i][1],
+                    robot_size,
+                    float(random.randint(0, 359)),
+                    (255, 255, 255),
+                    speed,
+                    turnspeed,
+                    True,
+                    type,
+                )
+            )
+        else:
+            robots.append(
+                Robot(
+                    camera.surface,
+                    spawn_positions[i][0],
+                    spawn_positions[i][1],
+                    robot_size,
+                    float(random.randint(0, 359)),
+                    (255, 255, 255),
+                    speed,
+                    turnspeed,
+                    False,
+                    random.choice(("Spider", "Tank")),
+                )
+            )
+    for robot in robots:
+        robot.shot_break_duration = 1000
+        robot.recharge_rate = 0.2
+    return robots
+
+
+def difficulty_survival_faster(camera, game_map) -> list[Robot]:
+    game_map.player_count = 3
+    spawn_positions = game_map.generate_spawn_positions()
+    robot_size = int(config.TILE_SIZE * 1.3)
+    speed = 1 * camera.zoom
+    turnspeed = 1 * camera.zoom
+    robots: list[Robot] = []
+    for i in range(game_map.player_count):
+        if i == 0:
+            robots.append(
+                Robot(
+                    camera.surface,
+                    spawn_positions[i][0],
+                    spawn_positions[i][1],
+                    robot_size,
+                    float(random.randint(0, 359)),
+                    (255, 255, 255),
+                    4 * camera.zoom,
+                    5 * camera.zoom,
+                    True,
+                    type,
+                )
+            )
+        else:
+            robots.append(
+                Robot(
+                    camera.surface,
+                    spawn_positions[i][0],
+                    spawn_positions[i][1],
+                    robot_size,
+                    float(random.randint(0, 359)),
+                    (255, 255, 255),
+                    speed,
+                    turnspeed,
+                    False,
+                    random.choice(("Spider", "Tank")),
+                )
+            )
+    for robot in robots:
+        robot.shot_break_duration = 1000
+        robot.recharge_rate = 0.2
+    return robots
+
+
+def difficulty_survival_more(camera, game_map) -> list[Robot]:
+    game_map.player_count = 2
+    spawn_positions = game_map.generate_spawn_positions()
+    robot_size = int(config.TILE_SIZE * 1.3)
+    speed = 2 * camera.zoom
+    turnspeed = 2 * camera.zoom
+    robots: list[Robot] = []
+    for i in range(game_map.player_count):
+        if i == 0:
+            robots.append(
+                Robot(
+                    camera.surface,
+                    spawn_positions[i][0],
+                    spawn_positions[i][1],
+                    robot_size,
+                    float(random.randint(0, 359)),
+                    (255, 255, 255),
+                    4 * camera.zoom,
+                    5 * camera.zoom,
+                    True,
+                    type,
+                )
+            )
+        else:
+            robots.append(
+                Robot(
+                    camera.surface,
+                    spawn_positions[i][0],
+                    spawn_positions[i][1],
+                    robot_size,
+                    float(random.randint(0, 359)),
+                    (255, 255, 255),
+                    speed,
+                    turnspeed,
+                    False,
+                    random.choice(("Spider", "Tank")),
+                )
+            )
+    for robot in robots:
+        robot.shot_break_duration = 1000
+        robot.recharge_rate = 0.2
+    return robots
 
 
 def main_menu():
@@ -262,6 +490,24 @@ def options():
         hover_color=(40, 160, 255),
     )
 
+    survival1_button = Button(
+        rect=(screen.get_width() // 2 - 225, 400, 200, 50),
+        text="Survival1",
+        font=font,
+        bg_color=(20, 130, 200),
+        text_color=(255, 255, 255),
+        hover_color=(40, 160, 255),
+    )
+
+    survival2_button = Button(
+        rect=(screen.get_width() // 2 + 25, 400, 200, 50),
+        text="Survival2",
+        font=font,
+        bg_color=(20, 130, 200),
+        text_color=(255, 255, 255),
+        hover_color=(40, 160, 255),
+    )
+
     back_button = Button(
         rect=(screen.get_width() // 2 - 100, 510, 200, 50),
         text="Back",
@@ -279,23 +525,100 @@ def options():
 
         draw_text(screen, "Difficulty", 0, 250, 50, center=True)
 
+        global difficulty
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
             if easy_button.is_clicked(event):
-                pass
+                difficulty = "easy"
             if medium_button.is_clicked(event):
-                pass
+                difficulty = "medium"
             if hard_button.is_clicked(event):
-                pass
+                difficulty = "hard"
+            if survival1_button.is_clicked(event):
+                difficulty = "survival1"
+            if survival2_button.is_clicked(event):
+                difficulty = "survival2"
             if back_button.is_clicked(event):
                 return
 
         easy_button.draw(screen)
         medium_button.draw(screen)
         hard_button.draw(screen)
+        survival1_button.draw(screen)
+        survival2_button.draw(screen)
+        back_button.draw(screen)
+
+        pygame.display.flip()
+        clock.tick(60)
+
+
+def class_selection():
+    clock = pygame.time.Clock()
+    font = pygame.font.SysFont(None, 40)
+    global type
+
+    start_button = Button(
+        rect=(screen.get_width() // 2 - 100, 400, 200, 50),
+        text="Start Game",
+        font=font,
+        bg_color=(20, 130, 200),
+        text_color=(255, 255, 255),
+        hover_color=(40, 160, 255),
+    )
+
+    tank_button = Button(
+        rect=(screen.get_width() // 2 - 250, 300, 200, 50),
+        text="Tank",
+        font=font,
+        bg_color=(20, 130, 200),
+        text_color=(255, 255, 255),
+        hover_color=(40, 160, 255),
+    )
+
+    spider_button = Button(
+        rect=(screen.get_width() // 2 + 50, 300, 200, 50),
+        text="Spider",
+        font=font,
+        bg_color=(20, 130, 200),
+        text_color=(255, 255, 255),
+        hover_color=(40, 160, 255),
+    )
+
+    back_button = Button(
+        rect=(screen.get_width() // 2 - 100, 570, 200, 50),
+        text="Back",
+        font=font,
+        bg_color=(200, 50, 50),
+        text_color=(255, 255, 255),
+        hover_color=(255, 80, 80),
+    )
+
+    running = True
+    while running:
+        screen.fill((30, 30, 30))
+
+        draw_text(screen, "Class Selection", 0, 150, 80, center=True)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if start_button.is_clicked(event):
+                game_loop()
+            if tank_button.is_clicked(event):
+                type = "Tank"
+            if spider_button.is_clicked(event):
+                type = "Spider"
+            if back_button.is_clicked(event):
+                return
+
+        start_button.draw(screen)
+        spider_button.draw(screen)
+        tank_button.draw(screen)
         back_button.draw(screen)
 
         pygame.display.flip()
@@ -499,57 +822,35 @@ def game_loop(map_file: str | None = None):
 
     # Robot setup
     robot_renderer = RobotRenderer(camera.surface)
-    spawn_positions = game_map.generate_spawn_positions()
-    robot_size = int(config.TILE_SIZE * 1.3)
-    player = Robot(
-        camera.surface,
-        *spawn_positions[0],
-        robot_size,
-        0,
-        (255, 255, 255),
-        4 * camera.zoom,
-        6 * camera.zoom,
-        True,
-        "Spider",
-    )
-    enemy1 = Robot(
-        camera.surface,
-        *spawn_positions[1],
-        robot_size,
-        0,
-        (0, 100, 190),
-        4 * camera.zoom,
-        6 * camera.zoom,
-        False,
-        "Spider",
-    )
-    enemy2 = Robot(
-        camera.surface,
-        *spawn_positions[2],
-        robot_size,
-        50,
-        (255, 50, 120),
-        4 * camera.zoom,
-        6 * camera.zoom,
-        False,
-        "Spider",
-    )
-    enemy3 = Robot(
-        camera.surface,
-        *spawn_positions[3],
-        robot_size,
-        50,
-        (0, 250, 0),
-        4 * camera.zoom,
-        6 * camera.zoom,
-        False,
-        "Tank",
-    )
-    robots: list[Robot] = [player, enemy1, enemy2, enemy3]
+    if difficulty == "easy":
+        robots = difficulty_easy(camera, game_map)
+    if difficulty == "medium":
+        robots = difficulty_medium(camera, game_map)
+    if difficulty == "hard":
+        robots = difficulty_hard(camera, game_map)
+    if difficulty == "survival1":
+        robots = difficulty_survival_more(camera, game_map)
+    if difficulty == "survival2":
+        robots = difficulty_survival_faster(camera, game_map)
+    player = robots[0]
 
     # Bullet and movement setup
     bullets: list[Bullet] = []
+    powerups: list[Powerup] = []
+    powerup_types: list[str] = [
+        "ram",
+        "power_boost",
+        "health_boost",
+        "indestructible",
+    ]
+    powerup_tick: int = 7000
     enemy_behaviour_tick: int = 0
+    start_tick = pygame.time.get_ticks()
+    increasing_speed_variable: float = 0.8
+    enemy_base_speed: float = robots[1].speed
+    kills: int = 0
+    robot_tick: int = 15000
+    robot_tick_increaser: int = 14000
 
     # show countdown before game starts
     countdown(screen, camera, map_renderer, robot_renderer, robots, player)
@@ -579,7 +880,7 @@ def game_loop(map_file: str | None = None):
         ticks = pygame.time.get_ticks()
 
         # Enemy behavior update every 3 seconds
-        if ticks > enemy_behaviour_tick:
+        if ticks - start_tick > enemy_behaviour_tick:
             enemy_behaviour_tick += 3000  # 3 sec
             goals: list[Robot | None] = []
             for robot in robots:
@@ -588,9 +889,11 @@ def game_loop(map_file: str | None = None):
                 goals.append(robot.get_robot_with_distance_prob(game_map, robots))
         for robot in robots:
             if robot is player:  # player
-                player.update_player(robots, game_map, walls, bullets, camera)
+                player.update_player(robots, game_map, walls, bullets, camera, powerups)
                 if player.hp <= 0:
                     player.hp = 0  # set to 0, so it does not show a negativ number
+                    if difficulty == "survival1" or difficulty == "survival2":
+                        score: int = int((ticks - start_tick) / 1000)
 
                     # render everything one last time, so that you can see, that hp is 0
                     camera.follow_dynamic_center(robots, player)
@@ -607,31 +910,60 @@ def game_loop(map_file: str | None = None):
                     pygame.time.delay(900)
 
                     # call gameover function
-                    gameover(camera, map_renderer, robot_renderer, robots, player)
+                    if difficulty == "survival1" or difficulty == "survival2":
+                        gameover(
+                            camera,
+                            map_renderer,
+                            robot_renderer,
+                            robots,
+                            player,
+                            score,
+                            kills,
+                        )
+                    else:
+                        gameover(camera, map_renderer, robot_renderer, robots, player)
             else:  # enemies
-                robot.update_enemy(
-                    goals[robots.index(robot) - 1],
-                    robots,
-                    game_map,
-                    walls,
-                    bullets,
-                    camera,
-                )
+                if (difficulty == "survival1") or (difficulty == "survival2"):
+                    robot.update_enemy(
+                        player,
+                        robots,
+                        game_map,
+                        walls,
+                        bullets,
+                        camera,
+                        powerups,
+                    )
+                    if robot.hp < 100:
+                        robot.hp = 0
+                else:
+                    robot.update_enemy(
+                        goals[robots.index(robot) - 1],
+                        robots,
+                        game_map,
+                        walls,
+                        bullets,
+                        camera,
+                        powerups,
+                    )
                 if robot.hp <= 0:
+                    kills += 1
                     robots.remove(robot)
                     if len(robots) <= 1:
-                        # render everything one last time, so that you can see,
-                        # that all enemies are gone
-                        camera.follow_dynamic_center(robots, player)
-                        camera.surface.fill((0, 0, 0))
-                        map_renderer.draw_map(camera)
+                        if (difficulty != "survival1") and (difficulty != "survival2"):
+                            # render everything one last time, so that you can see,
+                            # that all enemies are gone
+                            camera.follow_dynamic_center(robots, player)
+                            camera.surface.fill((0, 0, 0))
+                            map_renderer.draw_map(camera)
 
-                        for robot in robots:
-                            robot_renderer.draw(robot, camera, 0)
+                            for robot in robots:
+                                robot_renderer.draw(robot, camera, 0)
 
-                        screen.blit(camera.surface, (0, 0))
-                        pygame.display.flip()
-                        victory(camera, map_renderer, robot_renderer, robots, player)
+                            screen.blit(camera.surface, (0, 0))
+                            pygame.display.flip()
+                            victory(
+                                camera, map_renderer, robot_renderer, robots, player
+                            )
 
             # draw robot
             robot_renderer.draw(robot, camera, dt)
@@ -653,6 +985,59 @@ def game_loop(map_file: str | None = None):
             if not bullet.alive:
                 bullets.remove(bullet)
 
+        # Powerup appearing
+        if ticks - start_tick > powerup_tick:
+            powerup_tick += 7000  # 7 sec
+            random_powerup_type = random.choice(powerup_types)
+            powerups.append(Powerup(random_powerup_type, game_map))
+
+        # Robots appearing for survival mode
+        if difficulty == "survival1":  # more
+            if ticks - start_tick > robot_tick:
+                if robot_tick > 3500:
+                    robot_tick += robot_tick_increaser
+                    robot_tick_increaser -= 500
+                robots.append(
+                    Robot(
+                        camera.surface,
+                        -1000,
+                        -1000,
+                        player.hitbox_radius,
+                        float(random.randint(0, 359)),
+                        (255, 255, 255),
+                        2,
+                        2,
+                        False,
+                        random.choice(("Spider", "Tank")),
+                    )
+                )
+                robots[len(robots) - 1].get_spawn_position(game_map, robots)
+        if difficulty == "survival2":  # faster
+            if len(robots) < 3 and player.hp > 0:
+                robots.append(
+                    Robot(
+                        camera.surface,
+                        -1000,
+                        -1000,
+                        player.hitbox_radius,
+                        float(random.randint(0, 359)),
+                        (255, 255, 255),
+                        enemy_base_speed + increasing_speed_variable,
+                        enemy_base_speed + increasing_speed_variable,
+                        False,
+                        random.choice(("Spider", "Tank")),
+                    )
+                )
+                robots[len(robots) - 1].get_spawn_position(game_map, robots)
+                increasing_speed_variable += 0.8
+
+        # Powerups updates
+        for powerup in powerups:
+            powerup.draw_powerup(camera)
+            powerup.time_left -= 10
+            if (not powerup.alive) or (powerup.time_left <= 0):
+                powerups.remove(powerup)
+
         screen.blit(camera.surface, (0, 0))
         pygame.display.flip()
 
@@ -660,7 +1045,7 @@ def game_loop(map_file: str | None = None):
     sys.exit()
 
 
-def gameover(camera, map_renderer, robot_renderer, robots, player):
+def gameover(camera, map_renderer, robot_renderer, robots, player, score=-1, kills=-1):
     sounds = Sounds()
     sounds.stop_all_sounds()
     sounds.play_sound("gameover_sound")
@@ -685,6 +1070,20 @@ def gameover(camera, map_renderer, robot_renderer, robots, player):
             50,
             center=True,
         )
+
+        if difficulty == "survival1" or difficulty == "survival2":
+            global highscore
+            global highestkills
+            if highscore < score:  # set new highscore
+                highscore = score
+            if highestkills < kills:
+                highestkills = kills
+            draw_text(screen, f"Highscore: {highscore}s", 0, 400, 100, center=True)
+            draw_text(screen, f"Score: {score}s", 0, 500, 100, center=True)
+            draw_text(
+                screen, f"Highest Kills: {highestkills}", 0, 600, 100, center=True
+            )
+            draw_text(screen, f"Kills: {kills}", 0, 700, 100, center=True)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
