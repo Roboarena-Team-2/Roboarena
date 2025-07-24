@@ -804,7 +804,7 @@ def game_loop(map_file: str | None = None):
         robots = difficulty_hard(camera, game_map)
     if difficulty == "survival1":
         robots = difficulty_survival_more(camera, game_map)
-        robot_tick: int = 15000
+        robot_tick: int = 5000
     if difficulty == "survival2":
         robots = difficulty_survival_faster(camera, game_map)
     player = robots[0]
@@ -821,7 +821,7 @@ def game_loop(map_file: str | None = None):
     powerup_tick: int = 8000
     enemy_behaviour_tick: int = 0
     start_tick = pygame.time.get_ticks()
-    increasing_speed_variable: float = 0.2
+    increasing_speed_variable: float = 0.8
     enemy_base_speed: float = robots[1].speed
     kills: int = 0
 
@@ -916,18 +916,19 @@ def game_loop(map_file: str | None = None):
                     kills += 1
                     robots.remove(robot)
                     if len(robots) <= 1:
-                        # render everything one last time, so that you can see,
-                        # that all enemies are gone
-                        camera.follow_dynamic_center(robots, player)
-                        camera.surface.fill((0, 0, 0))
-                        map_renderer.draw_map(camera)
+                        if (difficulty != "survival1") and (difficulty != "survival2"):
+                            # render everything one last time, so that you can see,
+                            # that all enemies are gone
+                            camera.follow_dynamic_center(robots, player)
+                            camera.surface.fill((0, 0, 0))
+                            map_renderer.draw_map(camera)
 
-                        for robot in robots:
-                            robot_renderer.draw(robot, camera, 0)
+                            for robot in robots:
+                                robot_renderer.draw(robot, camera, 0)
 
-                        screen.blit(camera.surface, (0, 0))
-                        pygame.display.flip()
-                        victory(camera, map_renderer, robot_renderer, robots, player)
+                            screen.blit(camera.surface, (0, 0))
+                            pygame.display.flip()
+                            victory(camera, map_renderer, robot_renderer, robots, player)
 
             # draw robot
             robot_renderer.draw(robot, camera, dt)
@@ -958,7 +959,7 @@ def game_loop(map_file: str | None = None):
         # Robots appearing for survival mode
         if difficulty == "survival1":  # more
             if ticks - start_tick > robot_tick:
-                robot_tick += 15000  # 15 sec
+                robot_tick += 5000  # 5 sec
                 robots.append(
                     Robot(
                         camera.surface,
@@ -991,7 +992,7 @@ def game_loop(map_file: str | None = None):
                     )
                 )
                 robots[len(robots) - 1].get_spawn_position(game_map, robots)
-                increasing_speed_variable += 0.5
+                increasing_speed_variable += 0.8
 
         # Powerups updates
         for powerup in powerups:
