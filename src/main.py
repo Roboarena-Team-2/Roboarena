@@ -1,3 +1,5 @@
+from random import randint
+
 import pygame
 import sys
 import config
@@ -45,6 +47,11 @@ type: str = random.choice(["Tank", "Spider"])
 difficulty: str = "medium"
 highscore: int = 0
 highestkills: int = 0
+
+# Map data
+current_map = "test-level.txt"
+random_map = False
+seed = 1
 
 
 def draw_text(
@@ -343,7 +350,7 @@ def main_menu():
                 sys.exit()
 
             if start_button.is_clicked(event):
-                class_selection()
+                game_loop()
             if options_button.is_clicked(event):
                 options()
             if instructions_button.is_clicked(event):
@@ -621,9 +628,13 @@ def class_selection():
 def level_selection():
     clock = pygame.time.Clock()
     font = pygame.font.SysFont(None, 40)
+    global random_map
+    global current_map
+    global seed
+    random_map = False  # reset this variable each time level selection is called
 
     start_button = Button(
-        rect=(screen.get_width() // 2 - 100, 440, 200, 50),
+        rect=(screen.get_width() // 2 - 100, 510, 200, 50),
         text="Start Game",
         font=font,
         bg_color=(20, 130, 200),
@@ -667,8 +678,17 @@ def level_selection():
         hover_color=(40, 160, 255),
     )
 
+    random_button = Button(
+        rect=(screen.get_width() // 2 - 100, 440, 200, 50),
+        text="Random",
+        font=font,
+        bg_color=(20, 130, 200),
+        text_color=(255, 255, 255),
+        hover_color=(40, 160, 255),
+    )
+
     back_button = Button(
-        rect=(screen.get_width() // 2 - 100, 570, 200, 50),
+        rect=(screen.get_width() // 2 - 100, 580, 200, 50),
         text="Back",
         font=font,
         bg_color=(200, 50, 50),
@@ -687,16 +707,18 @@ def level_selection():
                 pygame.quit()
                 sys.exit()
             if start_button.is_clicked(event):
-                game_loop()
+                game_loop(current_map)
             if level1_button.is_clicked(event):
-                game_loop("test-level.txt")
+                current_map = "test-level.txt"
             if level2_button.is_clicked(event):
-                game_loop("test-level2.txt")
+                current_map = "test-level2.txt"
             if level3_button.is_clicked(event):
-                game_loop("lavariver.txt")
+                current_map = "lavariver.txt"
             if level4_button.is_clicked(event):
-                game_loop("fourelements.txt")
-
+                current_map = "fourelements.txt"
+            if random_button.is_clicked(event):
+                random_map = True
+                seed = randint(0, 999999)
             if back_button.is_clicked(event):
                 return
 
@@ -705,6 +727,7 @@ def level_selection():
         level2_button.draw(screen)
         level3_button.draw(screen)
         level4_button.draw(screen)
+        random_button.draw(screen)
         back_button.draw(screen)
 
         pygame.display.flip()
@@ -777,10 +800,13 @@ def countdown(surface, camera, map_renderer, robot_renderer, robots, player):
 
 def game_loop(map_file: str | None = None):
     if map_file is None:
-        map_file = "test-level.txt"
+        map_file = current_map
 
     # Map setup
-    game_map = Map(map_file)
+    if random_map:
+        game_map = Map(random_map=True, seed=seed)
+    else:
+        game_map = Map(map_file)
     map_data = game_map.get_map_data()
     map_width_px = len(map_data[0]) * config.TILE_SIZE
     map_height_px = len(map_data) * config.TILE_SIZE
@@ -1067,7 +1093,7 @@ def gameover(camera, map_renderer, robot_renderer, robots, player, score=-1, kil
                 if event.key == pygame.K_ESCAPE:
                     main_menu()
                 elif event.key == pygame.K_RETURN:
-                    game_loop()
+                    game_loop(current_map)
 
         pygame.display.flip()
         clock.tick(60)
@@ -1108,7 +1134,7 @@ def victory(camera, map_renderer, robot_renderer, robots, player):
                 if event.key == pygame.K_ESCAPE:
                     main_menu()
                 elif event.key == pygame.K_RETURN:
-                    game_loop()
+                    game_loop(current_map)
 
         pygame.display.flip()
         clock.tick(60)
