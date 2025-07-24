@@ -74,7 +74,7 @@ class Robot:
             []
         )  # List of bush tile positions robot is currently overlapping
         self.robot_type = robot_type
-        self.frames_without_turning = 8
+        self.frames_without_turning = 6
 
     # Lets the player move the robot on map
     def update_player(
@@ -227,7 +227,7 @@ class Robot:
                 else:
                     self.alpha += math.copysign(self.v_alpha, angle_diff)
                 self.alpha = self.alpha % 360
-                self.frames_without_turning = 8
+                self.frames_without_turning = 6
             else:
                 self.frames_without_turning -= 1
 
@@ -299,7 +299,7 @@ class Robot:
         )
         if self.powerup == "ram" and self.ram_pause == 0:
             robot.hp -= 5
-            self.ram_pause = 25
+            self.ram_pause = 15
         # moves robot to direct wanted path if no wall
         if newRect.collidelist(walls) == -1:
             self.x = xnew
@@ -485,6 +485,8 @@ class Robot:
                             if "lava" in touched_textures:
                                 self.y -= y
                 else:
+                    if len(robots) < 2:
+                        return None
                     (dist, robot) = self.robot_dist(robots)[0]
                     if dist <= 0:
                         self.x -= x
@@ -492,6 +494,8 @@ class Robot:
                         self.robot_collision(robot, robots, walls)
                 check_for_lava = False
             else:
+                if len(robots) < 2:
+                        return None
                 (dist, robot) = self.robot_dist(robots)[0]
                 if dist <= 0:
                     self.x -= x

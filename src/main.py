@@ -76,8 +76,8 @@ def difficulty_easy(camera, game_map) -> list[Robot]:
                     robot_size,
                     float(random.randint(0, 359)),
                     (255, 255, 255),
-                    speed,
-                    turnspeed,
+                    4 * camera.zoom,
+                    5 * camera.zoom,
                     True,
                     type,
                 )
@@ -120,8 +120,8 @@ def difficulty_medium(camera, game_map) -> list[Robot]:
                     robot_size,
                     float(random.randint(0, 359)),
                     (255, 255, 255),
-                    speed,
-                    turnspeed,
+                    4.5 * camera.zoom,
+                    5.5 * camera.zoom,
                     True,
                     type,
                 )
