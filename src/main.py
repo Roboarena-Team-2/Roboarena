@@ -229,8 +229,8 @@ def difficulty_survival_faster(camera, game_map) -> list[Robot]:
                 )
             )
     for robot in robots:
-        robot.shot_break_duration = 2000
-        robot.recharge_rate = 0.1
+        robot.shot_break_duration = 1000
+        robot.recharge_rate = 0.2
     return robots
 
 
@@ -778,7 +778,7 @@ def game_loop(map_file: str | None = None):
         robots = difficulty_hard(camera, game_map)
     if difficulty == "survival1":
         robots = difficulty_survival_more(camera, game_map)
-        robot_tick: int = 10000
+        robot_tick: int = 15000
     if difficulty == "survival2":
         robots = difficulty_survival_faster(camera, game_map)
     player = robots[0]
@@ -795,7 +795,7 @@ def game_loop(map_file: str | None = None):
     powerup_tick: int = 8000
     enemy_behaviour_tick: int = 0
     start_tick = pygame.time.get_ticks()
-    increasing_speed_variable: float = 0.5
+    increasing_speed_variable: float = 0.2
     enemy_base_speed: float = robots[1].speed
 
     # show countdown before game starts
@@ -928,7 +928,7 @@ def game_loop(map_file: str | None = None):
         # Robots appearing for survival mode
         if difficulty == "survival1":  # more
             if ticks - start_tick > robot_tick:
-                robot_tick += 10000  # 10 sec
+                robot_tick += 15000  # 15 sec
                 robots.append(
                     Robot(
                         camera.surface,
