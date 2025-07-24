@@ -299,7 +299,7 @@ class Robot:
         )
         if self.powerup == "ram" and self.ram_pause == 0:
             robot.hp -= 5
-            self.ram_pause = 50
+            self.ram_pause = 25
         # moves robot to direct wanted path if no wall
         if newRect.collidelist(walls) == -1:
             self.x = xnew
@@ -543,7 +543,11 @@ class Robot:
         if current_time - self.last_shot_time < self.shot_break_duration:
             return None
         # make sure there is enough power
-        if self.power <= 20:
+        if self.robot_type == "Tank":
+            powerloss = 20
+        else:
+            powerloss = 15
+        if self.power <= powerloss:
             return None
         # shoot, if there is enough time and power
 
@@ -573,7 +577,7 @@ class Robot:
         y = self.v * -math.sin(direction_rad) * 2
         self.move_if_no_walls(x, y, walls, robots, game_map)
         self.last_shot_time = current_time  # update time of last shot
-        self.power -= 20  # update power
+        self.power -= powerloss  # update power
         bullets.append(bullet)
         if self.is_player:
             self.sounds.play_sound("shot_sound")
@@ -591,9 +595,15 @@ class Robot:
                 bullet.alive = False
                 if self.powerup != "indestructible":
                     if bullet.shooter.robot_type == "Tank":
-                        self.hp = self.hp - 30
+                        if self.robot_type == "Tank":
+                            self.hp = self.hp - 20
+                        else:
+                            self.hp = self.hp - 30
                     else:
-                        self.hp = self.hp - 15  # robot is spider or back-up robot
+                        if self.robot_type == "Tank":
+                            self.hp = self.hp - 10
+                        else:
+                            self.hp = self.hp - 15
                     if self.is_player:
                         self.sounds.play_sound("player_hit_sound")
 

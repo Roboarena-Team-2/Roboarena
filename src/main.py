@@ -901,6 +901,8 @@ def game_loop(map_file: str | None = None):
                         camera,
                         powerups,
                     )
+                    if robot.hp < 100:
+                        robot.hp = 0
                 else:
                     robot.update_enemy(
                         goals[robots.index(robot) - 1],
@@ -911,8 +913,6 @@ def game_loop(map_file: str | None = None):
                         camera,
                         powerups,
                     )
-                if robot.hp < 100:
-                    robot.hp = 0
                 if robot.hp <= 0:
                     kills += 1
                     robots.remove(robot)
