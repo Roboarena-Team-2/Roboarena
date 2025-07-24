@@ -481,7 +481,7 @@ def game_loop(map_file: str | None = None):
 
     # Map setup
     if random_map:
-        game_map = Map(random_map = True, seed = seed)
+        game_map = Map(random_map=True, seed=seed)
     else:
         game_map = Map(map_file)
     map_data = game_map.get_map_data()

@@ -1,17 +1,21 @@
 import random
 from math import floor
 
+
 def fade(t):
     return t * t * t * (t * (t * 6 - 15) + 10)
 
+
 def lerp(a, b, t):
     return a + t * (b - a)
+
 
 def grad(hash, x, y):
     h = hash & 3
     u = x if h < 2 else y
     v = y if h < 2 else x
     return (u if h & 1 == 0 else -u) + (v if h & 2 == 0 else -v)
+
 
 class Perlin:
     def __init__(self, seed=None):

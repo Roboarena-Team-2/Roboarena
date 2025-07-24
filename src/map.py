@@ -8,7 +8,6 @@ from fallback_map import get_fallback_map
 from perlin import Perlin
 
 
-
 class Map:
     def __init__(
         self,
