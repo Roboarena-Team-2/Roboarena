@@ -40,10 +40,16 @@ class Robot:
         self.hitbox_radius = hitbox_radius  # radius of the hitbox
         self.alpha = direction % 360  # direction of the robot in degree
         self.color = color  # color of the robot
-        self.v = speed  # current acceleration for moving
-        self.v_alpha = speed_alpha  # current acceleration for turning
-        self.speed = speed  # speed for moving
-        self.speed_alpha = speed_alpha  # speed for turning
+        if robot_type == "tank":
+            self.v = speed * 0.8  # current acceleration for moving
+            self.v_alpha = speed_alpha * 0.8 # current acceleration for turning
+            self.speed = speed * 0.8 # speed for moving
+            self.speed_alpha = speed_alpha * 0.8 # speed for turning
+        else:
+            self.v = speed  # current acceleration for moving
+            self.v_alpha = speed_alpha  # current acceleration for turning
+            self.speed = speed  # speed for moving
+            self.speed_alpha = speed_alpha  # speed for turning
         self.hp = 100  # current livepoints of the robot
         self.last_shot_time = 100  # time of last shot
         self.shot_break_duration = 1500  # min duration of break between shots
@@ -86,7 +92,7 @@ class Robot:
         if self.robot_type == "Tank":
             keys = pygame.key.get_pressed()
             # rotate
-            self.alpha += (keys[pygame.K_d] - keys[pygame.K_a]) * self.v_alpha * 0.6
+            self.alpha += (keys[pygame.K_d] - keys[pygame.K_a]) * self.v_alpha
             self.alpha = self.alpha % 360
 
             # move
@@ -94,11 +100,11 @@ class Robot:
             x = 0
             y = 0
             if keys[pygame.K_w]:  # forward
-                x = math.cos(alpha_rad) * self.v * 0.8
-                y = math.sin(alpha_rad) * self.v * 0.8
+                x = math.cos(alpha_rad) * self.v
+                y = math.sin(alpha_rad) * self.v
             if keys[pygame.K_s]:  # backwards
-                x = -1 * math.cos(alpha_rad) * self.v * 0.8
-                y = -1 * math.sin(alpha_rad) * self.v * 0.8
+                x = -1 * math.cos(alpha_rad) * self.v
+                y = -1 * math.sin(alpha_rad) * self.v
             self.move_if_no_walls(x, y, walls, robots, game_map)
 
             # sound
@@ -216,10 +222,10 @@ class Robot:
             angle_to_goal = math.degrees(rad_to_goal) % 360
             angle_diff = (angle_to_goal - self.alpha + 180) % 360 - 180
             if self.frames_without_turning == 0:
-                if abs(angle_diff) < self.v_alpha *0.6:
+                if abs(angle_diff) < self.v_alpha:
                     self.alpha = angle_to_goal
                 else:
-                    self.alpha += math.copysign(self.v_alpha * 0.6, angle_diff)
+                    self.alpha += math.copysign(self.v_alpha, angle_diff)
                 self.alpha = self.alpha % 360
                 self.frames_without_turning = 8
             else:
@@ -236,8 +242,8 @@ class Robot:
                 direction = 1  # move forward
             else:
                 direction = -1  # move backward
-            x = forward_x * self.v * 0.8 * direction
-            y = forward_y * self.v * 0.8 * direction
+            x = forward_x * self.v * direction
+            y = forward_y * self.v * direction
             self.move_if_no_walls(x, y, walls, robots, game_map, check_for_lava=True)
 
             # shoot, if goal is in 45° range
