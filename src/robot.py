@@ -40,10 +40,16 @@ class Robot:
         self.hitbox_radius = hitbox_radius  # radius of the hitbox
         self.alpha = direction % 360  # direction of the robot in degree
         self.color = color  # color of the robot
-        self.v = speed  # current acceleration for moving
-        self.v_alpha = speed_alpha  # current acceleration for turning
-        self.speed = speed  # speed for moving
-        self.speed_alpha = speed_alpha  # speed for turning
+        if robot_type == "Tank":
+            self.v = speed * 0.8  # current acceleration for moving
+            self.v_alpha = speed_alpha * 0.6  # current acceleration for turning
+            self.speed = speed * 0.8  # speed for moving
+            self.speed_alpha = speed_alpha * 0.6  # speed for turning
+        else:
+            self.v = speed  # current acceleration for moving
+            self.v_alpha = speed_alpha  # current acceleration for turning
+            self.speed = speed  # speed for moving
+            self.speed_alpha = speed_alpha  # speed for turning
         self.hp = 100  # current livepoints of the robot
         self.last_shot_time = 100  # time of last shot
         self.shot_break_duration = 1500  # min duration of break between shots
@@ -68,7 +74,7 @@ class Robot:
             []
         )  # List of bush tile positions robot is currently overlapping
         self.robot_type = robot_type
-        self.frames_without_turning = 8
+        self.frames_without_turning = 6
 
     # Lets the player move the robot on map
     def update_player(
@@ -221,7 +227,7 @@ class Robot:
                 else:
                     self.alpha += math.copysign(self.v_alpha, angle_diff)
                 self.alpha = self.alpha % 360
-                self.frames_without_turning = 8
+                self.frames_without_turning = 6
             else:
                 self.frames_without_turning -= 1
 
@@ -293,7 +299,7 @@ class Robot:
         )
         if self.powerup == "ram" and self.ram_pause == 0:
             robot.hp -= 5
-            self.ram_pause = 50
+            self.ram_pause = 15
         # moves robot to direct wanted path if no wall
         if newRect.collidelist(walls) == -1:
             self.x = xnew
@@ -479,6 +485,8 @@ class Robot:
                             if "lava" in touched_textures:
                                 self.y -= y
                 else:
+                    if len(robots) < 2:
+                        return None
                     (dist, robot) = self.robot_dist(robots)[0]
                     if dist <= 0:
                         self.x -= x
@@ -486,6 +494,8 @@ class Robot:
                         self.robot_collision(robot, robots, walls)
                 check_for_lava = False
             else:
+                if len(robots) < 2:
+                    return None
                 (dist, robot) = self.robot_dist(robots)[0]
                 if dist <= 0:
                     self.x -= x
@@ -537,16 +547,20 @@ class Robot:
         if current_time - self.last_shot_time < self.shot_break_duration:
             return None
         # make sure there is enough power
-        if self.power <= 20:
+        if self.robot_type == "Tank":
+            powerloss = 20
+        else:
+            powerloss = 15
+        if self.power <= powerloss:
             return None
-        # shoot, if there is enough time and power
 
+        # shoot, if there is enough time and power
         alpha_rad = math.radians(self.alpha)
         offset = self.hitbox_radius * 0.2  # start the bullet closer to center
         start_x = self.x + offset * math.cos(alpha_rad)  # start outsinde of the robot
         start_y = self.y + offset * math.sin(alpha_rad)
         if self.robot_type == "Tank":
-            velocity = 25 * camera.zoom
+            velocity = 30 * camera.zoom
             reach = 800
         else:  # Spider and back-up robot
             velocity = 20 * camera.zoom
@@ -567,7 +581,7 @@ class Robot:
         y = self.v * -math.sin(direction_rad) * 2
         self.move_if_no_walls(x, y, walls, robots, game_map)
         self.last_shot_time = current_time  # update time of last shot
-        self.power -= 20  # update power
+        self.power -= powerloss  # update power
         bullets.append(bullet)
         if self.is_player:
             self.sounds.play_sound("shot_sound")
@@ -585,9 +599,15 @@ class Robot:
                 bullet.alive = False
                 if self.powerup != "indestructible":
                     if bullet.shooter.robot_type == "Tank":
-                        self.hp = self.hp - 30
+                        if self.robot_type == "Tank":
+                            self.hp = self.hp - 20
+                        else:
+                            self.hp = self.hp - 30
                     else:
-                        self.hp = self.hp - 15  # robot is spider or back-up robot
+                        if self.robot_type == "Tank":
+                            self.hp = self.hp - 10
+                        else:
+                            self.hp = self.hp - 15
                     if self.is_player:
                         self.sounds.play_sound("player_hit_sound")
 
@@ -624,6 +644,11 @@ class Robot:
             # avoiding: 'ValueError: Total of weights must be greater than zero'
             # by removing robots with zero probability before calling random.choices
             prob_robot = [(p, r) for p, r in prob_robot if p > 0]
+
+            if random.choice(range(100)) < 50:
+                for goal in potential_goals:
+                    if goal.is_player:
+                        return goal
 
             robot: "Robot" = random.choices(
                 [r for p, r in prob_robot], weights=[p for p, r in prob_robot], k=1
