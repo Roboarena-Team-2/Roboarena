@@ -622,7 +622,7 @@ def level_selection():
     font = pygame.font.SysFont(None, 40)
 
     start_button = Button(
-        rect=(screen.get_width() // 2 - 100, 400, 200, 50),
+        rect=(screen.get_width() // 2 - 100, 440, 200, 50),
         text="Start Game",
         font=font,
         bg_color=(20, 130, 200),
@@ -642,6 +642,24 @@ def level_selection():
     level2_button = Button(
         rect=(screen.get_width() // 2 + 50, 300, 200, 50),
         text="Level 2",
+        font=font,
+        bg_color=(20, 130, 200),
+        text_color=(255, 255, 255),
+        hover_color=(40, 160, 255),
+    )
+
+    level3_button = Button(
+        rect=(screen.get_width() // 2 - 250, 370, 200, 50),
+        text="Lava River",
+        font=font,
+        bg_color=(20, 130, 200),
+        text_color=(255, 255, 255),
+        hover_color=(40, 160, 255),
+    )
+
+    level4_button = Button(
+        rect=(screen.get_width() // 2 + 50, 370, 200, 50),
+        text="Four Elements",
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -673,12 +691,19 @@ def level_selection():
                 game_loop("test-level.txt")
             if level2_button.is_clicked(event):
                 game_loop("test-level2.txt")
+            if level3_button.is_clicked(event):
+                game_loop("lavariver.txt")
+            if level4_button.is_clicked(event):
+                game_loop("fourelements.txt")
+
             if back_button.is_clicked(event):
                 return
 
         start_button.draw(screen)
         level1_button.draw(screen)
         level2_button.draw(screen)
+        level3_button.draw(screen)
+        level4_button.draw(screen)
         back_button.draw(screen)
 
         pygame.display.flip()
