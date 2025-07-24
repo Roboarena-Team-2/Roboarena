@@ -40,10 +40,16 @@ class Robot:
         self.hitbox_radius = hitbox_radius  # radius of the hitbox
         self.alpha = direction % 360  # direction of the robot in degree
         self.color = color  # color of the robot
-        self.v = speed  # current acceleration for moving
-        self.v_alpha = speed_alpha  # current acceleration for turning
-        self.speed = speed  # speed for moving
-        self.speed_alpha = speed_alpha  # speed for turning
+        if robot_type == "Tank":
+            self.v = speed * 0.8
+            self.v_alpha = speed_alpha * 0.6
+            self.speed = speed * 0.8
+            self.speed_alpha = speed_alpha * 0.6
+        else:
+            self.v = speed  # current acceleration for moving
+            self.v_alpha = speed_alpha  # current acceleration for turning
+            self.speed = speed  # speed for moving
+            self.speed_alpha = speed_alpha  # speed for turning
         self.hp = 100  # current livepoints of the robot
         self.last_shot_time = 100  # time of last shot
         self.shot_break_duration = 1500  # min duration of break between shots
