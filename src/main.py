@@ -960,8 +960,8 @@ def game_loop(map_file: str | None = None):
         # Robots appearing for survival mode
         if difficulty == "survival1":  # more
             if ticks - start_tick > robot_tick:
-                robot_tick += robot_tick_increaser
-                if robot_tick_increaser > 500:
+                if robot_tick > 3500:
+                    robot_tick += robot_tick_increaser
                     robot_tick_increaser -= 500
                 robots.append(
                     Robot(
