@@ -46,110 +46,7 @@ print(f"TILE_SIZE: {config.TILE_SIZE}")
 type: str = "Tank"
 language: str = "English"
 volume: int = 100
-
-texts = {
-    "start_text": "Start Game",
-    "difficulty_text": "Difficulty",
-    "instructions_text": "How to play",
-    "level_text": "Map selection",
-    "settings_text": "Settings",
-    "quit_text": "Exit Game",
-    "main_menu_text": "Main Menu",
-    "easy_text": "Easy",
-    "medium_text": "Medium",
-    "hard_text": "Hard",
-    "normal_mode_text": "Normal",
-    "back_text": "Back",
-    "continue_text": "Continue",
-    "paused_text": "Paused",
-    "spider_text": "Spider",
-    "tank_text": "Tank",
-    "class_selection_text": "Robot selection",
-    "map1_text": "Map 1",
-    "map2_text": "Map 2",
-    "level_selection_text": "Map selection",
-    "english_text": "English",
-    "german_text": "German",
-    "show_credits_text": "Show Credits",
-    "volume_text": "Volume",
-    "language_text": "Language",
-    "credits_text": "Credits",
-    "victory_text": "VICTORY",
-    "endgame_text": ["Press ECS to return to main menu", "or ENTER to play again"],
-    "gameover_text": "GAME OVER",
-    "go_text": "GO!",
-    "credits": [
-        "This game is a work of Team 2:",
-        "Walid Abdulhamid, Katja Grammel, Sarah Herty and Nico Loroff",
-        "We only used openly available pictures and sounds with licence cc0.",
-    ],
-    "instructions": [
-        "Tank:",
-        "   Controls:",
-        "       w/s keys for moving forward/backward",
-        "       a/d keys for turning left/right",
-        "       mouse can aim +/- 45° and click for shooting",
-        "   Else:",
-        "       Bullets reach farther",
-        "       Decreases damage by 1/3",
-        "Spider:",
-        "   Controls:",
-        "       WASD keys for moving",
-        "       mouse for turning/aiming and click for shooting",
-        "   Else:",
-        "       Decreases attack by 1/3",
-        "Powerups:",
-        "   Ram:",
-        "       2x Speed and collision attack",
-        "   Health-boost:",
-        "       + 50 health",
-        "   Power-boost:",
-        "       + 50 power",
-        "   Shield:",
-        "       indestructible (still lava damage)",
-        "Modes:",
-        "   Easy:",
-        "       2x Speed and collision attack",
-        "   Medium:",
-        "       + 50 health",
-        "   Hard:",
-        "       + 50 power",
-        "   Survival1:",
-        "       indestructible (still lava damage)",
-        "       bush does not work in survival mode",
-        "   Survival2:",
-        "       indestructible (still lava damage)",
-        "       bush does not work in survival mode",
-        "Surfaces:" "   Grass:",
-        "       2x Speed and collision attack",
-        "   Wall:",
-        "       + 50 health",
-        "   Sand:",
-        "       + 50 power",
-        "   Ice:",
-        "       indestructible (still lava damage)",
-        "   Bush:",
-        "       indestructible (still lava damage)",
-        "       bush does not work in survival mode",
-        "   Lava:",
-        "       indestructible (still lava damage)",
-    ],
-    "controls_text": "Controls:",
-    "tank_move_explanation_text": "up/down arrow keys for moving forward/backward",
-    "tank_turn_explanation_text": "left/right arrow keys for turning left/right",
-    "tank_shoot_explanation_text": "mouse can aim +/- 45° and click for shooting",
-    "spider_move_explanation_text": "arrow keys for moving",
-    "spider_shoot_explanation_text": "mouse for turning/aiming and click for shooting",
-    "powerups_text": "Power-ups:",
-    "ram_text": "Ram",
-    "ram_explanation_text": "2x Speed and collision attack",
-    "health_boost_text": "Health-boost",
-    "health_boost_explanation_text": "+ 50 health",
-    "power_boost_text": "Power-boost",
-    "power_boost_explanation_text": "+ 50 power",
-    "shield_text": "Shield",
-    "shield_explanation_text": "indestructible (still lava damage)",
-}
+texts = config.texts
 
 
 def draw_text(
@@ -563,6 +460,7 @@ def level_selection():
 
 def settings():
     global volume
+    global texts
     clock = pygame.time.Clock()
     font = pygame.font.SysFont(None, 40)
 
@@ -649,12 +547,12 @@ def settings():
 
             if english_button.is_clicked(event):
                 language = "English"
-                update_language()
+                texts = config.update_language(language)
                 settings()
                 return
             if german_button.is_clicked(event):
                 language = "German"
-                update_language()
+                texts = config.update_language(language)
                 settings()
                 return
             if credits_button.is_clicked(event):
@@ -676,7 +574,7 @@ def instructions_menu():
     font = pygame.font.SysFont(None, 40)
 
     instructions_scrollbar = Scrollbar(
-        len(texts["instructions"]) * 45 - 300,
+        len(texts["instructions"]) * 45 - 600,
         text_space=pygame.Rect(
             screen.get_width() * 0.2, 200, screen.get_width() * 0.8, 300
         ),
@@ -712,72 +610,44 @@ def instructions_menu():
                 i * 35 + instructions_top - scrollheight < instructions_bottom
             ):
                 draw_text(
-                    screen, line, 100, instructions_top + i * 35 - scrollheight, 40
+                    screen, line, 200, instructions_top + i * 35 - scrollheight, 40
                 )
-
-        half_x = screen.get_width() // 2
 
         # Powerups
         icon_fire = pygame.transform.scale(
             config.ICONS["explosion"],
             (
-                40,
-                40,
+                30,
+                30,
             ),
         ).convert_alpha()
-        screen.blit(icon_fire, (half_x + 50, 250))
-        draw_text(
-            screen,
-            f"{texts['ram_text']}: {texts['ram_explanation_text']}",
-            half_x + 100,
-            260,
-            30,
-        )
         icon_health = pygame.transform.scale(
             config.ICONS["heart"],
             (
-                40,
-                40,
+                30,
+                30,
             ),
         ).convert_alpha()
-        screen.blit(icon_health, (half_x + 50, 300))
-        draw_text(
-            screen,
-            f"{texts['health_boost_text']}: {texts['health_boost_explanation_text']}",
-            half_x + 100,
-            310,
-            30,
-        )
         icon_power = pygame.transform.scale(
             config.ICONS["power"],
             (
-                40,
-                40,
+                30,
+                30,
             ),
         ).convert_alpha()
-        screen.blit(icon_power, (half_x + 50, 350))
-        draw_text(
-            screen,
-            f"{texts['power_boost_text']}: {texts['power_boost_explanation_text']}",
-            half_x + 100,
-            360,
-            30,
-        )
         icon_shield = pygame.transform.scale(
             config.ICONS["shield"],
             (
-                40,
-                40,
+                30,
+                30,
             ),
         ).convert_alpha()
-        screen.blit(icon_shield, (half_x + 50, 400))
-        draw_text(
-            screen,
-            f"{texts['shield_text']}: {texts['shield_explanation_text']}",
-            half_x + 100,
-            410,
-            30,
-        )
+        
+        for j, icon in enumerate([icon_fire,icon_health,icon_power,icon_shield]):
+            if (instructions_top + (17 + 2*j) * 35 - scrollheight >= instructions_top) and (
+                (17 + 2*j) * 35 + instructions_top - scrollheight < instructions_bottom
+            ):
+                screen.blit(icon, (220, instructions_top + (17+2*j) * 35 - scrollheight))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -1144,120 +1014,6 @@ def game_credits():
         clock.tick(60)
 
 
-def update_language():
-    global texts
-    if language == "German":
-        texts = {
-            "start_text": "Spiel starten",
-            "difficulty_text": "Schwierigkeit",
-            "instructions_text": "Anleitung",
-            "level_text": "Karten-Auswahl",
-            "settings_text": "Einstellungen",
-            "quit_text": "Spiel beenden",
-            "main_menu_text": "Hauptmenü",
-            "easy_text": "Leicht",
-            "medium_text": "Mittel",
-            "hard_text": "Schwer",
-            "normal_mode_text": "Normal",
-            "back_text": "Zurück",
-            "continue_text": "Fortsetzen",
-            "paused_text": "Pausiert",
-            "spider_text": "Spinne",
-            "tank_text": "Panzer",
-            "class_selection_text": "Roboter Auswahl",
-            "map1_text": "Karte 1",
-            "map2_text": "Karte 2",
-            "level_selection_text": "Karten Auswahl",
-            "english_text": "Englisch",
-            "german_text": "Deutsch",
-            "show_credits_text": "Zeig die Credits",
-            "volume_text": "Lautstärke",
-            "language_text": "Sprache",
-            "credits_text": "Credits",
-            "victory_text": "Sieg",
-            "endgame_text": [
-                "Drücke ESC um ins Hauptmenü zurückgehen",
-                "oder ENTER um nochmal zu spielen",
-            ],
-            "gameover_text": "Verloren",
-            "go_text": "LOS!",
-            "credits": [
-                "Dieses Spiel ist ein Projekt der Gruppe 2:",
-                "Walid Abdulhamid, Katja Grammel, Sarah Herty und Nico Loroff",
-                "Wir haben nur frei verfügbare Bilder und Töne mit Lizenz cc0 verwendet.",
-            ],
-            "controls_text": "Steuerung:",
-            "tank_move_explanation_text": "Oben/Unten Pfeiltasten fürs vorwärts/rückwärts Bewegen",
-            "tank_turn_explanation_text": "Links/Rechts Pfeiltasten fürs links/rechts Drehen",
-            "tank_shoot_explanation_text": "Maus zum +/- 45° Zielen und Klicken zum Schießen",
-            "spider_move_explanation_text": "Pfeiltasten fürs Bewegen",
-            "spider_shoot_explanation_text": "Maus zum Drehen/Zielen und Klicken zum Schießen",
-            "powerups_text": "Power-ups:",
-            "ram_text": "Rammbock",
-            "ram_explanation_text": "2x Schnelligkeit und Kollisionsattacke",
-            "health_boost_text": "Gesundheitsbooster",
-            "health_boost_explanation_text": "+ 50 Gesundheit",
-            "power_boost_text": "Kraftbooster",
-            "power_boost_explanation_text": "+ 50 Kraft",
-            "shield_text": "Schild",
-            "shield_explanation_text": "unzerstörbar (Lava bleibt schädlich)",
-        }
-    else:
-        texts = {
-            "start_text": "Start Game",
-            "difficulty_text": "Difficulty",
-            "instructions_text": "How to play",
-            "level_text": "Map selection",
-            "settings_text": "Settings",
-            "quit_text": "Exit Game",
-            "main_menu_text": "Main Menu",
-            "easy_text": "Easy",
-            "medium_text": "Medium",
-            "hard_text": "Hard",
-            "normal_mode_text": "Normal",
-            "back_text": "Back",
-            "continue_text": "Continue",
-            "paused_text": "Paused",
-            "spider_text": "Spider",
-            "tank_text": "Tank",
-            "class_selection_text": "Robot selection",
-            "map1_text": "Map 1",
-            "map2_text": "Map 2",
-            "level_selection_text": "Map selection",
-            "english_text": "English",
-            "german_text": "German",
-            "show_credits_text": "Show Credits",
-            "volume_text": "Volume",
-            "language_text": "Language",
-            "credits_text": "Credits",
-            "victory_text": "VICTORY",
-            "endgame_text": [
-                "Press ECS to return to main menu",
-                "or ENTER to play again",
-            ],
-            "gameover_text": "GAME OVER",
-            "go_text": "GO!",
-            "credits": [
-                "This game is a work of Team 2:",
-                "Walid Abdulhamid, Katja Grammel, Sarah Herty and Nico Loroff",
-                "We only used openly available pictures and sounds with licence cc0.",
-            ],
-            "controls_text": "Controls:",
-            "tank_move_explanation_text": "up/down arrow keys for moving forward/backward",
-            "tank_turn_explanation_text": "left/right arrow keys for turning left/right",
-            "tank_shoot_explanation_text": "mouse can aim +/- 45° and click for shooting",
-            "spider_move_explanation_text": "arrow keys for moving",
-            "spider_shoot_explanation_text": "mouse for turning/aiming and click for shooting",
-            "powerups_text": "Power-ups:",
-            "ram_text": "Ram",
-            "ram_explanation_text": "2x Speed and collision attack",
-            "health_boost_text": "Health-boost",
-            "health_boost_explanation_text": "+ 50 health",
-            "power_boost_text": "Power-boost",
-            "power_boost_explanation_text": "+ 50 power",
-            "shield_text": "Shield",
-            "shield_explanation_text": "indestructible (still lava damage)",
-        }
 
 
 main_menu()
