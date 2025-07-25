@@ -107,7 +107,10 @@ class RobotRenderer:
         pygame.draw.circle(shadow_surface, (0, 0, 0, 60), (radius, radius), radius)
 
         # compute shadow offset
-        shadow_pos = camera.apply(robot.x, robot.y + robot.hitbox_radius * 0.22)
+        if robot.robot_type == "Tank":
+            shadow_pos = camera.apply(robot.x, robot.y + robot.hitbox_radius * 0.25)
+        else:
+            shadow_pos = camera.apply(robot.x, robot.y + robot.hitbox_radius * 0.2)
         rect = shadow_surface.get_rect(center=shadow_pos)
 
         self.camera_surface.blit(shadow_surface, rect)
@@ -150,12 +153,12 @@ class RobotRenderer:
         if robot.robot_type in self.animations:
             # Get current animation frame based on class type
             if robot.robot_type == "Spider":
-                direction_index = int((-robot.alpha + 90) / 10) % 36
+                direction_index = int(-robot.alpha  / 10) % 36
                 animation_index = self.frame_indices[robot] % 4
                 index = direction_index * 4 + animation_index
 
             elif robot.robot_type == "Tank":
-                direction_index = int((-robot.alpha + 90) / 10) % 36
+                direction_index = int(-robot.alpha  / 10) % 36
                 index = direction_index
 
             frame = self.animations[robot.robot_type][index]
@@ -390,14 +393,14 @@ class RobotRenderer:
             - ((fire_width / 2) / camera.zoom)
             + (
                 math.cos(math.radians(robot.alpha))
-                * (robot.hitbox_radius * 0.35 + (fire_width))
+                * (robot.hitbox_radius * 0.3 + (fire_width))
                 # / camera.zoom
             ),
             robot.y
             - ((fire_height / 2) / camera.zoom)
             + (
-                math.sin(math.radians(robot.alpha - 90))
-                * (robot.hitbox_radius * 0.35 + (fire_height))
+                math.sin(math.radians(robot.alpha ))
+                * (robot.hitbox_radius * 0.3 + (fire_height))
                 # / camera.zoom
             ),
         )
