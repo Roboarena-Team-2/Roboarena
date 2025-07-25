@@ -7,6 +7,7 @@ from robot import Robot
 from bullet import Bullet
 from button import Button
 from slider import Slider
+from scrollbar import Scrollbar
 from sounds import Sounds
 from camera import Camera
 from robot_renderer import RobotRenderer
@@ -50,7 +51,7 @@ texts = {
     "start_text": "Start Game",
     "difficulty_text": "Difficulty",
     "instructions_text": "How to play",
-    "level_text": "Level selection",
+    "level_text": "Map selection",
     "settings_text": "Settings",
     "quit_text": "Exit Game",
     "main_menu_text": "Main Menu",
@@ -77,7 +78,62 @@ texts = {
     "endgame_text": ["Press ECS to return to main menu", "or ENTER to play again"],
     "gameover_text": "GAME OVER",
     "go_text": "GO!",
-    "credits": ["Team ...", "", "Other credits:", " Credit 1 ", " Credit 2"],
+    "credits": [
+        "This game is a work of Team 2:",
+        "Walid Abdulhamid, Katja Grammel, Sarah Herty and Nico Loroff",
+        "We only used openly available pictures and sounds with licence cc0.",
+    ],
+    "instructions": [
+        "Tank:",
+        "   Controls:",
+        "       w/s keys for moving forward/backward",
+        "       a/d keys for turning left/right",
+        "       mouse can aim +/- 45° and click for shooting",
+        "   Else:",
+        "       Bullets reach farther",
+        "       Decreases damage by 1/3",
+        "Spider:",
+        "   Controls:",
+        "       WASD keys for moving",
+        "       mouse for turning/aiming and click for shooting",
+        "   Else:",
+        "       Decreases attack by 1/3",
+        "Powerups:",
+        "   Ram:",
+        "       2x Speed and collision attack",
+        "   Health-boost:",
+        "       + 50 health",
+        "   Power-boost:",
+        "       + 50 power",
+        "   Shield:",
+        "       indestructible (still lava damage)",
+        "Modes:",
+        "   Easy:",
+        "       2x Speed and collision attack",
+        "   Medium:",
+        "       + 50 health",
+        "   Hard:",
+        "       + 50 power",
+        "   Survival1:",
+        "       indestructible (still lava damage)",
+        "       bush does not work in survival mode",
+        "   Survival2:",
+        "       indestructible (still lava damage)",
+        "       bush does not work in survival mode",
+        "Surfaces:" "   Grass:",
+        "       2x Speed and collision attack",
+        "   Wall:",
+        "       + 50 health",
+        "   Sand:",
+        "       + 50 power",
+        "   Ice:",
+        "       indestructible (still lava damage)",
+        "   Bush:",
+        "       indestructible (still lava damage)",
+        "       bush does not work in survival mode",
+        "   Lava:",
+        "       indestructible (still lava damage)",
+    ],
     "controls_text": "Controls:",
     "tank_move_explanation_text": "up/down arrow keys for moving forward/backward",
     "tank_turn_explanation_text": "left/right arrow keys for turning left/right",
@@ -619,6 +675,15 @@ def settings():
 def instructions_menu():
     font = pygame.font.SysFont(None, 40)
 
+    instructions_scrollbar = Scrollbar(
+        len(texts["instructions"]) * 45 - 300,
+        text_space=pygame.Rect(
+            screen.get_width() * 0.2, 200, screen.get_width() * 0.8, 300
+        ),
+        slider_color=(200, 50, 50),
+        hover_color=(255, 80, 80),
+    )
+
     back_button = Button(
         rect=(screen.get_width() // 2 - 125, 550, 250, 50),
         text=texts["back_text"],
@@ -628,24 +693,29 @@ def instructions_menu():
         hover_color=(255, 80, 80),
     )
 
+    active_slider = None
+    instructions_top = instructions_scrollbar.space_rect.top
+    instructions_bottom = instructions_scrollbar.space_rect.bottom
+
     running = True
     while running:
         screen.fill((30, 30, 30))
         draw_text(screen, texts["instructions_text"], 0, 150, 80, center=True)
+        scrollheight = (
+            instructions_scrollbar.current_height
+            * instructions_scrollbar.text_height
+            / instructions_scrollbar.space_rect.height
+        )
+
+        for i, line in enumerate(texts["instructions"]):
+            if (instructions_top + i * 35 - scrollheight >= instructions_top) and (
+                i * 35 + instructions_top - scrollheight < instructions_bottom
+            ):
+                draw_text(
+                    screen, line, 100, instructions_top + i * 35 - scrollheight, 40
+                )
 
         half_x = screen.get_width() // 2
-
-        draw_text(screen, texts["controls_text"], half_x - 550, 200, 50)
-        draw_text(screen, texts["powerups_text"], half_x + 50, 200, 50)
-
-        # Controls
-        draw_text(screen, f"{texts['tank_text']}:", half_x - 550, 250, 40)
-        draw_text(screen, texts["tank_move_explanation_text"], half_x - 550, 290, 30)
-        draw_text(screen, texts["tank_turn_explanation_text"], half_x - 550, 320, 30)
-        draw_text(screen, texts["tank_shoot_explanation_text"], half_x - 550, 350, 30)
-        draw_text(screen, f"{texts['spider_text']}:", half_x - 550, 400, 40)
-        draw_text(screen, texts["spider_move_explanation_text"], half_x - 550, 440, 30)
-        draw_text(screen, texts["spider_shoot_explanation_text"], half_x - 550, 470, 30)
 
         # Powerups
         icon_fire = pygame.transform.scale(
@@ -713,10 +783,23 @@ def instructions_menu():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if instructions_scrollbar.slider_rect.collidepoint(event.pos):
+                        active_slider = instructions_scrollbar.slider_rect
+
+            if event.type == pygame.MOUSEBUTTONUP:
+                if event.button == 1:
+                    active_slider = None
+
+            if event.type == pygame.MOUSEMOTION:
+                if active_slider:
+                    instructions_scrollbar.update(event.rel[1])
             if back_button.is_clicked(event):
                 return
 
         back_button.draw(screen)
+        instructions_scrollbar.draw(screen)
 
         pygame.display.flip()
         clock.tick(60)
@@ -1068,7 +1151,7 @@ def update_language():
             "start_text": "Spiel starten",
             "difficulty_text": "Schwierigkeit",
             "instructions_text": "Anleitung",
-            "level_text": "Level-Auswahl",
+            "level_text": "Karten-Auswahl",
             "settings_text": "Einstellungen",
             "quit_text": "Spiel beenden",
             "main_menu_text": "Hauptmenü",
@@ -1098,17 +1181,17 @@ def update_language():
             ],
             "gameover_text": "Verloren",
             "go_text": "LOS!",
-            "credits": ["Team ...", "", "Other credits:", " Credit 1 ", " Credit 2"],
+            "credits": [
+                "Dieses Spiel ist ein Projekt der Gruppe 2:",
+                "Walid Abdulhamid, Katja Grammel, Sarah Herty und Nico Loroff",
+                "Wir haben nur frei verfügbare Bilder und Töne mit Lizenz cc0 verwendet.",
+            ],
             "controls_text": "Steuerung:",
-            "tank_move_explanation_text":
-            "Oben/Unten Pfeiltasten fürs vorwärts/rückwärts Bewegen",
-            "tank_turn_explanation_text":
-            "Links/Rechts Pfeiltasten fürs links/rechts Drehen",
-            "tank_shoot_explanation_text":
-            "Maus zum +/- 45° Zielen und Klicken zum Schießen",
+            "tank_move_explanation_text": "Oben/Unten Pfeiltasten fürs vorwärts/rückwärts Bewegen",
+            "tank_turn_explanation_text": "Links/Rechts Pfeiltasten fürs links/rechts Drehen",
+            "tank_shoot_explanation_text": "Maus zum +/- 45° Zielen und Klicken zum Schießen",
             "spider_move_explanation_text": "Pfeiltasten fürs Bewegen",
-            "spider_shoot_explanation_text":
-            "Maus zum Drehen/Zielen und Klicken zum Schießen",
+            "spider_shoot_explanation_text": "Maus zum Drehen/Zielen und Klicken zum Schießen",
             "powerups_text": "Power-ups:",
             "ram_text": "Rammbock",
             "ram_explanation_text": "2x Schnelligkeit und Kollisionsattacke",
@@ -1124,7 +1207,7 @@ def update_language():
             "start_text": "Start Game",
             "difficulty_text": "Difficulty",
             "instructions_text": "How to play",
-            "level_text": "Level selection",
+            "level_text": "Map selection",
             "settings_text": "Settings",
             "quit_text": "Exit Game",
             "main_menu_text": "Main Menu",
@@ -1154,15 +1237,17 @@ def update_language():
             ],
             "gameover_text": "GAME OVER",
             "go_text": "GO!",
-            "credits": ["Team ...", "", "Other credits:", " Credit 1 ", " Credit 2"],
+            "credits": [
+                "This game is a work of Team 2:",
+                "Walid Abdulhamid, Katja Grammel, Sarah Herty and Nico Loroff",
+                "We only used openly available pictures and sounds with licence cc0.",
+            ],
             "controls_text": "Controls:",
-            "tank_move_explanation_text":
-            "up/down arrow keys for moving forward/backward",
+            "tank_move_explanation_text": "up/down arrow keys for moving forward/backward",
             "tank_turn_explanation_text": "left/right arrow keys for turning left/right",
             "tank_shoot_explanation_text": "mouse can aim +/- 45° and click for shooting",
             "spider_move_explanation_text": "arrow keys for moving",
-            "spider_shoot_explanation_text":
-            "mouse for turning/aiming and click for shooting",
+            "spider_shoot_explanation_text": "mouse for turning/aiming and click for shooting",
             "powerups_text": "Power-ups:",
             "ram_text": "Ram",
             "ram_explanation_text": "2x Speed and collision attack",
