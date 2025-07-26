@@ -576,14 +576,14 @@ def instructions_menu():
     instructions_scrollbar = Scrollbar(
         len(texts["instructions"]) * 45 - 600,
         text_space=pygame.Rect(
-            screen.get_width() * 0.2, 200, screen.get_width() * 0.8, 300
+            screen.get_width() * 0.2, 200, screen.get_width() * 0.8, 350
         ),
-        slider_color=(200, 50, 50),
-        hover_color=(255, 80, 80),
+        slider_color=(215, 215, 215),
+        hover_color=(245, 245, 245),
     )
 
     back_button = Button(
-        rect=(screen.get_width() // 2 - 125, 550, 250, 50),
+        rect=(screen.get_width() // 2 - 125, 600, 250, 50),
         text=texts["back_text"],
         font=font,
         bg_color=(200, 50, 50),
@@ -642,12 +642,17 @@ def instructions_menu():
                 30,
             ),
         ).convert_alpha()
-        
-        for j, icon in enumerate([icon_fire,icon_health,icon_power,icon_shield]):
-            if (instructions_top + (17 + 2*j) * 35 - scrollheight >= instructions_top) and (
-                (17 + 2*j) * 35 + instructions_top - scrollheight < instructions_bottom
+
+        for j, icon in enumerate([icon_fire, icon_health, icon_power, icon_shield]):
+            if (
+                instructions_top + (27 + 2 * j) * 35 - scrollheight >= instructions_top
+            ) and (
+                (27 + 2 * j) * 35 + instructions_top - scrollheight
+                < instructions_bottom
             ):
-                screen.blit(icon, (220, instructions_top + (17+2*j) * 35 - scrollheight))
+                screen.blit(
+                    icon, (220, instructions_top + (27 + 2 * j) * 35 - scrollheight)
+                )
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -1012,8 +1017,6 @@ def game_credits():
 
         pygame.display.flip()
         clock.tick(60)
-
-
 
 
 main_menu()
