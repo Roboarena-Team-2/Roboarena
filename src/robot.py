@@ -13,7 +13,7 @@ ice_acceleration: float = 2
 sand_acceleration: float = 1 / 2
 
 # Recharge-rate (how much power will be recharged every frame)
-recharge_rate: float = 0.05
+recharge_rate: float = 0.1
 
 # Time with powerups
 ram_time: int = 300
@@ -27,7 +27,7 @@ class Robot:
         x: int,
         y: int,
         hitbox_radius: int,
-        direction: int,
+        direction: float,
         color: tuple[int, int, int],
         speed: float,
         speed_alpha: float,
@@ -40,14 +40,21 @@ class Robot:
         self.hitbox_radius = hitbox_radius  # radius of the hitbox
         self.alpha = direction % 360  # direction of the robot in degree
         self.color = color  # color of the robot
-        self.v = speed  # current acceleration for moving
-        self.v_alpha = speed_alpha  # current acceleration for turning
-        self.speed = speed  # speed for moving
-        self.speed_alpha = speed_alpha  # speed for turning
+        if robot_type == "Tank":
+            self.v = speed * 0.8  # current acceleration for moving
+            self.v_alpha = speed_alpha * 0.6  # current acceleration for turning
+            self.speed = speed * 0.8  # speed for moving
+            self.speed_alpha = speed_alpha * 0.6  # speed for turning
+        else:
+            self.v = speed  # current acceleration for moving
+            self.v_alpha = speed_alpha  # current acceleration for turning
+            self.speed = speed  # speed for moving
+            self.speed_alpha = speed_alpha  # speed for turning
         self.hp = 100  # current livepoints of the robot
         self.last_shot_time = 100  # time of last shot
-        self.shot_break_duration = 2000  # min duration of break between shots
+        self.shot_break_duration = 1500  # min duration of break between shots
         self.power = 100  # current power for attacks
+        self.recharge_rate = recharge_rate
         self.moving = False  # if robot is currently moving
         self.is_player = is_player  # if robot is player (not enemy)
         self.last_wall_hit_time = 0  # time of last wall hit sound
@@ -67,10 +74,7 @@ class Robot:
             []
         )  # List of bush tile positions robot is currently overlapping
         self.robot_type = robot_type
-        # if robot_type == "Spider":
-        #   self.player_sound = "spider_sound"
-        # else:
-        #   self.player_sound = "drive_sound"
+        self.frames_without_turning = 6
 
     # Lets the player move the robot on map
     def update_player(
@@ -85,40 +89,109 @@ class Robot:
         # Check for effect
         self.exist(game_map, robots, bullets, powerups)
 
-        # Update player position based on key inputs
-        keys = pygame.key.get_pressed()
+        if self.robot_type == "Tank":
+            keys = pygame.key.get_pressed()
+            # rotate
+            self.alpha += (keys[pygame.K_d] - keys[pygame.K_a]) * self.v_alpha
+            self.alpha = self.alpha % 360
 
-        x = (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * self.v
-        y = (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * self.v
-        self.move_if_no_walls(x, y, walls, robots, game_map)
-        self.alpha += (keys[pygame.K_d] - keys[pygame.K_a]) * self.v_alpha
-        self.alpha = self.alpha % 360
+            # move
+            alpha_rad = math.radians(self.alpha)
+            x = 0
+            y = 0
+            if keys[pygame.K_w]:  # forward
+                x = math.cos(alpha_rad) * self.v
+                y = math.sin(alpha_rad) * self.v
+            if keys[pygame.K_s]:  # backwards
+                x = -1 * math.cos(alpha_rad) * self.v
+                y = -1 * math.sin(alpha_rad) * self.v
+            self.move_if_no_walls(x, y, walls, robots, game_map)
 
-        # sound for moving
-        currently_moving = (
-            keys[pygame.K_RIGHT]
-            or keys[pygame.K_LEFT]
-            or keys[pygame.K_DOWN]
-            or keys[pygame.K_UP]
-            or keys[pygame.K_a]
-            or keys[pygame.K_d]
-        )
-        if currently_moving and not self.moving:
-            if self.robot_type == "Spider":
-                self.sounds.play_sound("spider_sound")
-            else:
+            # sound
+            currently_moving = (
+                keys[pygame.K_d]
+                or keys[pygame.K_a]
+                or keys[pygame.K_w]
+                or keys[pygame.K_s]
+            )
+            if currently_moving and not self.moving:
                 self.sounds.play_sound("drive_sound")
-            self.moving = True
-        if not currently_moving and self.moving:
-            if self.robot_type == "Spider":
-                self.sounds.stop_loop("spider_sound")
-            else:
+                self.moving = True
+            if not currently_moving and self.moving:
                 self.sounds.stop_loop("drive_sound")
-            self.moving = False
+                self.moving = False
 
-        # check, if user used a key for shooting
-        if keys[pygame.K_s]:
-            self.shoot(bullets, camera, walls, robots, game_map)
+            # shoot
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_x, mouse_y = pygame.mouse.get_pos()
+                    mouse_world_x, mouse_world_y = camera.screen_to_world(
+                        mouse_x, mouse_y
+                    )
+                    dx = mouse_world_x - self.x
+                    dy = mouse_world_y - self.y
+                    shooting_angle = math.degrees(math.atan2(dy, dx)) % 360
+                    diff = (shooting_angle - self.alpha + 180) % 360 - 180
+                    alpha = self.alpha
+                    if diff >= 0:
+                        alpha += min(45, diff)
+                    else:
+                        alpha += max(-45, diff)
+                    self.shoot(alpha, bullets, camera, walls, robots, game_map)
+
+        else:  # Spider and back-up robot
+            # Update player direction based on mouse position
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            mouse_world_x, mouse_world_y = camera.screen_to_world(mouse_x, mouse_y)
+            dx = mouse_world_x - self.x
+            dy = mouse_world_y - self.y
+            new_direction_rad = math.atan2(dy, dx)
+            new_direction_deg = math.degrees(new_direction_rad) % 360
+            diff = (new_direction_deg - self.alpha + 180) % 360 - 180
+            if abs(diff) > self.v_alpha:  # to avoid jittering
+                turning = True
+                if diff > 0:
+                    self.alpha += self.v_alpha
+                else:
+                    self.alpha += self.v_alpha * (-1)
+            else:
+                self.alpha = new_direction_deg
+                turning = False
+            # check that alpha is always between 0 and 360 degrees
+            self.alpha %= 360
+
+            # Update player position based on key inputs
+            keys = pygame.key.get_pressed()
+
+            x = (keys[pygame.K_d] - keys[pygame.K_a]) * self.v
+            y = (keys[pygame.K_s] - keys[pygame.K_w]) * self.v
+            self.move_if_no_walls(x, y, walls, robots, game_map)
+
+            # sound for moving
+            currently_moving = (
+                keys[pygame.K_d]
+                or keys[pygame.K_a]
+                or keys[pygame.K_s]
+                or keys[pygame.K_w]
+                or turning
+            )
+            if currently_moving and not self.moving:
+                if self.robot_type == "Spider":
+                    self.sounds.play_sound("spider_sound")
+                else:
+                    self.sounds.play_sound("drive_sound")
+                self.moving = True
+            if not currently_moving and self.moving:
+                if self.robot_type == "Spider":
+                    self.sounds.stop_loop("spider_sound")
+                else:
+                    self.sounds.stop_loop("drive_sound")
+                self.moving = False
+
+            # check, if user used a key for shooting
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.shoot(self.alpha, bullets, camera, walls, robots, game_map)
 
     # Lets a robot follow another robot
     def update_enemy(
@@ -139,31 +212,63 @@ class Robot:
             self.go_hide(game_map, walls, robots)
             return None
 
-        # Move towards a goal position
+        # calculate goal direction
         x_to_goal = goal.x - self.x
         y_to_goal = goal.y - self.y
-        x = math.copysign(self.v, x_to_goal)
-        y = math.copysign(self.v, y_to_goal)
-        self.move_if_no_walls(x, y, walls, robots, game_map, check_for_lava=True)
 
-        # Adjust rotation to face the goal
-        rad_to_goal = math.atan2(y_to_goal, x_to_goal)
-        angle_to_goal = (math.degrees(rad_to_goal) + 180) % 360
+        if self.robot_type == "Tank":
+            # Adjust rotation to face the goal
+            rad_to_goal = math.atan2(y_to_goal, x_to_goal)
+            angle_to_goal = math.degrees(rad_to_goal) % 360
+            angle_diff = (angle_to_goal - self.alpha + 180) % 360 - 180
+            if self.frames_without_turning == 0:
+                if abs(angle_diff) < self.v_alpha:
+                    self.alpha = angle_to_goal
+                else:
+                    self.alpha += math.copysign(self.v_alpha, angle_diff)
+                self.alpha = self.alpha % 360
+                self.frames_without_turning = 6
+            else:
+                self.frames_without_turning -= 1
 
-        # Invert direction if shortest rotation is the other way
-        if angle_to_goal < self.alpha:
-            if abs(angle_to_goal - self.alpha) > 180:
-                angle_to_goal *= -1
-        else:
-            if abs(angle_to_goal - self.alpha) < 180:
-                angle_to_goal *= -1
-        self.alpha += math.copysign(self.v_alpha, angle_to_goal)
-        self.alpha = self.alpha % 360
+            # Move towards a goal position
+            alpha_rad = math.radians(self.alpha)
+            forward_x = math.cos(alpha_rad)  # x-part of direction
+            forward_y = math.sin(alpha_rad)  # y-part of direction
+            dot = x_to_goal * forward_x + y_to_goal * forward_y  # dot product
+            if dot == 0:
+                direction = 0  # dont move (90 degree angle to goal)
+            elif dot > 0:
+                direction = 1  # move forward
+            else:
+                direction = -1  # move backward
+            x = forward_x * self.v * direction
+            y = forward_y * self.v * direction
+            self.move_if_no_walls(x, y, walls, robots, game_map, check_for_lava=True)
 
-        # shoot if angle to goal is under 10°
-        angle_diff = abs(abs(angle_to_goal - 180) - self.alpha) % 360
-        if (angle_diff <= 10) or (angle_diff >= 350):
-            self.shoot(bullets, camera, walls, robots, game_map)
+            # shoot, if goal is in 45° range
+            if abs(angle_diff) < 45:
+                self.shoot(angle_to_goal, bullets, camera, walls, robots, game_map)
+
+        else:  # spider and back-up robot
+            # Adjust rotation to face the goal
+            rad_to_goal = math.atan2(y_to_goal, x_to_goal)
+            angle_to_goal = math.degrees(rad_to_goal) % 360
+            angle_diff = (angle_to_goal - self.alpha + 180) % 360 - 180
+            if abs(angle_diff) < self.v_alpha:
+                self.alpha = angle_to_goal
+            else:
+                self.alpha += math.copysign(self.v_alpha, angle_diff)
+            self.alpha = self.alpha % 360
+
+            # Move towards a goal position
+            x = math.copysign(self.v, x_to_goal)
+            y = math.copysign(self.v, y_to_goal)
+            self.move_if_no_walls(x, y, walls, robots, game_map, check_for_lava=True)
+
+            # shoot if angle to goal is under 10°
+            if abs(angle_diff) < 10:
+                self.shoot(self.alpha, bullets, camera, walls, robots, game_map)
 
         # avoid being in range of other robots
         self.move_if_in_range(robots, walls, game_map)
@@ -194,7 +299,7 @@ class Robot:
         )
         if self.powerup == "ram" and self.ram_pause == 0:
             robot.hp -= 5
-            self.ram_pause = 50
+            self.ram_pause = 15
         # moves robot to direct wanted path if no wall
         if newRect.collidelist(walls) == -1:
             self.x = xnew
@@ -368,14 +473,20 @@ class Robot:
             if check_for_lava:
                 touched_textures = self.touched_textures(game_map)
                 if "lava" in touched_textures:
-                    self.y -= y
-                    touched_textures = self.touched_textures(game_map)
-                    if "lava" in touched_textures:
+                    if self.robot_type == "Tank":  # avoid that tank moves diagonally
                         self.x -= x
-                        self.y += y
+                        self.y -= y
+                    else:
+                        self.y -= y
+                        touched_textures = self.touched_textures(game_map)
                         if "lava" in touched_textures:
-                            self.y -= y
+                            self.x -= x
+                            self.y += y
+                            if "lava" in touched_textures:
+                                self.y -= y
                 else:
+                    if len(robots) < 2:
+                        return None
                     (dist, robot) = self.robot_dist(robots)[0]
                     if dist <= 0:
                         self.x -= x
@@ -383,6 +494,8 @@ class Robot:
                         self.robot_collision(robot, robots, walls)
                 check_for_lava = False
             else:
+                if len(robots) < 2:
+                    return None
                 (dist, robot) = self.robot_dist(robots)[0]
                 if dist <= 0:
                     self.x -= x
@@ -395,32 +508,34 @@ class Robot:
             if self.is_player and (current_time - self.last_wall_hit_time > 3000):
                 self.sounds.play_sound("wall_hit_sound")
                 self.last_wall_hit_time = current_time
-            # check and move if only in x direction is no wall
-            xnew = self.x + x
-            ynew = self.y
-            hitbox = self.get_hitbox(xnew, ynew)
-            if hitbox.collidelist(walls) == -1:
-                self.x = xnew
-                self.y = ynew
-                (dist, robot) = self.robot_dist(robots)[0]
-                if dist <= 0:
-                    self.x -= x
-                    self.robot_collision(robot, robots, walls)
-            else:
-                # check and move if only in y direction is no wall
-                xnew = self.x
-                ynew = self.y + y
+            if self.robot_type != "Tank":  # tank cant move sideways along a wall
+                # check and move if only in x direction is no wall
+                xnew = self.x + x
+                ynew = self.y
                 hitbox = self.get_hitbox(xnew, ynew)
                 if hitbox.collidelist(walls) == -1:
                     self.x = xnew
                     self.y = ynew
                     (dist, robot) = self.robot_dist(robots)[0]
                     if dist <= 0:
-                        self.y -= y
+                        self.x -= x
                         self.robot_collision(robot, robots, walls)
+                else:
+                    # check and move if only in y direction is no wall
+                    xnew = self.x
+                    ynew = self.y + y
+                    hitbox = self.get_hitbox(xnew, ynew)
+                    if hitbox.collidelist(walls) == -1:
+                        self.x = xnew
+                        self.y = ynew
+                        (dist, robot) = self.robot_dist(robots)[0]
+                        if dist <= 0:
+                            self.y -= y
+                            self.robot_collision(robot, robots, walls)
 
     def shoot(
         self,
+        alpha,
         bullets: list[Bullet],
         camera: Camera,
         walls: list[pygame.Rect],
@@ -432,23 +547,33 @@ class Robot:
         if current_time - self.last_shot_time < self.shot_break_duration:
             return None
         # make sure there is enough power
-        if self.power <= 20:
+        if self.robot_type == "Tank":
+            powerloss = 20
+        else:
+            powerloss = 15
+        if self.power <= powerloss:
             return None
-        # shoot, if there is enough time and power
 
+        # shoot, if there is enough time and power
         alpha_rad = math.radians(self.alpha)
         offset = self.hitbox_radius * 0.2  # start the bullet closer to center
         start_x = self.x + offset * math.cos(alpha_rad)  # start outsinde of the robot
         start_y = self.y + offset * math.sin(alpha_rad)
+        if self.robot_type == "Tank":
+            velocity = 30 * camera.zoom
+            reach = 800
+        else:  # Spider and back-up robot
+            velocity = 20 * camera.zoom
+            reach = 600
         bullet = Bullet(
             int(start_x),
             int(start_y),
-            self.alpha,
+            alpha,
             int(7 * camera.zoom),
             (0, 0, 0),
             self,
-            20 * camera.zoom,
-            800,  # reach
+            velocity,
+            reach,
         )  # create bullet
         # recoil
         direction_rad = math.radians(self.alpha)
@@ -456,7 +581,7 @@ class Robot:
         y = self.v * -math.sin(direction_rad) * 2
         self.move_if_no_walls(x, y, walls, robots, game_map)
         self.last_shot_time = current_time  # update time of last shot
-        self.power -= 20  # update power
+        self.power -= powerloss  # update power
         bullets.append(bullet)
         if self.is_player:
             self.sounds.play_sound("shot_sound")
@@ -473,7 +598,16 @@ class Robot:
             if dist < max_dist:
                 bullet.alive = False
                 if self.powerup != "indestructible":
-                    self.hp = self.hp - 15
+                    if bullet.shooter.robot_type == "Tank":
+                        if self.robot_type == "Tank":
+                            self.hp = self.hp - 20
+                        else:
+                            self.hp = self.hp - 30
+                    else:
+                        if self.robot_type == "Tank":
+                            self.hp = self.hp - 10
+                        else:
+                            self.hp = self.hp - 15
                     if self.is_player:
                         self.sounds.play_sound("player_hit_sound")
 
@@ -511,6 +645,11 @@ class Robot:
             # by removing robots with zero probability before calling random.choices
             prob_robot = [(p, r) for p, r in prob_robot if p > 0]
 
+            if random.choice(range(100)) < 50:
+                for goal in potential_goals:
+                    if goal.is_player:
+                        return goal
+
             robot: "Robot" = random.choices(
                 [r for p, r in prob_robot], weights=[p for p, r in prob_robot], k=1
             )[0]
@@ -527,17 +666,37 @@ class Robot:
             rad_to_robot = math.atan2(robot.y - self.y, robot.x - self.x)
             angle_to_robot = (math.degrees(rad_to_robot) + 180) % 360
             angle_diff = abs(abs(angle_to_robot) - robot.alpha) % 360
-            if (angle_diff <= 10) or (angle_diff >= 350):  # in range of robot
+            in_range = False
+            if robot.robot_type == "Tank":
+                if (angle_diff <= 45) or (angle_diff >= 315):
+                    in_range = True
+            else:
+                if (angle_diff <= 10) or (angle_diff >= 350):
+                    in_range = True
+            if in_range:  # in range of robot
                 x_to_goal = robot.x - self.x
                 y_to_goal = robot.y - self.y
-                if abs(y_to_goal) <= 0.5:
-                    x = math.copysign(0, y_to_goal)
+                if self.robot_type == "Tank":
+                    rad_alpha = math.radians(self.alpha)
+                    forward_vector = (math.cos(rad_alpha), math.sin(rad_alpha))
+
+                    # dot product to determine if robot is in front, back or at the side
+                    dot = x_to_goal * forward_vector[0] + y_to_goal * forward_vector[1]
+                    if abs(dot) > 0.5:
+                        # move away
+                        x = -math.copysign(self.v, dot) * forward_vector[0]
+                        y = -math.copysign(self.v, dot) * forward_vector[1]
+                    else:
+                        x, y = 0, 0  # robot is at the side
                 else:
-                    x = math.copysign(self.v, y_to_goal)
-                if abs(x_to_goal) <= 0.5:
-                    y = math.copysign(self.v, x_to_goal * -1)
-                else:
-                    y = math.copysign(0, x_to_goal * -1)
+                    if abs(y_to_goal) <= 0.5:
+                        x = math.copysign(0, y_to_goal)
+                    else:
+                        x = math.copysign(self.v, y_to_goal)
+                    if abs(x_to_goal) <= 0.5:
+                        y = math.copysign(self.v, x_to_goal * -1)
+                    else:
+                        y = math.copysign(0, x_to_goal * -1)
                 self.move_if_no_walls(x, y, walls, robots, game_map)  # move to side
 
     # Robot does nothing (but still experience effects of map and bullets)
@@ -555,7 +714,7 @@ class Robot:
 
         # recharge power
         if self.power < 100:
-            self.power += recharge_rate
+            self.power += self.recharge_rate
 
         # set time left with powerup
         if self.time_left_with_powerup > 0:
@@ -614,11 +773,8 @@ class Robot:
                 y = (j + (yn - 1)) * config.TILE_SIZE
                 nearest_bush_middle = (x, y)
                 break
-        # go to bush
         if not nearest_bush_middle:
             return None
-        x = math.copysign(self.v, nearest_bush_middle[0] - self.x)
-        y = math.copysign(self.v, nearest_bush_middle[1] - self.y)
         # Adjust rotation to face the goal
         rad_to_goal = math.atan2(
             nearest_bush_middle[1] - self.y, nearest_bush_middle[0] - self.x
@@ -634,15 +790,36 @@ class Robot:
                 angle_to_goal *= -1
         self.alpha += math.copysign(self.v_alpha, angle_to_goal)
         self.alpha = self.alpha % 360
+
+        # go to bush
+        if self.robot_type == "Tank":
+            rad_alpha = math.radians(self.alpha)
+            forward_vector = (math.cos(rad_alpha), math.sin(rad_alpha))
+            dx = nearest_bush_middle[0] - self.x
+            dy = nearest_bush_middle[1] - self.y
+            dot = (
+                dx * forward_vector[0] + dy * forward_vector[1]
+            )  # dot product to determine if bush is in front, back or at the side
+            if abs(dot) > 0.5:
+                # move forwards or backwards (depending on dot)
+                x = math.copysign(self.v, dot) * forward_vector[0]
+                y = math.copysign(self.v, dot) * forward_vector[1]
+            else:
+                # dont move (bush is sideways)
+                x, y = 0, 0
+        else:
+            x = math.copysign(self.v, nearest_bush_middle[0] - self.x)
+            y = math.copysign(self.v, nearest_bush_middle[1] - self.y)
+
         self.move_if_no_walls(x, y, walls, robots, game_map, check_for_lava=True)
 
     # checks and react if robot is touching a powerup
     def getting_powerup(self, powerups: list[Powerup]) -> None:
         robot_box = pygame.Rect(
-            self.x,
-            self.y,
-            self.hitbox_radius * 2,
-            self.hitbox_radius * 2,
+            int(self.x),
+            int(self.y),
+            int(self.hitbox_radius * 2),
+            int(self.hitbox_radius * 2),
         )
         for powerup in powerups:
             if powerup.rect.colliderect(robot_box):

@@ -5,13 +5,22 @@ from pathlib import Path
 from math import sqrt, ceil
 from random import randint
 from fallback_map import get_fallback_map
+from perlin import Perlin
 
 
 class Map:
-    def __init__(self, file_path: str | None = None, player_count: int = 4):
+    def __init__(
+        self,
+        file_path: str | None = None,
+        player_count: int = 4,
+        random_map: bool = False,
+        seed: int = 1,
+    ):
         """Initializes the map with default player-size and optional file input"""
         self.player_count = player_count
         self.file_path = file_path
+        self.random_map = random_map
+        self.seed = seed
         self.rows = config.ROWS
         self.cols = config.COLUMNS
 
@@ -19,13 +28,17 @@ class Map:
         self.map_data = self.initialize_map()
 
         # If a file path is provided: load from file, otherwise use the fallback map
-        try:
-            inner_map = self.get_inner_map()
-        except FileNotFoundError:
-            print(f"Warning: file {self.file_path} not found. Using fallback map.")
-            inner_map = get_fallback_map()
-        if inner_map is None:
-            print("Warning: No file. Using fallback map.")
+
+        if random_map:
+            inner_map = self.generate_random_inner_map(seed)
+        elif self.file_path is not None:
+            try:
+                inner_map = self.get_inner_map()
+            except FileNotFoundError:
+                print(f"Warning: file {self.file_path} not found. Using fallback map.")
+                inner_map = get_fallback_map()
+        else:
+
             inner_map = get_fallback_map()
 
         self.create_map(inner_map)
@@ -41,6 +54,94 @@ class Map:
                 row.append(tile)
             map_data.append(row)
         return map_data
+
+    def generate_random_inner_map(self, seed) -> list[list[str]]:
+
+        scale = 10.0
+        noise_gen = Perlin(seed=seed)
+
+        layers = [
+            {"octaves": 3, "weight": 1.0},
+            {"octaves": 6, "weight": 0.5},
+            {"octaves": 12, "weight": 0.25},
+            {"octaves": 24, "weight": 0.125},
+        ]
+
+        inner_map = []
+
+        for y in range(self.rows - 2):
+            row = []
+            for x in range(self.cols - 2):
+                nx = x / scale
+                ny = y / scale
+
+                total_noise = 0.0
+                total_weight = 0.0
+
+                for layer in layers:
+                    octaves = layer["octaves"]
+                    weight = layer["weight"]
+
+                    freq = 1.0
+                    amp = 1.0
+                    max_amp = 0.0
+                    layer_noise = 0.0
+
+                    for _ in range(octaves):
+                        val = noise_gen.noise(nx * freq, ny * freq)
+                        layer_noise += val * amp
+                        max_amp += amp
+                        amp *= 0.5
+                        freq *= 2.0
+
+                    layer_noise /= max_amp
+                    total_noise += layer_noise * weight
+                    total_weight += weight
+
+                final_noise = total_noise / total_weight
+
+                if final_noise < -0.22:
+                    tile = "lava"
+                elif final_noise < -0.07:
+                    tile = "sand"
+                elif final_noise < 0.1:
+                    tile = "ground"
+                elif final_noise < 0.2:
+                    tile = "bush"
+                elif final_noise < 0.35:
+                    tile = "ice"
+                else:
+                    tile = "wall"
+
+                row.append(tile)
+            inner_map.append(row)
+
+        return inner_map
+
+    def generate_patch(
+        self,
+        map_data: list[list[str]],
+        tile: str,
+        num_patches: int,
+        min_size: int,
+        max_size: int,
+        irregular: bool = True,
+    ) -> None:
+        for _ in range(num_patches):
+            width = randint(min_size, max_size)
+            height = randint(min_size, max_size)
+            start_x = randint(1, self.cols - 2 - width - 1)
+            start_y = randint(1, self.rows - 2 - height - 1)
+
+            if irregular:
+                init_start_x = randint(3, self.cols - 2 - max_size)
+
+            for i in range(height):
+                if irregular:
+                    width = randint(int(0.7 * max_size), max_size)
+                    start_x = init_start_x - randint(1, 2)
+                for j in range(width):
+                    map_data[start_y + i][start_x + j] = tile
 
     def get_inner_map(self) -> List[List[str]] | None:
         """Read map file and convert characters to tile types"""

@@ -145,6 +145,9 @@ texts = {
         "   Lava:",
         "       40 damage and respawn on safe surface",
     ],
+    "lava_river": "Lava River",
+    "four_elements": "Four Elements",
+    "Random": "Random",
 }
 
 
@@ -267,6 +270,9 @@ def update_language(language):
                 "   Lava:",
                 "       40 Schaden und respawn auf sicherer Oberfläche",
             ],
+            "lava_river": "Lava Fluss",
+            "four_elements": "Vier Elemente",
+            "Random": "Zufall",
         }
     else:
         texts = {
@@ -385,5 +391,8 @@ def update_language(language):
                 "   Lava:",
                 "       40 damage and respawn on safe surface",
             ],
+            "lava_river": "Lava River",
+            "four_elements": "Four Elements",
+            "Random": "Random",
         }
     return texts
