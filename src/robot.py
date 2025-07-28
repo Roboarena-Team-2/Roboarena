@@ -304,6 +304,8 @@ class Robot:
         if newRect.collidelist(walls) == -1:
             self.x = xnew
             self.y = ynew
+            if len(robots) < 2:
+                return
             (dist, robot) = self.robot_dist(robots)[0]
             if dist <= 0:
                 self.x -= x
@@ -441,7 +443,7 @@ class Robot:
             config.TILE_SIZE * (config.COLUMNS - 2),
         )
         min_dist = max_dist / (len(robots) + 1)
-        if self.robot_dist(robots)[0][0] > min_dist:
+        if len(robots) < 2 or self.robot_dist(robots)[0][0] > min_dist:
             # Check for tiles to avoid walls, lava and bush
             touched_textures = self.touched_textures(game_map)
             if (
@@ -516,10 +518,11 @@ class Robot:
                 if hitbox.collidelist(walls) == -1:
                     self.x = xnew
                     self.y = ynew
-                    (dist, robot) = self.robot_dist(robots)[0]
-                    if dist <= 0:
-                        self.x -= x
-                        self.robot_collision(robot, robots, walls)
+                    if len(robots) > 1:
+                        (dist, robot) = self.robot_dist(robots)[0]
+                        if dist <= 0:
+                            self.x -= x
+                            self.robot_collision(robot, robots, walls)
                 else:
                     # check and move if only in y direction is no wall
                     xnew = self.x
@@ -528,10 +531,11 @@ class Robot:
                     if hitbox.collidelist(walls) == -1:
                         self.x = xnew
                         self.y = ynew
-                        (dist, robot) = self.robot_dist(robots)[0]
-                        if dist <= 0:
-                            self.y -= y
-                            self.robot_collision(robot, robots, walls)
+                        if len(robots) > 1:
+                            (dist, robot) = self.robot_dist(robots)[0]
+                            if dist <= 0:
+                                self.y -= y
+                                self.robot_collision(robot, robots, walls)
 
     def shoot(
         self,
