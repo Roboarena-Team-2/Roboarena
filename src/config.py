@@ -218,7 +218,7 @@ def update_language(language):
                 "          • vermindert den eigenen Schaden um 1/3, wenn man getroffen"
                 + "wird",
                 "          • vergrößert den zugefügten Schaden um 1/3, wenn man jemanden"
-                 + " abschießt",
+                + " abschießt",
                 "          • Schießen kostet 20 Energie",
                 "      Insgesamt: schwer zu steuern, macht mehr "
                 + "und bekommt weniger Schaden",
@@ -228,9 +228,9 @@ def update_language(language):
                 "          • Maus zum Drehen/Zielen und Klicken zum Schießen",
                 "      Sonstiges:",
                 "          • vergrößert den eigenen Schaden um 1/3, wenn man getroffen"
-                 + "wird",
+                + "wird",
                 "          • vermindert den zugefügten Schaden um 1/3, wenn man jemanden"
-                 + " abschießt",
+                + " abschießt",
                 "          • Schießen kostet 15 Energie",
                 "      Insgesamt: leicht zu steuern, macht weniger "
                 + "und bekommt mehr Schaden",
