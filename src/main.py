@@ -994,8 +994,27 @@ def game_loop(map_file: str | None = None):
         # Robots appearing for survival mode
         if difficulty == "survival1":  # more
             if ticks - start_tick > robot_tick:
+                robot_tick += robot_tick_increaser
                 if robot_tick > 3500:
-                    robot_tick += robot_tick_increaser
+                    robot_tick_increaser -= 500
+                robots.append(
+                    Robot(
+                        camera.surface,
+                        -1000,
+                        -1000,
+                        player.hitbox_radius,
+                        float(random.randint(0, 359)),
+                        (255, 255, 255),
+                        2,
+                        2,
+                        False,
+                        random.choice(("Spider", "Tank")),
+                    )
+                )
+                robots[len(robots) - 1].get_spawn_position(game_map, robots)
+            if len(robots) < 2:
+                robot_tick = ticks - start_tick + robot_tick_increaser
+                if robot_tick > 3500:
                     robot_tick_increaser -= 500
                 robots.append(
                     Robot(
@@ -1078,12 +1097,10 @@ def gameover(camera, map_renderer, robot_renderer, robots, player, score=-1, kil
                 highscore = score
             if highestkills < kills:
                 highestkills = kills
-            draw_text(screen, f"Highscore: {highscore}s", 0, 400, 100, center=True)
-            draw_text(screen, f"Score: {score}s", 0, 500, 100, center=True)
-            draw_text(
-                screen, f"Highest Kills: {highestkills}", 0, 600, 100, center=True
-            )
-            draw_text(screen, f"Kills: {kills}", 0, 700, 100, center=True)
+            draw_text(screen, f"Highscore: {highscore}s", 0, 330, 70, center=True)
+            draw_text(screen, f"Score: {score}s", 0, 400, 70, center=True)
+            draw_text(screen, f"Highest Kills: {highestkills}", 0, 470, 70, center=True)
+            draw_text(screen, f"Kills: {kills}", 0, 540, 70, center=True)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
