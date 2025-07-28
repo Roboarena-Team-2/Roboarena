@@ -1050,6 +1050,35 @@ def gameover(camera, map_renderer, robot_renderer, robots, player, score=-1, kil
     sounds.stop_all_sounds()
     sounds.play_sound("gameover_sound")
 
+    start_time = pygame.time.get_ticks()
+    while pygame.time.get_ticks() - start_time <= 6000:
+        if player:
+            camera.follow_dynamic_center(robots, player)
+        camera.surface.fill((0, 0, 0))
+        map_renderer.draw_map(camera)
+
+        for robot in robots:
+            robot_renderer.draw(robot, camera, 0)
+
+        draw_text(screen, "GAME OVER", 0, 200, 100, center=True)
+
+        if difficulty == "survival1" or difficulty == "survival2":
+            global highscore
+            global highestkills
+            if highscore < score:  # set new highscore
+                highscore = score
+            if highestkills < kills:
+                highestkills = kills
+            draw_text(screen, f"Highscore: {highscore}s", 0, 400, 100, center=True)
+            draw_text(screen, f"Score: {score}s", 0, 500, 100, center=True)
+            draw_text(
+                screen, f"Highest Kills: {highestkills}", 0, 600, 100, center=True
+            )
+            draw_text(screen, f"Kills: {kills}", 0, 700, 100, center=True)
+
+        pygame.display.flip()
+        clock.tick(60)
+
     running = True
     while running:
         if player:
@@ -1072,12 +1101,6 @@ def gameover(camera, map_renderer, robot_renderer, robots, player, score=-1, kil
         )
 
         if difficulty == "survival1" or difficulty == "survival2":
-            global highscore
-            global highestkills
-            if highscore < score:  # set new highscore
-                highscore = score
-            if highestkills < kills:
-                highestkills = kills
             draw_text(screen, f"Highscore: {highscore}s", 0, 400, 100, center=True)
             draw_text(screen, f"Score: {score}s", 0, 500, 100, center=True)
             draw_text(
@@ -1104,6 +1127,21 @@ def victory(camera, map_renderer, robot_renderer, robots, player):
     sounds = Sounds()
     sounds.stop_all_sounds()
     sounds.play_sound("win_sound")
+
+    start_time = pygame.time.get_ticks()
+    while pygame.time.get_ticks() - start_time <= 4000:
+        if player:
+            camera.follow_dynamic_center(robots, player)
+        camera.surface.fill((0, 0, 0))
+        map_renderer.draw_map(camera)
+
+        for robot in robots:
+            robot_renderer.draw(robot, camera, 0)
+
+        draw_text(screen, "VICTORY", 0, 200, 100, center=True)
+
+        pygame.display.flip()
+        clock.tick(60)
 
     running = True
     while running:
