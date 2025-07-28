@@ -657,7 +657,7 @@ def level_selection():
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
-        selected=current_map == "test-level.txt" and random_map == False,
+        selected=current_map == "test-level.txt" and not random_map,
         selected_color=(0, 100, 150),
     )
 
@@ -668,7 +668,7 @@ def level_selection():
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
-        selected=current_map == "test-level2.txt" and random_map == False,
+        selected=current_map == "test-level2.txt" and not random_map,
         selected_color=(0, 100, 150),
     )
 
@@ -679,7 +679,7 @@ def level_selection():
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
-        selected=current_map == "lavariver.txt" and random_map == False,
+        selected=current_map == "lavariver.txt" and not random_map,
         selected_color=(0, 100, 150),
     )
 
@@ -690,7 +690,7 @@ def level_selection():
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
-        selected=current_map == "fourelements.txt" and random_map == False,
+        selected=current_map == "fourelements.txt" and not random_map,
         selected_color=(0, 100, 150),
     )
 
@@ -701,7 +701,7 @@ def level_selection():
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
-        selected=random_map == True,
+        selected=random_map,
         selected_color=(0, 100, 150),
     )
 
