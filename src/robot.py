@@ -28,7 +28,6 @@ class Robot:
         y: int,
         hitbox_radius: int,
         direction: float,
-        color: tuple[int, int, int],
         speed: float,
         speed_alpha: float,
         is_player: bool,
@@ -39,7 +38,6 @@ class Robot:
         self.y = y  # y-coordinate of center
         self.hitbox_radius = hitbox_radius  # radius of the hitbox
         self.alpha = direction % 360  # direction of the robot in degree
-        self.color = color  # color of the robot
         if robot_type == "Tank":
             self.v = speed * 0.8  # current acceleration for moving
             self.v_alpha = speed_alpha * 0.6  # current acceleration for turning
