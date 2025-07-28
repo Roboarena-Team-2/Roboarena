@@ -47,6 +47,7 @@ print(f"TILE_SIZE: {config.TILE_SIZE}")
 # Player and game variables
 type: str = random.choice(["Tank", "Spider"])
 language: str = "English"
+config.update_language("English")
 volume: int = 100
 texts = config.texts
 difficulty: str = "medium"
@@ -944,13 +945,13 @@ def instructions_menu():
 
         for j, icon in enumerate([icon_fire, icon_health, icon_power, icon_shield]):
             if (
-                instructions_top + (29 + 2 * j) * 35 - scrollheight >= instructions_top
+                instructions_top + (31 + 2 * j) * 35 - scrollheight >= instructions_top
             ) and (
-                (29 + 2 * j) * 35 + instructions_top - scrollheight
+                (31 + 2 * j) * 35 + instructions_top - scrollheight
                 < instructions_bottom
             ):
                 screen.blit(
-                    icon, (220, instructions_top + (29 + 2 * j) * 35 - scrollheight)
+                    icon, (220, instructions_top + (31 + 2 * j) * 35 - scrollheight)
                 )
 
         for event in pygame.event.get():
