@@ -512,7 +512,7 @@ def difficulty_selection():
     )
 
     survival1_button = Button(
-        rect=(screen.get_width() // 2 - 225, 400, 200, 50),
+        rect=(screen.get_width() // 2 - 225, 450, 200, 50),
         text="Survival1",
         font=font,
         bg_color=(20, 130, 200),
@@ -521,7 +521,7 @@ def difficulty_selection():
     )
 
     survival2_button = Button(
-        rect=(screen.get_width() // 2 + 25, 400, 200, 50),
+        rect=(screen.get_width() // 2 + 25, 450, 200, 50),
         text="Survival2",
         font=font,
         bg_color=(20, 130, 200),
@@ -545,6 +545,8 @@ def difficulty_selection():
         draw_text(screen, texts["difficulty_text"], 0, 150, 80, center=True)
 
         draw_text(screen, texts["normal_mode_text"], 0, 250, 50, center=True)
+
+        draw_text(screen, texts["survival_mode_text"], 0, 400, 50, center=True)
 
         global difficulty
 
@@ -942,13 +944,13 @@ def instructions_menu():
 
         for j, icon in enumerate([icon_fire, icon_health, icon_power, icon_shield]):
             if (
-                instructions_top + (27 + 2 * j) * 35 - scrollheight >= instructions_top
+                instructions_top + (29 + 2 * j) * 35 - scrollheight >= instructions_top
             ) and (
-                (27 + 2 * j) * 35 + instructions_top - scrollheight
+                (29 + 2 * j) * 35 + instructions_top - scrollheight
                 < instructions_bottom
             ):
                 screen.blit(
-                    icon, (220, instructions_top + (27 + 2 * j) * 35 - scrollheight)
+                    icon, (220, instructions_top + (29 + 2 * j) * 35 - scrollheight)
                 )
 
         for event in pygame.event.get():
