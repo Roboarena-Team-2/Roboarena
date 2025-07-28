@@ -1,5 +1,3 @@
-from random import randint
-
 import pygame
 import sys
 import config
@@ -708,7 +706,7 @@ def level_selection():
                 current_map = "fourelements.txt"
             if random_button.is_clicked(event):
                 random_map = True
-                seed = randint(0, 999999)
+                seed = random.randint(0, 999999)
             if back_button.is_clicked(event):
                 return
 
