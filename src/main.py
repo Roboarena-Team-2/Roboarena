@@ -1,5 +1,3 @@
-from random import randint
-
 import pygame
 import sys
 import config
@@ -82,7 +80,6 @@ def difficulty_easy(camera, game_map) -> list[Robot]:
                     spawn_positions[i][1],
                     robot_size,
                     float(random.randint(0, 359)),
-                    (255, 255, 255),
                     4 * camera.zoom,
                     5 * camera.zoom,
                     True,
@@ -97,7 +94,6 @@ def difficulty_easy(camera, game_map) -> list[Robot]:
                     spawn_positions[i][1],
                     robot_size,
                     float(random.randint(0, 359)),
-                    (255, 255, 255),
                     speed,
                     turnspeed,
                     False,
@@ -126,7 +122,6 @@ def difficulty_medium(camera, game_map) -> list[Robot]:
                     spawn_positions[i][1],
                     robot_size,
                     float(random.randint(0, 359)),
-                    (255, 255, 255),
                     4.5 * camera.zoom,
                     5.5 * camera.zoom,
                     True,
@@ -141,7 +136,6 @@ def difficulty_medium(camera, game_map) -> list[Robot]:
                     spawn_positions[i][1],
                     robot_size,
                     float(random.randint(0, 359)),
-                    (255, 255, 255),
                     speed,
                     turnspeed,
                     False,
@@ -170,7 +164,6 @@ def difficulty_hard(camera, game_map) -> list[Robot]:
                     spawn_positions[i][1],
                     robot_size,
                     float(random.randint(0, 359)),
-                    (255, 255, 255),
                     speed,
                     turnspeed,
                     True,
@@ -185,7 +178,6 @@ def difficulty_hard(camera, game_map) -> list[Robot]:
                     spawn_positions[i][1],
                     robot_size,
                     float(random.randint(0, 359)),
-                    (255, 255, 255),
                     speed,
                     turnspeed,
                     False,
@@ -214,7 +206,6 @@ def difficulty_survival_faster(camera, game_map) -> list[Robot]:
                     spawn_positions[i][1],
                     robot_size,
                     float(random.randint(0, 359)),
-                    (255, 255, 255),
                     4 * camera.zoom,
                     5 * camera.zoom,
                     True,
@@ -229,7 +220,6 @@ def difficulty_survival_faster(camera, game_map) -> list[Robot]:
                     spawn_positions[i][1],
                     robot_size,
                     float(random.randint(0, 359)),
-                    (255, 255, 255),
                     speed,
                     turnspeed,
                     False,
@@ -258,7 +248,6 @@ def difficulty_survival_more(camera, game_map) -> list[Robot]:
                     spawn_positions[i][1],
                     robot_size,
                     float(random.randint(0, 359)),
-                    (255, 255, 255),
                     4 * camera.zoom,
                     5 * camera.zoom,
                     True,
@@ -273,7 +262,6 @@ def difficulty_survival_more(camera, game_map) -> list[Robot]:
                     spawn_positions[i][1],
                     robot_size,
                     float(random.randint(0, 359)),
-                    (255, 255, 255),
                     speed,
                     turnspeed,
                     False,
@@ -718,7 +706,7 @@ def level_selection():
                 current_map = "fourelements.txt"
             if random_button.is_clicked(event):
                 random_map = True
-                seed = randint(0, 999999)
+                seed = random.randint(0, 999999)
             if back_button.is_clicked(event):
                 return
 
@@ -1004,7 +992,6 @@ def game_loop(map_file: str | None = None):
                         -1000,
                         player.hitbox_radius,
                         float(random.randint(0, 359)),
-                        (255, 255, 255),
                         2,
                         2,
                         False,
@@ -1023,7 +1010,6 @@ def game_loop(map_file: str | None = None):
                         -1000,
                         player.hitbox_radius,
                         float(random.randint(0, 359)),
-                        (255, 255, 255),
                         2,
                         2,
                         False,
@@ -1040,7 +1026,6 @@ def game_loop(map_file: str | None = None):
                         -1000,
                         player.hitbox_radius,
                         float(random.randint(0, 359)),
-                        (255, 255, 255),
                         enemy_base_speed + increasing_speed_variable,
                         enemy_base_speed + increasing_speed_variable,
                         False,
@@ -1069,6 +1054,35 @@ def gameover(camera, map_renderer, robot_renderer, robots, player, score=-1, kil
     sounds.stop_all_sounds()
     sounds.play_sound("gameover_sound")
 
+    start_time = pygame.time.get_ticks()
+    while pygame.time.get_ticks() - start_time <= 6000:
+        if player:
+            camera.follow_dynamic_center(robots, player)
+        camera.surface.fill((0, 0, 0))
+        map_renderer.draw_map(camera)
+
+        for robot in robots:
+            robot_renderer.draw(robot, camera, 0)
+
+        draw_text(screen, "GAME OVER", 0, 200, 100, center=True)
+
+        if difficulty == "survival1" or difficulty == "survival2":
+            global highscore
+            global highestkills
+            if highscore < score:  # set new highscore
+                highscore = score
+            if highestkills < kills:
+                highestkills = kills
+            draw_text(screen, f"Highscore: {highscore}s", 0, 330, 70, center=True)
+            draw_text(screen, f"Score: {score}s", 0, 400, 70, center=True)
+            draw_text(
+                screen, f"Highest Kills: {highestkills}", 0, 470, 70, center=True
+            )
+            draw_text(screen, f"Kills: {kills}", 0, 540, 70, center=True)
+
+        pygame.display.flip()
+        clock.tick(60)
+
     running = True
     while running:
         if player:
@@ -1091,12 +1105,6 @@ def gameover(camera, map_renderer, robot_renderer, robots, player, score=-1, kil
         )
 
         if difficulty == "survival1" or difficulty == "survival2":
-            global highscore
-            global highestkills
-            if highscore < score:  # set new highscore
-                highscore = score
-            if highestkills < kills:
-                highestkills = kills
             draw_text(screen, f"Highscore: {highscore}s", 0, 330, 70, center=True)
             draw_text(screen, f"Score: {score}s", 0, 400, 70, center=True)
             draw_text(screen, f"Highest Kills: {highestkills}", 0, 470, 70, center=True)
@@ -1121,6 +1129,21 @@ def victory(camera, map_renderer, robot_renderer, robots, player):
     sounds = Sounds()
     sounds.stop_all_sounds()
     sounds.play_sound("win_sound")
+
+    start_time = pygame.time.get_ticks()
+    while pygame.time.get_ticks() - start_time <= 4000:
+        if player:
+            camera.follow_dynamic_center(robots, player)
+        camera.surface.fill((0, 0, 0))
+        map_renderer.draw_map(camera)
+
+        for robot in robots:
+            robot_renderer.draw(robot, camera, 0)
+
+        draw_text(screen, "VICTORY", 0, 200, 100, center=True)
+
+        pygame.display.flip()
+        clock.tick(60)
 
     running = True
     while running:
