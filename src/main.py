@@ -1022,7 +1022,7 @@ def game_loop(map_file: str | None = None):
         if difficulty == "survival1":  # more
             if ticks - start_tick > robot_tick:
                 robot_tick += robot_tick_increaser
-                if robot_tick > 3500:
+                if robot_tick_increaser > 3500:
                     robot_tick_increaser -= 500
                 robots.append(
                     Robot(
@@ -1040,7 +1040,7 @@ def game_loop(map_file: str | None = None):
                 robots[len(robots) - 1].get_spawn_position(game_map, robots)
             if len(robots) < 2:
                 robot_tick = ticks - start_tick + robot_tick_increaser
-                if robot_tick > 3500:
+                if robot_tick_increaser > 3500:
                     robot_tick_increaser -= 500
                 robots.append(
                     Robot(
