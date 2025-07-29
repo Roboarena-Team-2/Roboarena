@@ -2,7 +2,17 @@ import pygame
 
 
 class Button:
-    def __init__(self, rect, text, font, bg_color, text_color, hover_color=None):
+    def __init__(
+        self,
+        rect,
+        text,
+        font,
+        bg_color,
+        text_color,
+        hover_color=None,
+        selected=False,
+        selected_color=None,
+    ):
         """
         rect: pygame.Rect oder Tupel (x, y, width, height)
         text: Button-Beschriftung
@@ -17,13 +27,17 @@ class Button:
         self.bg_color = bg_color
         self.text_color = text_color
         self.hover_color = hover_color if hover_color else bg_color
+        self.selected = selected
+        self.selected_color = selected_color if selected_color else bg_color
 
         self.text_surface = self.font.render(self.text, True, self.text_color)
         self.text_rect = self.text_surface.get_rect(center=self.rect.center)
 
     def draw(self, screen):
         mouse_pos = pygame.mouse.get_pos()
-        if self.rect.collidepoint(mouse_pos):
+        if self.selected:
+            color = self.selected_color
+        elif self.rect.collidepoint(mouse_pos):
             color = self.hover_color
         else:
             color = self.bg_color

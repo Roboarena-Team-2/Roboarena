@@ -473,6 +473,8 @@ def difficulty_selection():
     clock = pygame.time.Clock()
     font = pygame.font.SysFont(None, 40)
 
+    global difficulty
+
     easy_button = Button(
         rect=(screen.get_width() // 2 - 425, 300, 250, 50),
         text=texts["easy_text"],
@@ -480,6 +482,8 @@ def difficulty_selection():
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
+        selected=difficulty == "easy",
+        selected_color=(0, 100, 150),
     )
 
     medium_button = Button(
@@ -489,6 +493,8 @@ def difficulty_selection():
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
+        selected=difficulty == "medium",
+        selected_color=(0, 100, 150),
     )
 
     hard_button = Button(
@@ -498,6 +504,8 @@ def difficulty_selection():
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
+        selected=difficulty == "hard",
+        selected_color=(0, 100, 150),
     )
 
     survival1_button = Button(
@@ -507,6 +515,8 @@ def difficulty_selection():
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
+        selected=difficulty == "survival1",
+        selected_color=(0, 100, 150),
     )
 
     survival2_button = Button(
@@ -516,6 +526,8 @@ def difficulty_selection():
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
+        selected=difficulty == "survival2",
+        selected_color=(0, 100, 150),
     )
 
     back_button = Button(
@@ -537,8 +549,6 @@ def difficulty_selection():
 
         draw_text(screen, texts["survival_mode_text"], 0, 400, 50, center=True)
 
-        global difficulty
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -546,14 +556,19 @@ def difficulty_selection():
 
             if easy_button.is_clicked(event):
                 difficulty = "easy"
+                return options()  # noqa: F821
             if medium_button.is_clicked(event):
                 difficulty = "medium"
+                return options()  # noqa: F821
             if hard_button.is_clicked(event):
                 difficulty = "hard"
+                return options()  # noqa: F821
             if survival1_button.is_clicked(event):
                 difficulty = "survival1"
+                return options()  # noqa: F821
             if survival2_button.is_clicked(event):
                 difficulty = "survival2"
+                return options()  # noqa: F821
             if back_button.is_clicked(event):
                 return
 
@@ -589,6 +604,8 @@ def class_selection():
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
+        selected=type == "Tank",
+        selected_color=(0, 100, 150),
     )
 
     spider_button = Button(
@@ -598,6 +615,8 @@ def class_selection():
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
+        selected=type == "Spider",
+        selected_color=(0, 100, 150),
     )
 
     back_button = Button(
@@ -623,8 +642,10 @@ def class_selection():
                 game_loop()
             if tank_button.is_clicked(event):
                 type = "Tank"
+                return class_selection()
             if spider_button.is_clicked(event):
                 type = "Spider"
+                return class_selection()
             if back_button.is_clicked(event):
                 return
 
@@ -643,7 +664,6 @@ def level_selection():
     global random_map
     global current_map
     global seed
-    random_map = False  # reset this variable each time level selection is called
 
     start_button = Button(
         rect=(screen.get_width() // 2 - 125, 450, 250, 50),
@@ -661,6 +681,8 @@ def level_selection():
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
+        selected=current_map == "test-level.txt" and not random_map,
+        selected_color=(0, 100, 150),
     )
 
     level2_button = Button(
@@ -670,6 +692,8 @@ def level_selection():
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
+        selected=current_map == "test-level2.txt" and not random_map,
+        selected_color=(0, 100, 150),
     )
 
     level3_button = Button(
@@ -679,6 +703,8 @@ def level_selection():
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
+        selected=current_map == "lavariver.txt" and not random_map,
+        selected_color=(0, 100, 150),
     )
 
     level4_button = Button(
@@ -688,6 +714,8 @@ def level_selection():
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
+        selected=current_map == "fourelements.txt" and not random_map,
+        selected_color=(0, 100, 150),
     )
 
     random_button = Button(
@@ -697,6 +725,8 @@ def level_selection():
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
+        selected=random_map,
+        selected_color=(0, 100, 150),
     )
 
     back_button = Button(
@@ -722,15 +752,24 @@ def level_selection():
                 game_loop(current_map)
             if level1_button.is_clicked(event):
                 current_map = "test-level.txt"
+                random_map = False
+                return level_selection()
             if level2_button.is_clicked(event):
                 current_map = "test-level2.txt"
+                random_map = False
+                return level_selection()
             if level3_button.is_clicked(event):
                 current_map = "lavariver.txt"
+                random_map = False
+                return level_selection()
             if level4_button.is_clicked(event):
                 current_map = "fourelements.txt"
+                random_map = False
+                return level_selection()
             if random_button.is_clicked(event):
                 random_map = True
                 seed = random.randint(0, 999999)
+                return level_selection()
             if back_button.is_clicked(event):
                 return
 
@@ -1192,9 +1231,27 @@ def game_loop(map_file: str | None = None):
 
         # Robots appearing for survival mode
         if difficulty == "survival1":  # more
-            if ticks - start_tick > robot_tick:
-                if robot_tick > 3500:
-                    robot_tick += robot_tick_increaser
+            if ticks - start_tick > robot_tick:  # time for new robot
+                robot_tick += robot_tick_increaser
+                if robot_tick_increaser > 3500:
+                    robot_tick_increaser -= 500
+                robots.append(
+                    Robot(
+                        camera.surface,
+                        -1000,
+                        -1000,
+                        player.hitbox_radius,
+                        float(random.randint(0, 359)),
+                        2,
+                        2,
+                        False,
+                        random.choice(("Spider", "Tank")),
+                    )
+                )
+                robots[len(robots) - 1].get_spawn_position(game_map, robots)
+            if len(robots) < 2:  # currently no alive enemy
+                robot_tick = ticks - start_tick + robot_tick_increaser
+                if robot_tick_increaser > 3500:
                     robot_tick_increaser -= 500
                 robots.append(
                     Robot(
@@ -1266,12 +1323,10 @@ def gameover(camera, map_renderer, robot_renderer, robots, player, score=-1, kil
                 highscore = score
             if highestkills < kills:
                 highestkills = kills
-            draw_text(screen, f"Highscore: {highscore}s", 0, 400, 100, center=True)
-            draw_text(screen, f"Score: {score}s", 0, 500, 100, center=True)
-            draw_text(
-                screen, f"Highest Kills: {highestkills}", 0, 600, 100, center=True
-            )
-            draw_text(screen, f"Kills: {kills}", 0, 700, 100, center=True)
+            draw_text(screen, f"Highscore: {highscore}s", 0, 330, 70, center=True)
+            draw_text(screen, f"Score: {score}s", 0, 400, 70, center=True)
+            draw_text(screen, f"Highest Kills: {highestkills}", 0, 470, 70, center=True)
+            draw_text(screen, f"Kills: {kills}", 0, 540, 70, center=True)
 
         pygame.display.flip()
         clock.tick(60)
@@ -1292,12 +1347,10 @@ def gameover(camera, map_renderer, robot_renderer, robots, player, score=-1, kil
             draw_text(screen, line, 0, 300 + i * 55, 50, center=True)
 
         if difficulty == "survival1" or difficulty == "survival2":
-            draw_text(screen, f"Highscore: {highscore}s", 0, 400, 100, center=True)
-            draw_text(screen, f"Score: {score}s", 0, 500, 100, center=True)
-            draw_text(
-                screen, f"Highest Kills: {highestkills}", 0, 600, 100, center=True
-            )
-            draw_text(screen, f"Kills: {kills}", 0, 700, 100, center=True)
+            draw_text(screen, f"Highscore: {highscore}s", 0, 330, 70, center=True)
+            draw_text(screen, f"Score: {score}s", 0, 400, 70, center=True)
+            draw_text(screen, f"Highest Kills: {highestkills}", 0, 470, 70, center=True)
+            draw_text(screen, f"Kills: {kills}", 0, 540, 70, center=True)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
