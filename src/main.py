@@ -1020,7 +1020,7 @@ def game_loop(map_file: str | None = None):
 
         # Robots appearing for survival mode
         if difficulty == "survival1":  # more
-            if ticks - start_tick > robot_tick:
+            if ticks - start_tick > robot_tick:  # time for new robot
                 robot_tick += robot_tick_increaser
                 if robot_tick_increaser > 3500:
                     robot_tick_increaser -= 500
@@ -1038,7 +1038,7 @@ def game_loop(map_file: str | None = None):
                     )
                 )
                 robots[len(robots) - 1].get_spawn_position(game_map, robots)
-            if len(robots) < 2:
+            if len(robots) < 2:  # currently no alive enemy
                 robot_tick = ticks - start_tick + robot_tick_increaser
                 if robot_tick_increaser > 3500:
                     robot_tick_increaser -= 500
