@@ -532,19 +532,19 @@ def options():
 
             if easy_button.is_clicked(event):
                 difficulty = "easy"
-                return options()
+                return options()  # noqa: F821
             if medium_button.is_clicked(event):
                 difficulty = "medium"
-                return options()
+                return options()  # noqa: F821
             if hard_button.is_clicked(event):
                 difficulty = "hard"
-                return options()
+                return options()  # noqa: F821
             if survival1_button.is_clicked(event):
                 difficulty = "survival1"
-                return options()
+                return options()  # noqa: F821
             if survival2_button.is_clicked(event):
                 difficulty = "survival2"
-                return options()
+                return options()  # noqa: F821
             if back_button.is_clicked(event):
                 return
 
