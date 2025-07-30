@@ -300,17 +300,8 @@ def main_menu():
         hover_color=(40, 160, 255),
     )
 
-    difficulty_button = Button(
-        rect=(screen.get_width() // 2 - 125, 390, 250, 50),
-        text=texts["difficulty_text"],
-        font=font,
-        bg_color=(20, 130, 200),
-        text_color=(255, 255, 255),
-        hover_color=(40, 160, 255),
-    )
-
     instructions_button = Button(
-        rect=(screen.get_width() // 2 - 125, 460, 250, 50),
+        rect=(screen.get_width() // 2 - 125, 390, 250, 50),
         text=texts["instructions_text"],
         font=font,
         bg_color=(20, 130, 200),
@@ -328,7 +319,7 @@ def main_menu():
     )
 
     settings_button = Button(
-        rect=(screen.get_width() // 2 - 125, 530, 250, 50),
+        rect=(screen.get_width() // 2 - 125, 460, 250, 50),
         text=texts["settings_text"],
         font=font,
         bg_color=(20, 130, 200),
@@ -337,7 +328,7 @@ def main_menu():
     )
 
     quit_button = Button(
-        rect=(screen.get_width() // 2 - 125, 600, 250, 50),
+        rect=(screen.get_width() // 2 - 125, 530, 250, 50),
         text=texts["quit_text"],
         font=font,
         bg_color=(200, 50, 50),
@@ -360,8 +351,6 @@ def main_menu():
                 sys.exit()
 
             if start_button.is_clicked(event):
-                difficulty_selection()
-            if difficulty_button.is_clicked(event):
                 difficulty_selection()
             if instructions_button.is_clicked(event):
                 instructions_menu()
@@ -391,7 +380,6 @@ def main_menu():
                 sys.exit()
 
         start_button.draw(screen)
-        difficulty_button.draw(screen)
         instructions_button.draw(screen)
         quickstart_button.draw(screen)
         settings_button.draw(screen)
