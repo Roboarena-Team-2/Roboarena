@@ -1376,7 +1376,7 @@ def gameover(camera, map_renderer, robot_renderer, robots, player, score=-1, kil
         for robot in robots:
             robot_renderer.draw(robot, camera, 0)
 
-        draw_text(screen, "GAME OVER", 0, 200, 100, center=True)
+        draw_text(screen, texts["gameover_text"], 0, 200, 100, center=True)
 
         if difficulty == "survival1" or difficulty == "survival2":
             global highscore
@@ -1385,10 +1385,10 @@ def gameover(camera, map_renderer, robot_renderer, robots, player, score=-1, kil
                 highscore = score
             if highestkills < kills:
                 highestkills = kills
-            draw_text(screen, f"Highscore: {highscore}s", 0, 330, 70, center=True)
-            draw_text(screen, f"Score: {score}s", 0, 400, 70, center=True)
-            draw_text(screen, f"Highest Kills: {highestkills}", 0, 470, 70, center=True)
-            draw_text(screen, f"Kills: {kills}", 0, 540, 70, center=True)
+            draw_text(screen, f"Highscore: {highscore}s", 0, 380, 70, center=True)
+            draw_text(screen, f"Score: {score}s", 0, 450, 70, center=True)
+            draw_text(screen, f"Highest Kills: {highestkills}", 0, 520, 70, center=True)
+            draw_text(screen, f"Kills: {kills}", 0, 590, 70, center=True)
 
         pygame.display.flip()
         clock.tick(60)
@@ -1406,13 +1406,13 @@ def gameover(camera, map_renderer, robot_renderer, robots, player, score=-1, kil
         draw_text(screen, texts["gameover_text"], 0, 200, 100, center=True)
 
         for i, line in enumerate(texts["endgame_text"]):
-            draw_text(screen, line, 0, 300 + i * 55, 50, center=True)
+            draw_text(screen, line, 0, 250 + i * 35, 50, center=True)
 
         if difficulty == "survival1" or difficulty == "survival2":
-            draw_text(screen, f"Highscore: {highscore}s", 0, 330, 70, center=True)
-            draw_text(screen, f"Score: {score}s", 0, 400, 70, center=True)
-            draw_text(screen, f"Highest Kills: {highestkills}", 0, 470, 70, center=True)
-            draw_text(screen, f"Kills: {kills}", 0, 540, 70, center=True)
+            draw_text(screen, f"Highscore: {highscore}s", 0, 380, 70, center=True)
+            draw_text(screen, f"Score: {score}s", 0, 450, 70, center=True)
+            draw_text(screen, f"Highest Kills: {highestkills}", 0, 520, 70, center=True)
+            draw_text(screen, f"Kills: {kills}", 0, 590, 70, center=True)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
