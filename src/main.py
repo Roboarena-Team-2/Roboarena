@@ -57,6 +57,10 @@ current_map = "test-level.txt"
 random_map = False
 seed = 1
 
+#Manu variables
+font = pygame.font.SysFont(None, 40)
+tooltip_font = pygame.font.SysFont(None, 25)
+
 
 def draw_text(
     surface, text, x, y, font_size, color=(255, 255, 255), font_name=None, center=False
@@ -282,7 +286,7 @@ def difficulty_survival_more(camera, game_map) -> list[Robot]:
 
 def main_menu():
     clock = pygame.time.Clock()
-    font = pygame.font.SysFont(None, 40)
+    global font
 
     start_button = Button(
         rect=(screen.get_width() // 2 - 125, 250, 250, 50),
@@ -353,7 +357,7 @@ def main_menu():
                 sys.exit()
 
             if start_button.is_clicked(event):
-                class_selection()
+                difficulty_selection()
             if difficulty_button.is_clicked(event):
                 difficulty_selection()
             if instructions_button.is_clicked(event):
@@ -381,7 +385,7 @@ def main_menu():
 
 def pause_menu():
     clock = pygame.time.Clock()
-    font = pygame.font.SysFont(None, 40)
+    global font
 
     continue_button = Button(
         rect=(screen.get_width() // 2 - 125, 230, 250, 50),
@@ -471,7 +475,9 @@ def pause_menu():
 
 def difficulty_selection():
     clock = pygame.time.Clock()
-    font = pygame.font.SysFont(None, 40)
+    global font
+    global tooltip_font
+
 
     global difficulty
 
@@ -517,6 +523,8 @@ def difficulty_selection():
         hover_color=(40, 160, 255),
         selected=difficulty == "survival1",
         selected_color=(0, 100, 150),
+        tooltip_text="More and more enemies\nwill spawn as time goes on",
+        tooltip_font=tooltip_font,
     )
 
     survival2_button = Button(
@@ -528,10 +536,21 @@ def difficulty_selection():
         hover_color=(40, 160, 255),
         selected=difficulty == "survival2",
         selected_color=(0, 100, 150),
+        tooltip_text="There will always be 2 enemies\nbut their speed increases upon death",
+        tooltip_font=tooltip_font,
+    )
+
+    next_button = Button(
+        rect=(screen.get_width() // 2 - 125, 600, 250, 50),
+        text="next",
+        font=font,
+        bg_color=(20, 130, 200),
+        text_color=(255, 255, 255),
+        hover_color=(40, 160, 255),
     )
 
     back_button = Button(
-        rect=(screen.get_width() // 2 - 125, 600, 250, 50),
+        rect=(screen.get_width() // 2 - 125, 750, 250, 50),
         text=texts["back_text"],
         font=font,
         bg_color=(200, 50, 50),
@@ -556,19 +575,16 @@ def difficulty_selection():
 
             if easy_button.is_clicked(event):
                 difficulty = "easy"
-                return options()  # noqa: F821
             if medium_button.is_clicked(event):
                 difficulty = "medium"
-                return options()  # noqa: F821
             if hard_button.is_clicked(event):
                 difficulty = "hard"
-                return options()  # noqa: F821
             if survival1_button.is_clicked(event):
                 difficulty = "survival1"
-                return options()  # noqa: F821
             if survival2_button.is_clicked(event):
                 difficulty = "survival2"
-                return options()  # noqa: F821
+            if next_button.is_clicked(event):
+                class_selection()
             if back_button.is_clicked(event):
                 return
 
@@ -577,6 +593,7 @@ def difficulty_selection():
         hard_button.draw(screen)
         survival1_button.draw(screen)
         survival2_button.draw(screen)
+        next_button.draw(screen)
         back_button.draw(screen)
 
         pygame.display.flip()
@@ -585,12 +602,13 @@ def difficulty_selection():
 
 def class_selection():
     clock = pygame.time.Clock()
-    font = pygame.font.SysFont(None, 40)
+    global font
     global type
+    global tooltip_font
 
-    start_button = Button(
+    next_button = Button(
         rect=(screen.get_width() // 2 - 125, 400, 250, 50),
-        text=texts["start_text"],
+        text="next",
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -606,6 +624,8 @@ def class_selection():
         hover_color=(40, 160, 255),
         selected=type == "Tank",
         selected_color=(0, 100, 150),
+        tooltip_text="Moves like a tank\ntakes less damage from shots\nlimited firing radius",
+        tooltip_font=tooltip_font,
     )
 
     spider_button = Button(
@@ -617,6 +637,8 @@ def class_selection():
         hover_color=(40, 160, 255),
         selected=type == "Spider",
         selected_color=(0, 100, 150),
+        tooltip_text="can move in all directions\nand shoot in every direction",
+        tooltip_font=tooltip_font,
     )
 
     back_button = Button(
@@ -638,8 +660,8 @@ def class_selection():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if start_button.is_clicked(event):
-                game_loop()
+            if next_button.is_clicked(event):
+                level_selection()
             if tank_button.is_clicked(event):
                 type = "Tank"
                 return class_selection()
@@ -649,7 +671,7 @@ def class_selection():
             if back_button.is_clicked(event):
                 return
 
-        start_button.draw(screen)
+        next_button.draw(screen)
         spider_button.draw(screen)
         tank_button.draw(screen)
         back_button.draw(screen)
@@ -660,10 +682,11 @@ def class_selection():
 
 def level_selection():
     clock = pygame.time.Clock()
-    font = pygame.font.SysFont(None, 40)
+    global font
     global random_map
     global current_map
     global seed
+    global tooltip_font
 
     start_button = Button(
         rect=(screen.get_width() // 2 - 125, 450, 250, 50),
@@ -727,6 +750,8 @@ def level_selection():
         hover_color=(40, 160, 255),
         selected=random_map,
         selected_color=(0, 100, 150),
+        tooltip_text="a randomly generated map",
+        tooltip_font=tooltip_font,
     )
 
     back_button = Button(
@@ -789,7 +814,7 @@ def settings():
     global volume
     global texts
     clock = pygame.time.Clock()
-    font = pygame.font.SysFont(None, 40)
+    global font
 
     volume_slider = Slider(
         rect=(screen.get_width() // 2 - 100, 290, 200, 10),
@@ -898,7 +923,7 @@ def settings():
 
 
 def instructions_menu():
-    font = pygame.font.SysFont(None, 40)
+    global font
 
     instructions_scrollbar = Scrollbar(
         len(texts["instructions"]) * 45 - 600,

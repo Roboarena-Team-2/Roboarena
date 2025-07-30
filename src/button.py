@@ -12,6 +12,10 @@ class Button:
         hover_color=None,
         selected=False,
         selected_color=None,
+        tooltip_text=None,  # <-- NEU
+        tooltip_font=None,  # <-- NEU
+        tooltip_bg=(50, 50, 50),  # Standard-Hintergrund
+        tooltip_text_color=(255, 255, 255)
     ):
         """
         rect: pygame.Rect oder Tupel (x, y, width, height)
@@ -33,6 +37,11 @@ class Button:
         self.text_surface = self.font.render(self.text, True, self.text_color)
         self.text_rect = self.text_surface.get_rect(center=self.rect.center)
 
+        self.tooltip_text = tooltip_text
+        self.tooltip_font = tooltip_font if tooltip_font else font
+        self.tooltip_bg = tooltip_bg
+        self.tooltip_text_color = tooltip_text_color
+
     def draw(self, screen):
         mouse_pos = pygame.mouse.get_pos()
         if self.selected:
@@ -41,8 +50,36 @@ class Button:
             color = self.hover_color
         else:
             color = self.bg_color
+
         pygame.draw.rect(screen, color, self.rect)
         screen.blit(self.text_surface, self.text_rect)
+
+        if self.tooltip_text and self.rect.collidepoint(mouse_pos):
+            self.draw_tooltip(screen)
+
+    def draw_tooltip(self, screen):
+        lines = self.tooltip_text.split('\n')
+        padding = 6
+        line_surfaces = [self.tooltip_font.render(line, True, self.tooltip_text_color) for line in lines]
+        line_heights = [surf.get_height() for surf in line_surfaces]
+        max_width = max(surf.get_width() for surf in line_surfaces)
+
+        # Tooltip-Größe berechnen
+        total_height = sum(line_heights) + padding * 2 + (len(lines) - 1) * 2  # zusätzlicher Zeilenabstand
+
+        tooltip_rect = pygame.Rect(0, 0, max_width + padding * 2, total_height)
+        tooltip_rect.midbottom = self.rect.midtop
+        tooltip_rect.y -= 10  # Abstand über dem Button
+
+        # Hintergrund zeichnen
+        pygame.draw.rect(screen, self.tooltip_bg, tooltip_rect, border_radius=4)
+
+        # Zeilen zeichnen
+        y = tooltip_rect.y + padding
+        for surf in line_surfaces:
+            x = tooltip_rect.x + (tooltip_rect.width - surf.get_width()) // 2
+            screen.blit(surf, (x, y))
+            y += surf.get_height() + 2  # Zeilenabstand
 
     def is_clicked(self, event):
         """
