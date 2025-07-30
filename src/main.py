@@ -551,7 +551,7 @@ def difficulty_selection():
     )
 
     next_button = Button(
-        rect=(screen.get_width() // 2 + 25, 600, 250, 50),
+        rect=(screen.get_width() // 2 + 25, 570, 250, 50),
         text="next",
         font=font,
         bg_color=(20, 130, 200),
@@ -562,7 +562,7 @@ def difficulty_selection():
     )
 
     start_button = Button(
-        rect=(screen.get_width() // 2 - 275, 600, 250, 50),
+        rect=(screen.get_width() // 2 - 275, 570, 250, 50),
         text=texts["start_text"],
         font=font,
         bg_color=(20, 130, 200),
@@ -573,7 +573,7 @@ def difficulty_selection():
     )
 
     back_button = Button(
-        rect=(screen.get_width() // 2 - 125, 750, 250, 50),
+        rect=(screen.get_width() // 2 - 125, 650, 250, 50),
         text=texts["back_text"],
         font=font,
         bg_color=(200, 50, 50),
