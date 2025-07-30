@@ -169,10 +169,15 @@ def update_language(language):
             "easy_tooltip": "2 Gegner",
             "medium_tooltip": "3 Gegner",
             "hard_tooltip": "4 Gegner",
-            "survival1_tooltip": "Es tauchen immer mehr\nund immer schneller Gegner auf",
-            "survival2_tooltip": "Es gibt immer 2 Gegner,\ndie mit jedem Tod schneller werden",
-            "tank_tooltip": "Bewegt sich wie ein Panzer\nbekommt weniger Schaden von Schüssen\nEingeschränktes Schussfeld",
-            "spider_tooltip": "Kann in alle Richtungen laufen\nKann sich in alle Richtungen drehen beim schießen",
+            "survival1_tooltip": "Es tauchen immer mehr\n"
+                                 "und immer schneller Gegner auf",
+            "survival2_tooltip": "Es gibt immer 2 Gegner,\n"
+                                 "die mit jedem Tod schneller werden",
+            "tank_tooltip": "Bewegt sich wie ein Panzer\n"
+                            "bekommt weniger Schaden von Schüssen\n"
+                            "Eingeschränktes Schussfeld",
+            "spider_tooltip": "Kann in alle Richtungen laufen\n"
+                              "Kann sich in alle Richtungen drehen beim schießen",
             "random_tooltip": "eine zufällig generierte map",
         }
     else:
@@ -304,10 +309,15 @@ def update_language(language):
             "easy_tooltip": "2 enemies",
             "medium_tooltip": "3 enemies",
             "hard_tooltip": "4 enemies",
-            "survival1_tooltip": "More and more enemies\nwill spawn as time goes on",
-            "survival2_tooltip": "There will always be 2 enemies\nbut their speed increases upon death",
-            "tank_tooltip": "Moves like a tank\ntakes less damage from shots\nlimited firing radius",
-            "spider_tooltip": "Can move in all directions\nand turn in every direction while shooting",
+            "survival1_tooltip": "More and more enemies\n"
+                                 "will spawn as time goes on",
+            "survival2_tooltip": "There will always be 2 enemies\n"
+                                 "but their speed increases upon death",
+            "tank_tooltip": "Moves like a tank\n"
+                            "takes less damage from shots\n"
+                            "limited firing radius",
+            "spider_tooltip": "Can move in all directions\n"
+                              "and turn in every direction while shooting",
             "random_tooltip": "a randomly generated map",
         }
     return texts
