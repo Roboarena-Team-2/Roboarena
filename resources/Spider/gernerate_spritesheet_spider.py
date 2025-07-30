@@ -29,5 +29,3 @@ for angle in range(0, 360, angle_step):
 
 # Save
 spritesheet.save(output_file)
-
-

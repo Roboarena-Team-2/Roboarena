@@ -1,6 +1,5 @@
 import pygame
 import math
-import os
 import config
 from robot import Robot
 
@@ -75,7 +74,9 @@ class RobotRenderer:
             self.animations["Tank"] = body_frames
 
         else:  # Spider
-            spritesheet_path = f"../resources/{robot_type}/{robot_type.lower()}_spritesheet.png"
+            spritesheet_path = (
+                f"../resources/{robot_type}/{robot_type.lower()}_spritesheet.png"
+            )
             spritesheet = pygame.image.load(spritesheet_path).convert_alpha()
             frame_width = spritesheet.get_width() // 4
             frame_height = spritesheet.get_height() // 36
@@ -164,12 +165,12 @@ class RobotRenderer:
         if robot.robot_type in self.animations:
             # Get current animation frame based on class type
             if robot.robot_type == "Spider":
-                direction_index = int(-robot.alpha  / 10) % 36
+                direction_index = int(-robot.alpha / 10) % 36
                 animation_index = self.frame_indices[robot] % 4
                 index = direction_index * 4 + animation_index
 
             elif robot.robot_type == "Tank":
-                direction_index = (int(-robot.alpha  / 10) - int(45)) % 36
+                direction_index = (int(-robot.alpha / 10) - int(45)) % 36
                 index = direction_index
 
                 # Target angle for Head
@@ -199,7 +200,9 @@ class RobotRenderer:
                 # Interpolate to the head angle
                 delta = (target_head_angle - robot.head_angle + 540) % 360 - 180
                 max_step = 10
-                robot.head_angle = (robot.head_angle + max(-max_step, min(max_step, delta))) % 360
+                robot.head_angle = (
+                    robot.head_angle + max(-max_step, min(max_step, delta))
+                ) % 360
                 head_angle = robot.head_angle
 
                 # Head-Index for animation
@@ -211,7 +214,9 @@ class RobotRenderer:
             if robot.robot_type == "Tank":
                 # draw body
                 body_frame = self.animations["Tank_body"][index]
-                body_scaled = pygame.transform.smoothscale(body_frame, (scaled_size, scaled_size))
+                body_scaled = pygame.transform.smoothscale(
+                    body_frame, (scaled_size, scaled_size)
+                )
                 body_rect = body_scaled.get_rect(center=camera.apply(robot.x, robot.y))
                 self.camera_surface.blit(body_scaled, body_rect)
 
@@ -219,7 +224,9 @@ class RobotRenderer:
                 head_frame = self.animations["Tank_head"][direction_index_Head]
                 head_scale = 0.8
                 head_size = int(scaled_size * head_scale)
-                head_scaled = pygame.transform.smoothscale(head_frame, (head_size, head_size))
+                head_scaled = pygame.transform.smoothscale(
+                    head_frame, (head_size, head_size)
+                )
 
                 # base angle
                 head_rad = math.radians(head_angle)
@@ -263,13 +270,17 @@ class RobotRenderer:
 
                     start = camera.apply(sx, sy)
                     end = camera.apply(ex, ey)
-                    laser_surf = pygame.Surface(self.camera_surface.get_size(), pygame.SRCALPHA)
+                    laser_surf = pygame.Surface(
+                        self.camera_surface.get_size(), pygame.SRCALPHA
+                    )
                     pygame.draw.line(laser_surf, (180, 0, 0, 50), start, end, 4)
                     self.camera_surface.blit(laser_surf, (0, 0))
 
             else:
                 frame = self.animations[robot.robot_type][index]
-                scaled_image = pygame.transform.smoothscale(frame, (scaled_size, scaled_size))
+                scaled_image = pygame.transform.smoothscale(
+                    frame, (scaled_size, scaled_size)
+                )
                 rect = scaled_image.get_rect(center=camera.apply(robot.x, robot.y))
                 self.camera_surface.blit(scaled_image, rect)
 
@@ -495,16 +506,16 @@ class RobotRenderer:
         back_shift = 0.15 * robot.hitbox_radius
 
         fire_x = (
-                robot.x
-                + look_shift * math.cos(head_rad)
-                - back_shift * math.cos(body_rad)
-                - ((fire_width / 2) / camera.zoom)
+            robot.x
+            + look_shift * math.cos(head_rad)
+            - back_shift * math.cos(body_rad)
+            - ((fire_width / 2) / camera.zoom)
         )
         fire_y = (
-                robot.y
-                + look_shift * math.sin(head_rad)
-                - back_shift * math.sin(body_rad)
-                - ((fire_height / 2) / camera.zoom)
+            robot.y
+            + look_shift * math.sin(head_rad)
+            - back_shift * math.sin(body_rad)
+            - ((fire_height / 2) / camera.zoom)
         )
         fire_x, fire_y = camera.apply(fire_x, fire_y)
 
@@ -512,8 +523,7 @@ class RobotRenderer:
         icon_fire = pygame.transform.scale(
             config.ICONS["explosion"], (int(icon_size + 3), int(icon_size + 3))
         ).convert_alpha()
-        icon_fire = pygame.transform.rotate(
-            icon_fire, -robot.alpha - 90)
+        icon_fire = pygame.transform.rotate(icon_fire, -robot.alpha - 90)
 
         current_time = pygame.time.get_ticks()
         if current_time - robot.last_shot_time < 30:
