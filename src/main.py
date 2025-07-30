@@ -360,7 +360,7 @@ def main_menu():
                 sys.exit()
 
             if start_button.is_clicked(event):
-                class_selection()
+                difficulty_selection()
             if difficulty_button.is_clicked(event):
                 difficulty_selection()
             if instructions_button.is_clicked(event):
@@ -492,8 +492,10 @@ def pause_menu():
 
 def difficulty_selection():
     clock = pygame.time.Clock()
-
     global difficulty
+    global type
+    global current_map
+    global random_map
 
     easy_button = Button(
         rect=(screen.get_width() // 2 - 425, 300, 250, 50),
@@ -560,8 +562,30 @@ def difficulty_selection():
         tooltip_font=tooltip_font,
     )
 
+    next_button = Button(
+        rect=(screen.get_width() // 2 + 25, 600, 250, 50),
+        text="next",
+        font=font,
+        bg_color=(20, 130, 200),
+        text_color=(255, 255, 255),
+        hover_color=(40, 160, 255),
+        tooltip_text=texts["next_tooltip"],
+        tooltip_font=tooltip_font,
+    )
+
+    start_button = Button(
+        rect=(screen.get_width() // 2 - 275, 600, 250, 50),
+        text=texts["start_text"],
+        font=font,
+        bg_color=(20, 130, 200),
+        text_color=(255, 255, 255),
+        hover_color=(40, 160, 255),
+        tooltip_text=texts["start_tooltip"],
+        tooltip_font=tooltip_font,
+    )
+
     back_button = Button(
-        rect=(screen.get_width() // 2 - 125, 600, 250, 50),
+        rect=(screen.get_width() // 2 - 125, 750, 250, 50),
         text=texts["back_text"],
         font=font,
         bg_color=(200, 50, 50),
@@ -599,6 +623,22 @@ def difficulty_selection():
             if survival2_button.is_clicked(event):
                 difficulty = "survival2"
                 return difficulty_selection()  # noqa: F821
+            if next_button.is_clicked(event):
+                class_selection()
+            if start_button.is_clicked(event):
+                type = random.choice(["Tank", "Spider"])
+                current_map = random.choice(
+                    [
+                        "test-level.txt",
+                        "test-level2.txt",
+                        "lavariver.txt",
+                        "fourelements.txt",
+                    ]
+                )
+                random_map = random.choice(
+                    [True, False, False, False, False]
+                )  # to get random maps in a ratio of 1:4
+                game_loop(current_map)
             if back_button.is_clicked(event):
                 return
 
@@ -607,6 +647,8 @@ def difficulty_selection():
         hard_button.draw(screen)
         survival1_button.draw(screen)
         survival2_button.draw(screen)
+        next_button.draw(screen)
+        start_button.draw(screen)
         back_button.draw(screen)
 
         pygame.display.flip()
