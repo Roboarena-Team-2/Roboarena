@@ -179,6 +179,9 @@ def update_language(language):
             "spider_tooltip": "Kann in alle Richtungen laufen\n"
                               "Kann sich in alle Richtungen drehen beim schießen",
             "random_tooltip": "eine zufällig generierte map",
+            "next_tooltip": "Wähle deine Klasse und Karte",
+            "start_tooltip": "Startet das Spiel mit einer\n"
+                             "zufälligen Karte und Klasse"
         }
     else:
         texts = {
@@ -319,5 +322,7 @@ def update_language(language):
             "spider_tooltip": "Can move in all directions\n"
                               "and turn in every direction while shooting",
             "random_tooltip": "a randomly generated map",
+            "next_tooltip": "choose your robot and a map",
+            "start_tooltip": "Start the game with a random robot and map"
         }
     return texts
