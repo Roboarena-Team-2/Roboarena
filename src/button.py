@@ -15,7 +15,7 @@ class Button:
         tooltip_text=None,  # <-- NEU
         tooltip_font=None,  # <-- NEU
         tooltip_bg=(50, 50, 50),  # Standard-Hintergrund
-        tooltip_text_color=(255, 255, 255)
+        tooltip_text_color=(255, 255, 255),
     ):
         """
         rect: pygame.Rect oder Tupel (x, y, width, height)
@@ -58,14 +58,19 @@ class Button:
             self.draw_tooltip(screen)
 
     def draw_tooltip(self, screen):
-        lines = self.tooltip_text.split('\n')
+        lines = self.tooltip_text.split("\n")
         padding = 6
-        line_surfaces = [self.tooltip_font.render(line, True, self.tooltip_text_color) for line in lines]
+        line_surfaces = [
+            self.tooltip_font.render(line, True, self.tooltip_text_color)
+            for line in lines
+        ]
         line_heights = [surf.get_height() for surf in line_surfaces]
         max_width = max(surf.get_width() for surf in line_surfaces)
 
         # Tooltip-Größe berechnen
-        total_height = sum(line_heights) + padding * 2 + (len(lines) - 1) * 2  # zusätzlicher Zeilenabstand
+        total_height = (
+            sum(line_heights) + padding * 2 + (len(lines) - 1) * 2
+        )  # zusätzlicher Zeilenabstand
 
         tooltip_rect = pygame.Rect(0, 0, max_width + padding * 2, total_height)
         tooltip_rect.midbottom = self.rect.midtop

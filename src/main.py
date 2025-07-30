@@ -57,7 +57,7 @@ current_map = "test-level.txt"
 random_map = False
 seed = 1
 
-#Manu variables
+# Manu variables
 font = pygame.font.SysFont(None, 40)
 tooltip_font = pygame.font.SysFont(None, 25)
 
@@ -287,6 +287,10 @@ def difficulty_survival_more(camera, game_map) -> list[Robot]:
 def main_menu():
     clock = pygame.time.Clock()
     global font
+    global current_map
+    global difficulty
+    global type
+    global random_map
 
     start_button = Button(
         rect=(screen.get_width() // 2 - 125, 250, 250, 50),
@@ -298,7 +302,7 @@ def main_menu():
     )
 
     difficulty_button = Button(
-        rect=(screen.get_width() // 2 - 125, 320, 250, 50),
+        rect=(screen.get_width() // 2 - 125, 390, 250, 50),
         text=texts["difficulty_text"],
         font=font,
         bg_color=(20, 130, 200),
@@ -307,7 +311,7 @@ def main_menu():
     )
 
     instructions_button = Button(
-        rect=(screen.get_width() // 2 - 125, 390, 250, 50),
+        rect=(screen.get_width() // 2 - 125, 460, 250, 50),
         text=texts["instructions_text"],
         font=font,
         bg_color=(20, 130, 200),
@@ -315,9 +319,9 @@ def main_menu():
         hover_color=(40, 160, 255),
     )
 
-    level_button = Button(
-        rect=(screen.get_width() // 2 - 125, 460, 250, 50),
-        text=texts["level_text"],
+    quickstart_button = Button(
+        rect=(screen.get_width() // 2 - 125, 320, 250, 50),
+        text=texts["quickstart_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -357,13 +361,28 @@ def main_menu():
                 sys.exit()
 
             if start_button.is_clicked(event):
-                difficulty_selection()
+                class_selection()
             if difficulty_button.is_clicked(event):
                 difficulty_selection()
             if instructions_button.is_clicked(event):
                 instructions_menu()
-            if level_button.is_clicked(event):
-                level_selection()
+            if quickstart_button.is_clicked(event):
+                type = random.choice(["Tank", "Spider"])
+                current_map = random.choice(
+                    [
+                        "test-level.txt",
+                        "test-level2.txt",
+                        "lavariver.txt",
+                        "fourelements.txt",
+                    ]
+                )
+                difficulty = random.choice(
+                    ["easy", "medium", "hard", "survival1", "survival2"]
+                )
+                random_map = random.choice(
+                    [True, False, False, False, False]
+                )  # to get random maps in a ratio of 1:4
+                game_loop(current_map)
             if settings_button.is_clicked(event):
                 settings()
                 main_menu()
@@ -375,7 +394,7 @@ def main_menu():
         start_button.draw(screen)
         difficulty_button.draw(screen)
         instructions_button.draw(screen)
-        level_button.draw(screen)
+        quickstart_button.draw(screen)
         settings_button.draw(screen)
         quit_button.draw(screen)
 
@@ -478,7 +497,6 @@ def difficulty_selection():
     global font
     global tooltip_font
 
-
     global difficulty
 
     easy_button = Button(
@@ -490,6 +508,8 @@ def difficulty_selection():
         hover_color=(40, 160, 255),
         selected=difficulty == "easy",
         selected_color=(0, 100, 150),
+        tooltip_text=texts["easy_tooltip"],
+        tooltip_font=tooltip_font,
     )
 
     medium_button = Button(
@@ -501,6 +521,8 @@ def difficulty_selection():
         hover_color=(40, 160, 255),
         selected=difficulty == "medium",
         selected_color=(0, 100, 150),
+        tooltip_text=texts["medium_tooltip"],
+        tooltip_font=tooltip_font,
     )
 
     hard_button = Button(
@@ -512,6 +534,8 @@ def difficulty_selection():
         hover_color=(40, 160, 255),
         selected=difficulty == "hard",
         selected_color=(0, 100, 150),
+        tooltip_text=texts["hard_tooltip"],
+        tooltip_font=tooltip_font,
     )
 
     survival1_button = Button(
@@ -523,7 +547,7 @@ def difficulty_selection():
         hover_color=(40, 160, 255),
         selected=difficulty == "survival1",
         selected_color=(0, 100, 150),
-        tooltip_text="More and more enemies\nwill spawn as time goes on",
+        tooltip_text=texts["survival1_tooltip"],
         tooltip_font=tooltip_font,
     )
 
@@ -536,21 +560,12 @@ def difficulty_selection():
         hover_color=(40, 160, 255),
         selected=difficulty == "survival2",
         selected_color=(0, 100, 150),
-        tooltip_text="There will always be 2 enemies\nbut their speed increases upon death",
+        tooltip_text=texts["survival2_tooltip"],
         tooltip_font=tooltip_font,
     )
 
-    next_button = Button(
-        rect=(screen.get_width() // 2 - 125, 600, 250, 50),
-        text="next",
-        font=font,
-        bg_color=(20, 130, 200),
-        text_color=(255, 255, 255),
-        hover_color=(40, 160, 255),
-    )
-
     back_button = Button(
-        rect=(screen.get_width() // 2 - 125, 750, 250, 50),
+        rect=(screen.get_width() // 2 - 125, 600, 250, 50),
         text=texts["back_text"],
         font=font,
         bg_color=(200, 50, 50),
@@ -583,8 +598,6 @@ def difficulty_selection():
                 difficulty = "survival1"
             if survival2_button.is_clicked(event):
                 difficulty = "survival2"
-            if next_button.is_clicked(event):
-                class_selection()
             if back_button.is_clicked(event):
                 return
 
@@ -593,7 +606,6 @@ def difficulty_selection():
         hard_button.draw(screen)
         survival1_button.draw(screen)
         survival2_button.draw(screen)
-        next_button.draw(screen)
         back_button.draw(screen)
 
         pygame.display.flip()
@@ -624,7 +636,7 @@ def class_selection():
         hover_color=(40, 160, 255),
         selected=type == "Tank",
         selected_color=(0, 100, 150),
-        tooltip_text="Moves like a tank\ntakes less damage from shots\nlimited firing radius",
+        tooltip_text=texts["tank_tooltip"],
         tooltip_font=tooltip_font,
     )
 
@@ -637,7 +649,7 @@ def class_selection():
         hover_color=(40, 160, 255),
         selected=type == "Spider",
         selected_color=(0, 100, 150),
-        tooltip_text="can move in all directions\nand shoot in every direction",
+        tooltip_text=texts["spider_tooltip"],
         tooltip_font=tooltip_font,
     )
 
@@ -750,7 +762,7 @@ def level_selection():
         hover_color=(40, 160, 255),
         selected=random_map,
         selected_color=(0, 100, 150),
-        tooltip_text="a randomly generated map",
+        tooltip_text=texts["random_tooltip"],
         tooltip_font=tooltip_font,
     )
 
