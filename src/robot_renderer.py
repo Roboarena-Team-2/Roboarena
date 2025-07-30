@@ -277,7 +277,7 @@ class RobotRenderer:
             # Default body
             pygame.draw.circle(
                 self.camera_surface,
-                robot.color,
+                (255, 255, 255),
                 camera.apply(robot.x, robot.y),
                 robot.hitbox_radius,
             )

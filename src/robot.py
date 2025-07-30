@@ -28,7 +28,6 @@ class Robot:
         y: int,
         hitbox_radius: int,
         direction: float,
-        color: tuple[int, int, int],
         speed: float,
         speed_alpha: float,
         is_player: bool,
@@ -39,7 +38,6 @@ class Robot:
         self.y = y  # y-coordinate of center
         self.hitbox_radius = hitbox_radius  # radius of the hitbox
         self.alpha = direction % 360  # direction of the robot in degree
-        self.color = color  # color of the robot
         if robot_type == "Tank":
             self.v = speed * 0.8  # current acceleration for moving
             self.v_alpha = speed_alpha * 0.6  # current acceleration for turning
@@ -306,6 +304,8 @@ class Robot:
         if newRect.collidelist(walls) == -1:
             self.x = xnew
             self.y = ynew
+            if len(robots) < 2:
+                return
             (dist, robot) = self.robot_dist(robots)[0]
             if dist <= 0:
                 self.x -= x
@@ -423,38 +423,37 @@ class Robot:
             self.bush_tiles = []
 
     # Get random spawn position
-    def get_spawn_position(self, game_map: Map, robots: list["Robot"]) -> tuple[int, int]:
-        max_attempts = 1000
-        for _ in range(max_attempts):
-            # Random tile coordinates
-            tile_x = random.randint(2, config.COLUMNS - 3)
-            tile_y = random.randint(2, config.ROWS - 3)
-            tile_type = game_map.get_tile_type(tile_x, tile_y)
-
-            # Skip invalid tiles
-            if tile_type in ("lava", "wall", "bush"):
-                continue
-
-            # Set position to center of tile
-            position_x = tile_x * config.TILE_SIZE + config.TILE_SIZE // 2
-            position_y = tile_y * config.TILE_SIZE + config.TILE_SIZE // 2
-            self.x = position_x
-            self.y = position_y
-
-            # Check distance to other robots
-            max_dist = math.hypot(
-                config.TILE_SIZE * (config.ROWS - 2),
-                config.TILE_SIZE * (config.COLUMNS - 2),
-            )
-            min_dist = max_dist / ((len(robots) + 1) * 1.7)
-            if self.robot_dist(robots)[0][0] <= min_dist:
-                continue
-
-            return (position_x, position_y)
-
-        raise Exception(
-            f"No valid spawn found after {max_attempts} attempts."
+    def get_spawn_position(
+        self, game_map: Map, robots: list["Robot"]
+    ) -> tuple[int, int]:
+        # Get random position
+        position_x = random.randint(
+            2 * config.TILE_SIZE + self.hitbox_radius,
+            (config.COLUMNS - 2) * config.TILE_SIZE,
         )
+        position_y = random.randint(
+            2 * config.TILE_SIZE + self.hitbox_radius,
+            (config.ROWS - 2) * config.TILE_SIZE,
+        )
+        # Check for distance to other robots
+        self.x = position_x
+        self.y = position_y
+        max_dist = math.hypot(
+            config.TILE_SIZE * (config.ROWS - 2),
+            config.TILE_SIZE * (config.COLUMNS - 2),
+        )
+        min_dist = max_dist / (len(robots) + 1)
+        if len(robots) < 2 or self.robot_dist(robots)[0][0] > min_dist:
+            # Check for tiles to avoid walls, lava and bush
+            touched_textures = self.touched_textures(game_map)
+            if (
+                ("lava" not in touched_textures)
+                and ("wall" not in touched_textures)
+                and ("bush" not in touched_textures)
+            ):
+                return (position_x, position_y)
+        # Try again
+        return self.get_spawn_position(game_map, robots)
 
     # moves robot if new position not in wall
     def move_if_no_walls(
@@ -519,10 +518,11 @@ class Robot:
                 if hitbox.collidelist(walls) == -1:
                     self.x = xnew
                     self.y = ynew
-                    (dist, robot) = self.robot_dist(robots)[0]
-                    if dist <= 0:
-                        self.x -= x
-                        self.robot_collision(robot, robots, walls)
+                    if len(robots) > 1:
+                        (dist, robot) = self.robot_dist(robots)[0]
+                        if dist <= 0:
+                            self.x -= x
+                            self.robot_collision(robot, robots, walls)
                 else:
                     # check and move if only in y direction is no wall
                     xnew = self.x
@@ -531,10 +531,11 @@ class Robot:
                     if hitbox.collidelist(walls) == -1:
                         self.x = xnew
                         self.y = ynew
-                        (dist, robot) = self.robot_dist(robots)[0]
-                        if dist <= 0:
-                            self.y -= y
-                            self.robot_collision(robot, robots, walls)
+                        if len(robots) > 1:
+                            (dist, robot) = self.robot_dist(robots)[0]
+                            if dist <= 0:
+                                self.y -= y
+                                self.robot_collision(robot, robots, walls)
 
     def shoot(
         self,

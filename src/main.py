@@ -1,5 +1,3 @@
-from random import randint
-
 import pygame
 import sys
 import config
@@ -8,6 +6,8 @@ from map_renderer import MapRenderer
 from robot import Robot
 from bullet import Bullet
 from button import Button
+from slider import Slider
+from scrollbar import Scrollbar
 from sounds import Sounds
 from camera import Camera
 from robot_renderer import RobotRenderer
@@ -44,6 +44,10 @@ print(f"TILE_SIZE: {config.TILE_SIZE}")
 
 # Player and game variables
 type: str = random.choice(["Tank", "Spider"])
+language: str = "English"
+config.update_language("English")
+volume: int = 100
+texts = config.texts
 difficulty: str = "medium"
 highscore: int = 0
 highestkills: int = 0
@@ -82,7 +86,6 @@ def difficulty_easy(camera, game_map) -> list[Robot]:
                     spawn_positions[i][1],
                     robot_size,
                     float(random.randint(0, 359)),
-                    (255, 255, 255),
                     4 * camera.zoom,
                     5 * camera.zoom,
                     True,
@@ -97,7 +100,6 @@ def difficulty_easy(camera, game_map) -> list[Robot]:
                     spawn_positions[i][1],
                     robot_size,
                     float(random.randint(0, 359)),
-                    (255, 255, 255),
                     speed,
                     turnspeed,
                     False,
@@ -125,7 +127,6 @@ def difficulty_medium(camera, game_map) -> list[Robot]:
                     spawn_positions[i][1],
                     robot_size,
                     float(random.randint(0, 359)),
-                    (255, 255, 255),
                     4.5 * camera.zoom,
                     5.5 * camera.zoom,
                     True,
@@ -140,7 +141,6 @@ def difficulty_medium(camera, game_map) -> list[Robot]:
                     spawn_positions[i][1],
                     robot_size,
                     float(random.randint(0, 359)),
-                    (255, 255, 255),
                     speed,
                     turnspeed,
                     False,
@@ -168,7 +168,6 @@ def difficulty_hard(camera, game_map) -> list[Robot]:
                     spawn_positions[i][1],
                     robot_size,
                     float(random.randint(0, 359)),
-                    (255, 255, 255),
                     speed,
                     turnspeed,
                     True,
@@ -183,7 +182,6 @@ def difficulty_hard(camera, game_map) -> list[Robot]:
                     spawn_positions[i][1],
                     robot_size,
                     float(random.randint(0, 359)),
-                    (255, 255, 255),
                     speed,
                     turnspeed,
                     False,
@@ -211,7 +209,6 @@ def difficulty_survival_faster(camera, game_map) -> list[Robot]:
                     spawn_positions[i][1],
                     robot_size,
                     float(random.randint(0, 359)),
-                    (255, 255, 255),
                     4 * camera.zoom,
                     5 * camera.zoom,
                     True,
@@ -226,7 +223,6 @@ def difficulty_survival_faster(camera, game_map) -> list[Robot]:
                     spawn_positions[i][1],
                     robot_size,
                     float(random.randint(0, 359)),
-                    (255, 255, 255),
                     speed,
                     turnspeed,
                     False,
@@ -254,7 +250,6 @@ def difficulty_survival_more(camera, game_map) -> list[Robot]:
                     spawn_positions[i][1],
                     robot_size,
                     float(random.randint(0, 359)),
-                    (255, 255, 255),
                     4 * camera.zoom,
                     5 * camera.zoom,
                     True,
@@ -269,7 +264,6 @@ def difficulty_survival_more(camera, game_map) -> list[Robot]:
                     spawn_positions[i][1],
                     robot_size,
                     float(random.randint(0, 359)),
-                    (255, 255, 255),
                     speed,
                     turnspeed,
                     False,
@@ -287,17 +281,17 @@ def main_menu():
     font = pygame.font.SysFont(None, 40)
 
     start_button = Button(
-        rect=(screen.get_width() // 2 - 100, 300, 200, 50),
-        text="Start Game",
+        rect=(screen.get_width() // 2 - 125, 250, 250, 50),
+        text=texts["start_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
     )
 
-    options_button = Button(
-        rect=(screen.get_width() // 2 - 100, 370, 200, 50),
-        text="Options",
+    difficulty_button = Button(
+        rect=(screen.get_width() // 2 - 125, 320, 250, 50),
+        text=texts["difficulty_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -305,8 +299,8 @@ def main_menu():
     )
 
     instructions_button = Button(
-        rect=(screen.get_width() // 2 - 100, 440, 200, 50),
-        text="How to play",
+        rect=(screen.get_width() // 2 - 125, 390, 250, 50),
+        text=texts["instructions_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -314,8 +308,17 @@ def main_menu():
     )
 
     level_button = Button(
-        rect=(screen.get_width() // 2 - 100, 510, 200, 50),
-        text="Level selection",
+        rect=(screen.get_width() // 2 - 125, 460, 250, 50),
+        text=texts["level_text"],
+        font=font,
+        bg_color=(20, 130, 200),
+        text_color=(255, 255, 255),
+        hover_color=(40, 160, 255),
+    )
+
+    settings_button = Button(
+        rect=(screen.get_width() // 2 - 125, 530, 250, 50),
+        text=texts["settings_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -323,8 +326,8 @@ def main_menu():
     )
 
     quit_button = Button(
-        rect=(screen.get_width() // 2 - 100, 580, 200, 50),
-        text="Exit Game",
+        rect=(screen.get_width() // 2 - 125, 600, 250, 50),
+        text=texts["quit_text"],
         font=font,
         bg_color=(200, 50, 50),
         text_color=(255, 255, 255),
@@ -336,7 +339,7 @@ def main_menu():
         screen.fill((30, 30, 30))
 
         title_font = pygame.font.SysFont(None, 80)
-        title_surf = title_font.render("Main Menu", True, (255, 255, 255))
+        title_surf = title_font.render(texts["main_menu_text"], True, (255, 255, 255))
         title_rect = title_surf.get_rect(center=(screen.get_width() // 2, 150))
         screen.blit(title_surf, title_rect)
 
@@ -347,20 +350,25 @@ def main_menu():
 
             if start_button.is_clicked(event):
                 class_selection()
-            if options_button.is_clicked(event):
-                options()
+            if difficulty_button.is_clicked(event):
+                difficulty_selection()
             if instructions_button.is_clicked(event):
                 instructions_menu()
             if level_button.is_clicked(event):
                 level_selection()
+            if settings_button.is_clicked(event):
+                settings()
+                main_menu()
+                return
             if quit_button.is_clicked(event):
                 pygame.quit()
                 sys.exit()
 
         start_button.draw(screen)
-        options_button.draw(screen)
+        difficulty_button.draw(screen)
         instructions_button.draw(screen)
         level_button.draw(screen)
+        settings_button.draw(screen)
         quit_button.draw(screen)
 
         pygame.display.flip()
@@ -372,8 +380,8 @@ def pause_menu():
     font = pygame.font.SysFont(None, 40)
 
     continue_button = Button(
-        rect=(screen.get_width() // 2 - 100, 230, 200, 50),
-        text="Continue",
+        rect=(screen.get_width() // 2 - 125, 230, 250, 50),
+        text=texts["continue_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -381,17 +389,17 @@ def pause_menu():
     )
 
     menu_button = Button(
-        rect=(screen.get_width() // 2 - 100, 300, 200, 50),
-        text="Main Menu",
+        rect=(screen.get_width() // 2 - 125, 300, 250, 50),
+        text=texts["main_menu_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
     )
 
-    options_button = Button(
-        rect=(screen.get_width() // 2 - 100, 370, 200, 50),
-        text="Options",
+    settings_button = Button(
+        rect=(screen.get_width() // 2 - 125, 370, 250, 50),
+        text=texts["settings_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -399,8 +407,8 @@ def pause_menu():
     )
 
     instructions_button = Button(
-        rect=(screen.get_width() // 2 - 100, 440, 200, 50),
-        text="How to play",
+        rect=(screen.get_width() // 2 - 125, 440, 250, 50),
+        text=texts["instructions_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -408,8 +416,8 @@ def pause_menu():
     )
 
     quit_button = Button(
-        rect=(screen.get_width() // 2 - 100, 510, 200, 50),
-        text="Exit Game",
+        rect=(screen.get_width() // 2 - 125, 510, 250, 50),
+        text=texts["quit_text"],
         font=font,
         bg_color=(200, 50, 50),
         text_color=(255, 255, 255),
@@ -419,12 +427,12 @@ def pause_menu():
     paused = True
     while paused:
 
-        sounds = Sounds()
+        sounds = Sounds(volume / 100)
         sounds.stop_all_sounds()
         screen.fill((30, 30, 30))
 
         title_font = pygame.font.SysFont(None, 80)  # große Schrift
-        title_surf = title_font.render("Paused", True, (255, 255, 255))
+        title_surf = title_font.render(texts["paused_text"], True, (255, 255, 255))
         title_rect = title_surf.get_rect(center=(screen.get_width() // 2, 150))
         screen.blit(title_surf, title_rect)
 
@@ -437,8 +445,10 @@ def pause_menu():
                 paused = False
             if menu_button.is_clicked(event):
                 main_menu()
-            if options_button.is_clicked(event):
-                options()
+            if settings_button.is_clicked(event):
+                settings()
+                pause_menu()
+                return
             if instructions_button.is_clicked(event):
                 instructions_menu()
             if quit_button.is_clicked(event):
@@ -447,7 +457,7 @@ def pause_menu():
 
         continue_button.draw(screen)
         menu_button.draw(screen)
-        options_button.draw(screen)
+        settings_button.draw(screen)
         instructions_button.draw(screen)
         quit_button.draw(screen)
 
@@ -455,58 +465,70 @@ def pause_menu():
         clock.tick(60)
 
 
-def options():
+def difficulty_selection():
     clock = pygame.time.Clock()
     font = pygame.font.SysFont(None, 40)
 
+    global difficulty
+
     easy_button = Button(
-        rect=(screen.get_width() // 2 - 350, 300, 200, 50),
-        text="Easy",
+        rect=(screen.get_width() // 2 - 425, 300, 250, 50),
+        text=texts["easy_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
+        selected=difficulty == "easy",
+        selected_color=(0, 100, 150),
     )
 
     medium_button = Button(
-        rect=(screen.get_width() // 2 - 100, 300, 200, 50),
-        text="Medium",
+        rect=(screen.get_width() // 2 - 125, 300, 250, 50),
+        text=texts["medium_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
+        selected=difficulty == "medium",
+        selected_color=(0, 100, 150),
     )
 
     hard_button = Button(
-        rect=(screen.get_width() // 2 + 150, 300, 200, 50),
-        text="Hard",
+        rect=(screen.get_width() // 2 + 175, 300, 250, 50),
+        text=texts["hard_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
+        selected=difficulty == "hard",
+        selected_color=(0, 100, 150),
     )
 
     survival1_button = Button(
-        rect=(screen.get_width() // 2 - 225, 400, 200, 50),
+        rect=(screen.get_width() // 2 - 225, 450, 200, 50),
         text="Survival1",
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
+        selected=difficulty == "survival1",
+        selected_color=(0, 100, 150),
     )
 
     survival2_button = Button(
-        rect=(screen.get_width() // 2 + 25, 400, 200, 50),
+        rect=(screen.get_width() // 2 + 25, 450, 200, 50),
         text="Survival2",
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
+        selected=difficulty == "survival2",
+        selected_color=(0, 100, 150),
     )
 
     back_button = Button(
-        rect=(screen.get_width() // 2 - 100, 510, 200, 50),
-        text="Back",
+        rect=(screen.get_width() // 2 - 125, 600, 250, 50),
+        text=texts["back_text"],
         font=font,
         bg_color=(200, 50, 50),
         text_color=(255, 255, 255),
@@ -517,11 +539,11 @@ def options():
     while running:
         screen.fill((30, 30, 30))
 
-        draw_text(screen, "Options", 0, 150, 80, center=True)
+        draw_text(screen, texts["difficulty_text"], 0, 150, 80, center=True)
 
-        draw_text(screen, "Difficulty", 0, 250, 50, center=True)
+        draw_text(screen, texts["normal_mode_text"], 0, 250, 50, center=True)
 
-        global difficulty
+        draw_text(screen, texts["survival_mode_text"], 0, 400, 50, center=True)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -530,14 +552,19 @@ def options():
 
             if easy_button.is_clicked(event):
                 difficulty = "easy"
+                return options()  # noqa: F821
             if medium_button.is_clicked(event):
                 difficulty = "medium"
+                return options()  # noqa: F821
             if hard_button.is_clicked(event):
                 difficulty = "hard"
+                return options()  # noqa: F821
             if survival1_button.is_clicked(event):
                 difficulty = "survival1"
+                return options()  # noqa: F821
             if survival2_button.is_clicked(event):
                 difficulty = "survival2"
+                return options()  # noqa: F821
             if back_button.is_clicked(event):
                 return
 
@@ -558,8 +585,8 @@ def class_selection():
     global type
 
     start_button = Button(
-        rect=(screen.get_width() // 2 - 100, 400, 200, 50),
-        text="Start Game",
+        rect=(screen.get_width() // 2 - 125, 400, 250, 50),
+        text=texts["start_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -567,26 +594,30 @@ def class_selection():
     )
 
     tank_button = Button(
-        rect=(screen.get_width() // 2 - 250, 300, 200, 50),
-        text="Tank",
+        rect=(screen.get_width() // 2 - 300, 300, 250, 50),
+        text=texts["tank_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
+        selected=type == "Tank",
+        selected_color=(0, 100, 150),
     )
 
     spider_button = Button(
-        rect=(screen.get_width() // 2 + 50, 300, 200, 50),
-        text="Spider",
+        rect=(screen.get_width() // 2 + 50, 300, 250, 50),
+        text=texts["spider_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
+        selected=type == "Spider",
+        selected_color=(0, 100, 150),
     )
 
     back_button = Button(
-        rect=(screen.get_width() // 2 - 100, 570, 200, 50),
-        text="Back",
+        rect=(screen.get_width() // 2 - 125, 600, 250, 50),
+        text=texts["back_text"],
         font=font,
         bg_color=(200, 50, 50),
         text_color=(255, 255, 255),
@@ -597,7 +628,7 @@ def class_selection():
     while running:
         screen.fill((30, 30, 30))
 
-        draw_text(screen, "Class Selection", 0, 150, 80, center=True)
+        draw_text(screen, texts["class_selection_text"], 0, 150, 80, center=True)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -607,8 +638,10 @@ def class_selection():
                 game_loop()
             if tank_button.is_clicked(event):
                 type = "Tank"
+                return class_selection()
             if spider_button.is_clicked(event):
                 type = "Spider"
+                return class_selection()
             if back_button.is_clicked(event):
                 return
 
@@ -627,11 +660,10 @@ def level_selection():
     global random_map
     global current_map
     global seed
-    random_map = False  # reset this variable each time level selection is called
 
     start_button = Button(
-        rect=(screen.get_width() // 2 - 100, 510, 200, 50),
-        text="Start Game",
+        rect=(screen.get_width() // 2 - 125, 450, 250, 50),
+        text=texts["start_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -639,53 +671,63 @@ def level_selection():
     )
 
     level1_button = Button(
-        rect=(screen.get_width() // 2 - 250, 300, 200, 50),
-        text="Level 1",
+        rect=(screen.get_width() // 2 - 275, 300, 250, 50),
+        text=texts["map1_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
+        selected=current_map == "test-level.txt" and not random_map,
+        selected_color=(0, 100, 150),
     )
 
     level2_button = Button(
-        rect=(screen.get_width() // 2 + 50, 300, 200, 50),
-        text="Level 2",
+        rect=(screen.get_width() // 2 + 25, 300, 250, 50),
+        text=texts["map2_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
+        selected=current_map == "test-level2.txt" and not random_map,
+        selected_color=(0, 100, 150),
     )
 
     level3_button = Button(
         rect=(screen.get_width() // 2 - 250, 370, 200, 50),
-        text="Lava River",
+        text=texts["lava_river"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
+        selected=current_map == "lavariver.txt" and not random_map,
+        selected_color=(0, 100, 150),
     )
 
     level4_button = Button(
         rect=(screen.get_width() // 2 + 50, 370, 200, 50),
-        text="Four Elements",
+        text=texts["four_elements"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
+        selected=current_map == "fourelements.txt" and not random_map,
+        selected_color=(0, 100, 150),
     )
 
     random_button = Button(
-        rect=(screen.get_width() // 2 - 100, 440, 200, 50),
-        text="Random",
+        rect=(screen.get_width() // 2 - 100, 520, 200, 50),
+        text=texts["Random"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
         hover_color=(40, 160, 255),
+        selected=random_map,
+        selected_color=(0, 100, 150),
     )
 
     back_button = Button(
-        rect=(screen.get_width() // 2 - 100, 580, 200, 50),
-        text="Back",
+        rect=(screen.get_width() // 2 - 125, 600, 250, 50),
+        text=texts["back_text"],
         font=font,
         bg_color=(200, 50, 50),
         text_color=(255, 255, 255),
@@ -696,7 +738,7 @@ def level_selection():
     while running:
         screen.fill((30, 30, 30))
 
-        draw_text(screen, "Level Selection", 0, 150, 80, center=True)
+        draw_text(screen, texts["level_selection_text"], 0, 150, 80, center=True)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -706,15 +748,24 @@ def level_selection():
                 game_loop(current_map)
             if level1_button.is_clicked(event):
                 current_map = "test-level.txt"
+                random_map = False
+                return level_selection()
             if level2_button.is_clicked(event):
                 current_map = "test-level2.txt"
+                random_map = False
+                return level_selection()
             if level3_button.is_clicked(event):
                 current_map = "lavariver.txt"
+                random_map = False
+                return level_selection()
             if level4_button.is_clicked(event):
                 current_map = "fourelements.txt"
+                random_map = False
+                return level_selection()
             if random_button.is_clicked(event):
                 random_map = True
-                seed = randint(0, 999999)
+                seed = random.randint(0, 999999)
+                return level_selection()
             if back_button.is_clicked(event):
                 return
 
@@ -730,36 +781,223 @@ def level_selection():
         clock.tick(60)
 
 
-def instructions_menu():
+def settings():
+    global volume
+    global texts
+    clock = pygame.time.Clock()
     font = pygame.font.SysFont(None, 40)
 
+    volume_slider = Slider(
+        rect=(screen.get_width() // 2 - 100, 290, 200, 10),
+        current_percentage=volume,
+        slider_color=(20, 130, 200),
+        circle_color=(200, 50, 50),
+        hover_color=(255, 80, 80),
+    )
+
+    english_button = Button(
+        rect=(screen.get_width() // 2 - 275, 390, 250, 50),
+        text=texts["english_text"],
+        font=font,
+        bg_color=(20, 130, 200),
+        text_color=(255, 255, 255),
+        hover_color=(40, 160, 255),
+    )
+
+    german_button = Button(
+        rect=(screen.get_width() // 2 + 25, 390, 250, 50),
+        text=texts["german_text"],
+        font=font,
+        bg_color=(20, 130, 200),
+        text_color=(255, 255, 255),
+        hover_color=(40, 160, 255),
+    )
+
+    credits_button = Button(
+        rect=(screen.get_width() // 2 - 125, 520, 250, 50),
+        text=texts["show_credits_text"],
+        font=font,
+        bg_color=(20, 130, 200),
+        text_color=(255, 255, 255),
+        hover_color=(40, 160, 255),
+    )
+
     back_button = Button(
-        rect=(screen.get_width() // 2 - 100, 500, 200, 50),
-        text="Back",
+        rect=(screen.get_width() // 2 - 125, 600, 250, 50),
+        text=texts["back_text"],
         font=font,
         bg_color=(200, 50, 50),
         text_color=(255, 255, 255),
         hover_color=(255, 80, 80),
     )
 
-    instructions = ["Game instructions here..."]
+    active_slider = None
 
     running = True
     while running:
         screen.fill((30, 30, 30))
-        draw_text(screen, "How to play", 0, 150, 80, center=True)
 
-        for i, line in enumerate(instructions):
-            draw_text(screen, line, 50, 200 + i * 35, 30)
+        draw_text(screen, texts["settings_text"], 0, 150, 80, center=True)
+
+        draw_text(screen, texts["volume_text"], 0, 250, 50, center=True)
+
+        draw_text(screen, texts["language_text"], 0, 350, 50, center=True)
+
+        draw_text(screen, texts["credits_text"], 0, 490, 50, center=True)
+
+        global language
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if volume_slider.circle_rect.collidepoint(event.pos):
+                        active_slider = volume_slider.circle_rect
+
+            if event.type == pygame.MOUSEBUTTONUP:
+                if event.button == 1:
+                    active_slider = None
+                    volume = volume_slider.percentage
+
+            if event.type == pygame.MOUSEMOTION:
+                if active_slider:
+                    volume_slider.update(
+                        event.rel[0] / (volume_slider.rect.width / 100)
+                    )
+
+            if english_button.is_clicked(event):
+                language = "English"
+                texts = config.update_language(language)
+                settings()
+                return
+            if german_button.is_clicked(event):
+                language = "German"
+                texts = config.update_language(language)
+                settings()
+                return
+            if credits_button.is_clicked(event):
+                game_credits()
+            if back_button.is_clicked(event):
+                return
+
+        volume_slider.draw(screen)
+        english_button.draw(screen)
+        german_button.draw(screen)
+        credits_button.draw(screen)
+        back_button.draw(screen)
+
+        pygame.display.flip()
+        clock.tick(60)
+
+
+def instructions_menu():
+    font = pygame.font.SysFont(None, 40)
+
+    instructions_scrollbar = Scrollbar(
+        len(texts["instructions"]) * 45 - 600,
+        text_space=pygame.Rect(
+            screen.get_width() * 0.2, 200, screen.get_width() * 0.8, 350
+        ),
+        slider_color=(215, 215, 215),
+        hover_color=(245, 245, 245),
+    )
+
+    back_button = Button(
+        rect=(screen.get_width() // 2 - 125, 600, 250, 50),
+        text=texts["back_text"],
+        font=font,
+        bg_color=(200, 50, 50),
+        text_color=(255, 255, 255),
+        hover_color=(255, 80, 80),
+    )
+
+    active_slider = None
+    instructions_top = instructions_scrollbar.space_rect.top
+    instructions_bottom = instructions_scrollbar.space_rect.bottom
+
+    running = True
+    while running:
+        screen.fill((30, 30, 30))
+        draw_text(screen, texts["instructions_text"], 0, 150, 80, center=True)
+        scrollheight = (
+            instructions_scrollbar.current_height
+            * instructions_scrollbar.text_height
+            / instructions_scrollbar.space_rect.height
+        )
+
+        for i, line in enumerate(texts["instructions"]):
+            if (instructions_top + i * 35 - scrollheight >= instructions_top) and (
+                i * 35 + instructions_top - scrollheight < instructions_bottom
+            ):
+                draw_text(
+                    screen, line, 200, instructions_top + i * 35 - scrollheight, 40
+                )
+
+        # Powerups
+        icon_fire = pygame.transform.scale(
+            config.ICONS["explosion"],
+            (
+                30,
+                30,
+            ),
+        ).convert_alpha()
+        icon_health = pygame.transform.scale(
+            config.ICONS["heart"],
+            (
+                30,
+                30,
+            ),
+        ).convert_alpha()
+        icon_power = pygame.transform.scale(
+            config.ICONS["power"],
+            (
+                30,
+                30,
+            ),
+        ).convert_alpha()
+        icon_shield = pygame.transform.scale(
+            config.ICONS["shield"],
+            (
+                30,
+                30,
+            ),
+        ).convert_alpha()
+
+        for j, icon in enumerate([icon_fire, icon_health, icon_power, icon_shield]):
+            if (
+                instructions_top + (31 + 2 * j) * 35 - scrollheight >= instructions_top
+            ) and (
+                (31 + 2 * j) * 35 + instructions_top - scrollheight
+                < instructions_bottom
+            ):
+                screen.blit(
+                    icon, (220, instructions_top + (31 + 2 * j) * 35 - scrollheight)
+                )
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if instructions_scrollbar.slider_rect.collidepoint(event.pos):
+                        active_slider = instructions_scrollbar.slider_rect
+
+            if event.type == pygame.MOUSEBUTTONUP:
+                if event.button == 1:
+                    active_slider = None
+
+            if event.type == pygame.MOUSEMOTION:
+                if active_slider:
+                    instructions_scrollbar.update(event.rel[1])
             if back_button.is_clicked(event):
                 return
 
         back_button.draw(screen)
+        instructions_scrollbar.draw(screen)
 
         pygame.display.flip()
         clock.tick(60)
@@ -767,9 +1005,9 @@ def instructions_menu():
 
 def countdown(surface, camera, map_renderer, robot_renderer, robots, player):
     font = pygame.font.SysFont(None, 150)
-    countdown_numbers = ["3", "2", "1", "GO!"]
+    countdown_numbers = ["3", "2", "1", texts["go_text"]]
 
-    sounds = Sounds()
+    sounds = Sounds(volume / 100)
     sounds.play_sound("countdown_sound")
 
     # player can see whole arena during countdown
@@ -782,7 +1020,7 @@ def countdown(surface, camera, map_renderer, robot_renderer, robots, player):
         for robot in robots:
             robot_renderer.draw(robot, camera, 0)
 
-        text_surface = font.render(count, True, (255, 255, 255))
+        text_surface = font.render(count, False, (255, 255, 255))
         text_rect = text_surface.get_rect(
             center=(surface.get_width() // 2, surface.get_height() // 2)
         )
@@ -869,7 +1107,7 @@ def game_loop(map_file: str | None = None):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-                sounds = Sounds()
+                sounds = Sounds(volume / 100)
                 sounds.stop_all_sounds()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
@@ -996,9 +1234,9 @@ def game_loop(map_file: str | None = None):
 
         # Robots appearing for survival mode
         if difficulty == "survival1":  # more
-            if ticks - start_tick > robot_tick:
-                if robot_tick > 3500:
-                    robot_tick += robot_tick_increaser
+            if ticks - start_tick > robot_tick:  # time for new robot
+                robot_tick += robot_tick_increaser
+                if robot_tick_increaser > 3500:
                     robot_tick_increaser -= 500
                 robots.append(
                     Robot(
@@ -1007,7 +1245,24 @@ def game_loop(map_file: str | None = None):
                         -1000,
                         player.hitbox_radius,
                         float(random.randint(0, 359)),
-                        (255, 255, 255),
+                        2,
+                        2,
+                        False,
+                        random.choice(("Spider", "Tank")),
+                    )
+                )
+                robots[len(robots) - 1].get_spawn_position(game_map, robots)
+            if len(robots) < 2:  # currently no alive enemy
+                robot_tick = ticks - start_tick + robot_tick_increaser
+                if robot_tick_increaser > 3500:
+                    robot_tick_increaser -= 500
+                robots.append(
+                    Robot(
+                        camera.surface,
+                        -1000,
+                        -1000,
+                        player.hitbox_radius,
+                        float(random.randint(0, 359)),
                         2,
                         2,
                         False,
@@ -1024,7 +1279,6 @@ def game_loop(map_file: str | None = None):
                         -1000,
                         player.hitbox_radius,
                         float(random.randint(0, 359)),
-                        (255, 255, 255),
                         enemy_base_speed + increasing_speed_variable,
                         enemy_base_speed + increasing_speed_variable,
                         False,
@@ -1049,9 +1303,36 @@ def game_loop(map_file: str | None = None):
 
 
 def gameover(camera, map_renderer, robot_renderer, robots, player, score=-1, kills=-1):
-    sounds = Sounds()
+    sounds = Sounds(volume / 100)
     sounds.stop_all_sounds()
     sounds.play_sound("gameover_sound")
+
+    start_time = pygame.time.get_ticks()
+    while pygame.time.get_ticks() - start_time <= 6000:
+        if player:
+            camera.follow_dynamic_center(robots, player)
+        camera.surface.fill((0, 0, 0))
+        map_renderer.draw_map(camera)
+
+        for robot in robots:
+            robot_renderer.draw(robot, camera, 0)
+
+        draw_text(screen, "GAME OVER", 0, 200, 100, center=True)
+
+        if difficulty == "survival1" or difficulty == "survival2":
+            global highscore
+            global highestkills
+            if highscore < score:  # set new highscore
+                highscore = score
+            if highestkills < kills:
+                highestkills = kills
+            draw_text(screen, f"Highscore: {highscore}s", 0, 330, 70, center=True)
+            draw_text(screen, f"Score: {score}s", 0, 400, 70, center=True)
+            draw_text(screen, f"Highest Kills: {highestkills}", 0, 470, 70, center=True)
+            draw_text(screen, f"Kills: {kills}", 0, 540, 70, center=True)
+
+        pygame.display.flip()
+        clock.tick(60)
 
     running = True
     while running:
@@ -1063,30 +1344,16 @@ def gameover(camera, map_renderer, robot_renderer, robots, player, score=-1, kil
         for robot in robots:
             robot_renderer.draw(robot, camera, 0)
 
-        draw_text(screen, "GAME OVER", 0, 200, 100, center=True)
+        draw_text(screen, texts["gameover_text"], 0, 200, 100, center=True)
 
-        draw_text(
-            screen,
-            "Press ESC to return to Main Menu or press ENTER to restart",
-            0,
-            250,
-            50,
-            center=True,
-        )
+        for i, line in enumerate(texts["endgame_text"]):
+            draw_text(screen, line, 0, 300 + i * 55, 50, center=True)
 
         if difficulty == "survival1" or difficulty == "survival2":
-            global highscore
-            global highestkills
-            if highscore < score:  # set new highscore
-                highscore = score
-            if highestkills < kills:
-                highestkills = kills
-            draw_text(screen, f"Highscore: {highscore}s", 0, 400, 100, center=True)
-            draw_text(screen, f"Score: {score}s", 0, 500, 100, center=True)
-            draw_text(
-                screen, f"Highest Kills: {highestkills}", 0, 600, 100, center=True
-            )
-            draw_text(screen, f"Kills: {kills}", 0, 700, 100, center=True)
+            draw_text(screen, f"Highscore: {highscore}s", 0, 330, 70, center=True)
+            draw_text(screen, f"Score: {score}s", 0, 400, 70, center=True)
+            draw_text(screen, f"Highest Kills: {highestkills}", 0, 470, 70, center=True)
+            draw_text(screen, f"Kills: {kills}", 0, 540, 70, center=True)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -1104,9 +1371,24 @@ def gameover(camera, map_renderer, robot_renderer, robots, player, score=-1, kil
 
 def victory(camera, map_renderer, robot_renderer, robots, player):
 
-    sounds = Sounds()
+    sounds = Sounds(volume / 100)
     sounds.stop_all_sounds()
     sounds.play_sound("win_sound")
+
+    start_time = pygame.time.get_ticks()
+    while pygame.time.get_ticks() - start_time <= 4000:
+        if player:
+            camera.follow_dynamic_center(robots, player)
+        camera.surface.fill((0, 0, 0))
+        map_renderer.draw_map(camera)
+
+        for robot in robots:
+            robot_renderer.draw(robot, camera, 0)
+
+        draw_text(screen, "VICTORY", 0, 200, 100, center=True)
+
+        pygame.display.flip()
+        clock.tick(60)
 
     running = True
     while running:
@@ -1118,16 +1400,10 @@ def victory(camera, map_renderer, robot_renderer, robots, player):
         for robot in robots:
             robot_renderer.draw(robot, camera, 0)
 
-        draw_text(screen, "VICTORY", 0, 200, 100, center=True)
+        draw_text(screen, texts["victory_text"], 0, 200, 100, center=True)
 
-        draw_text(
-            screen,
-            "Press ESC to return to Main Menu or press ENTER to restart",
-            0,
-            250,
-            50,
-            center=True,
-        )
+        for i, line in enumerate(texts["endgame_text"]):
+            draw_text(screen, line, 0, 300 + i * 55, 50, center=True)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -1138,6 +1414,42 @@ def victory(camera, map_renderer, robot_renderer, robots, player):
                     main_menu()
                 elif event.key == pygame.K_RETURN:
                     game_loop(current_map)
+
+        pygame.display.flip()
+        clock.tick(60)
+
+
+def game_credits():
+    clock = pygame.time.Clock()
+    font = pygame.font.SysFont(None, 40)
+
+    back_button = Button(
+        rect=(screen.get_width() // 2 - 125, 510, 250, 50),
+        text=texts["back_text"],
+        font=font,
+        bg_color=(200, 50, 50),
+        text_color=(255, 255, 255),
+        hover_color=(255, 80, 80),
+    )
+
+    running = True
+    while running:
+        screen.fill((30, 30, 30))
+
+        draw_text(screen, texts["credits_text"], 0, 150, 80, center=True)
+
+        for i, line in enumerate(texts["credits"]):
+            draw_text(screen, line, 50, 200 + i * 35, 30)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if back_button.is_clicked(event):
+                return
+
+        back_button.draw(screen)
 
         pygame.display.flip()
         clock.tick(60)
