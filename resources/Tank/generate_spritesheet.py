@@ -1,28 +1,37 @@
 import os
 from PIL import Image
 
-# Config
-input_folder = "tank_frames"
-output_file = "tank_spritesheet.png"
-frame_count = 36  # 000.png to 035.png
-columns = 1
-rows = 36
+angles = range(0, 360, 10)  # 0, 10, ..., 350
 
-# Get frame size from first image
-first_frame = os.path.join(input_folder, "panzer_000.png")
-first_image = Image.open(first_frame)
-frame_width, frame_height = first_image.size
+def generate(prefix, input_folder, output_file):
+    first_frame = os.path.join(input_folder, f"{prefix}_000.png")
+    first_image = Image.open(first_frame)
+    frame_width, frame_height = first_image.size
 
-# Create empty spritesheet
-spritesheet = Image.new("RGBA", (columns * frame_width, rows * frame_height))
+    spritesheet = Image.new("RGBA", (frame_width, frame_height * len(angles)))
 
-# Add all frames
-for i in range(frame_count):
-    filename = f"panzer_{i:03d}.png"
-    filepath = os.path.join(input_folder, filename)
-    x = 0
-    y = i * frame_height
-    spritesheet.paste(Image.open(filepath), (x, y))
+    for i, angle in enumerate(angles):
+        filename = f"{prefix}_{angle:03d}.png"
+        filepath = os.path.join(input_folder, filename)
+        x = 0
+        y = i * frame_height
+        print("Paste:", filepath)
+        spritesheet.paste(Image.open(filepath), (x, y))
 
-# Save
-spritesheet.save(output_file)
+    spritesheet.save(output_file)
+    print(f"✅ Gespeichert: {output_file}")
+
+
+# === BODY ===
+generate(
+    prefix="body",
+    input_folder=r"tank_frames/body",
+    output_file=r"body_spritesheet.png"
+)
+
+# === HEAD ===
+generate(
+    prefix="head",
+    input_folder=r"tank_frames/head",
+    output_file=r"head_spritesheet.png"
+)

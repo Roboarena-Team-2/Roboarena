@@ -24,37 +24,21 @@ class Camera:
 
     def follow_dynamic_center(self, robots: list, player):
         """
-        follow the center between all robots and the player
-        adjust zoom based on average distance to enemies
-        hold camera inside map boundaries
+        Follow the center between all robots (including the player),
+        and zoom based on the largest distance between any two robots.
         """
-        # Add player again to robots in order to pull the center toward the player
-        bots_with_duplicate_player = robots + [player]
+        all_robots = robots + [player]
 
-        if not bots_with_duplicate_player:
-            cx, cy = player.x, player.y
-            avg_distance = 0
-        else:
-            # Average position of all bots
-            sum_x = sum(bot.x for bot in bots_with_duplicate_player)
-            sum_y = sum(bot.y for bot in bots_with_duplicate_player)
-            n = len(bots_with_duplicate_player)
-            cx = sum_x / n
-            cy = sum_y / n
+        # Calculate center position
+        sum_x = sum(bot.x for bot in all_robots)
+        sum_y = sum(bot.y for bot in all_robots)
+        cx = sum_x / len(all_robots)
+        cy = sum_y / len(all_robots)
 
-            # Average distance from enemies to player
-            distances = [
-                ((bot.x - player.x) ** 2 + (bot.y - player.y) ** 2) ** 0.5
-                for bot in robots
-            ]
-            avg_distance = sum(distances) / len(distances) if distances else 0
-
-        # Set initial center directly
+        # follow center
         if self.center_x == 0 and self.center_y == 0:
             self.center_x = cx
             self.center_y = cy
-
-        # Smoothly follow the target center
         self.center_x += (cx - self.center_x) * 0.1
         self.center_y += (cy - self.center_y) * 0.1
 
@@ -64,24 +48,34 @@ class Camera:
         self.offset_x = int(self.center_x - half_width)
         self.offset_y = int(self.center_y - half_height)
 
-        # Dynamic zoom based on distances
-        avg_distance = max(20, min(avg_distance, 800))
+        # Calculate max distance between any two robots
+        max_dist = 0
+        for i in range(len(all_robots)):
+            for j in range(i + 1, len(all_robots)):
+                a = all_robots[i]
+                b = all_robots[j]
+                dx = abs(a.x - b.x)
+                dy = abs(a.y - b.y)
+                weighted = dx + dy * 2.5  # y weighted more
+                max_dist = max(max_dist, weighted)
 
-        # Zoom range
-        zoom_near = 1.5
-        zoom_far = 0.6
+        # Adjust zoom based on max_dist
+        min_dist = 100
+        max_dist_cap = 2500
+        zoom_near = 1.2
+        zoom_far = 0.5
 
-        # Zoom interpolation [0, 1]
-        norm_dist = (avg_distance - 100) / 700
-        norm_dist = max(0.0, min(norm_dist, 1.0))
-        target_zoom = zoom_near - norm_dist * (zoom_near - zoom_far)
+        # Normalized value in range [0, 1]
+        t = (max_dist - min_dist) / (max_dist_cap - min_dist)
+        t = max(0.0, min(t, 1.0))
+        target_zoom = zoom_near * (1 - t) + zoom_far * t
         self.zoom += (target_zoom - self.zoom) * 0.1
 
-        # Hold Camera inside the map
-        max_offset_x = self.map_pixel_width - (self.camera_surface_width / self.zoom)
-        max_offset_y = self.map_pixel_height - (self.camera_surface_height / self.zoom)
-        self.offset_x = max(0, min(self.offset_x, int(max_offset_x)))
-        self.offset_y = max(0, min(self.offset_y, int(max_offset_y)))
+        # Clamp camera to map boundaries
+        max_x = self.map_pixel_width - self.camera_surface_width / self.zoom
+        max_y = self.map_pixel_height - self.camera_surface_height / self.zoom
+        self.offset_x = max(0, min(self.offset_x, int(max_x)))
+        self.offset_y = max(0, min(self.offset_y, int(max_y)))
 
     def apply(self, x: int, y: int) -> tuple[int, int]:
         """Converts world coordinates to screen coordinates"""
@@ -94,8 +88,3 @@ class Camera:
         world_x = screen_x / self.zoom + self.offset_x
         world_y = screen_y / self.zoom + self.offset_y
         return world_x, world_y
-
-    def set_zoom_to(self, value: float):
-        # Set zoom level directly limited between 0.8 and 3.0.
-
-        self.zoom = max(0.8, min(value, 3.0))

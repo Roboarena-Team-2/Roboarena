@@ -124,7 +124,7 @@ class Robot:
 
             # shoot
             for event in pygame.event.get():
-                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_x, mouse_y = pygame.mouse.get_pos()
                     mouse_world_x, mouse_world_y = camera.screen_to_world(
                         mouse_x, mouse_y
@@ -280,6 +280,7 @@ class Robot:
             or abs(goal.y - self.y) > 0.5
             or abs(angle_to_goal - self.alpha) > 1
         )
+        self.target = goal
 
     # React to collisions with other robots
     def robot_collision(
@@ -422,37 +423,38 @@ class Robot:
             self.bush_tiles = []
 
     # Get random spawn position
-    def get_spawn_position(
-        self, game_map: Map, robots: list["Robot"]
-    ) -> tuple[int, int]:
-        # Get random position
-        position_x = random.randint(
-            2 * config.TILE_SIZE + self.hitbox_radius,
-            (config.COLUMNS - 2) * config.TILE_SIZE,
+    def get_spawn_position(self, game_map: Map, robots: list["Robot"]) -> tuple[int, int]:
+        max_attempts = 1000
+        for _ in range(max_attempts):
+            # Random tile coordinates
+            tile_x = random.randint(2, config.COLUMNS - 3)
+            tile_y = random.randint(2, config.ROWS - 3)
+            tile_type = game_map.get_tile_type(tile_x, tile_y)
+
+            # Skip invalid tiles
+            if tile_type in ("lava", "wall", "bush"):
+                continue
+
+            # Set position to center of tile
+            position_x = tile_x * config.TILE_SIZE + config.TILE_SIZE // 2
+            position_y = tile_y * config.TILE_SIZE + config.TILE_SIZE // 2
+            self.x = position_x
+            self.y = position_y
+
+            # Check distance to other robots
+            max_dist = math.hypot(
+                config.TILE_SIZE * (config.ROWS - 2),
+                config.TILE_SIZE * (config.COLUMNS - 2),
+            )
+            min_dist = max_dist / ((len(robots) + 1) * 1.7)
+            if self.robot_dist(robots)[0][0] <= min_dist:
+                continue
+
+            return (position_x, position_y)
+
+        raise Exception(
+            f"No valid spawn found after {max_attempts} attempts."
         )
-        position_y = random.randint(
-            2 * config.TILE_SIZE + self.hitbox_radius,
-            (config.ROWS - 2) * config.TILE_SIZE,
-        )
-        # Check for distance to other robots
-        self.x = position_x
-        self.y = position_y
-        max_dist = math.hypot(
-            config.TILE_SIZE * (config.ROWS - 2),
-            config.TILE_SIZE * (config.COLUMNS - 2),
-        )
-        min_dist = max_dist / (len(robots) + 1)
-        if self.robot_dist(robots)[0][0] > min_dist:
-            # Check for tiles to avoid walls, lava and bush
-            touched_textures = self.touched_textures(game_map)
-            if (
-                ("lava" not in touched_textures)
-                and ("wall" not in touched_textures)
-                and ("bush" not in touched_textures)
-            ):
-                return (position_x, position_y)
-        # Try again
-        return self.get_spawn_position(game_map, robots)
 
     # moves robot if new position not in wall
     def move_if_no_walls(
@@ -555,27 +557,47 @@ class Robot:
         if self.power <= powerloss:
             return None
 
+            # override alpha: use head_angle - 5° for tank player
+        if self.robot_type == "Tank" and self.is_player and hasattr(self, "head_angle"):
+            alpha = (self.head_angle - 5) % 360
+
         # shoot, if there is enough time and power
-        alpha_rad = math.radians(self.alpha)
-        offset = self.hitbox_radius * 0.2  # start the bullet closer to center
-        start_x = self.x + offset * math.cos(alpha_rad)  # start outsinde of the robot
-        start_y = self.y + offset * math.sin(alpha_rad)
+        start_x = self.x
+        start_y = self.y
+
+        # Move a bit forward in turret direction
+        look_shift = 0.2 * self.hitbox_radius
+        start_x += look_shift * math.cos(math.radians(alpha))
+        start_y += look_shift * math.sin(math.radians(alpha))
+
+        # Move a bit back in body direction
+        back_shift = 0.15 * self.hitbox_radius
+        start_x -= back_shift * math.cos(math.radians(self.alpha))
+        start_y -= back_shift * math.sin(math.radians(self.alpha))
+
         if self.robot_type == "Tank":
             velocity = 30 * camera.zoom
             reach = 900
         else:  # Spider and back-up robot
             velocity = 20 * camera.zoom
             reach = 600
+
+        # Clamp alpha to within 35
+        angle_diff = (alpha - self.alpha + 540) % 360 - 180
+        clamped_alpha = (self.alpha + max(-35, min(35, angle_diff))) % 360
+
+        # Create bullet
         bullet = Bullet(
             int(start_x),
             int(start_y),
-            alpha,
-            int(7 * camera.zoom),
+            clamped_alpha,
+            int(4 * (camera.zoom + 0.5)),
             (0, 0, 0),
             self,
             velocity,
             reach,
-        )  # create bullet
+        )
+
         # recoil
         direction_rad = math.radians(self.alpha)
         x = self.v * -math.cos(direction_rad) * 2
