@@ -286,7 +286,6 @@ def difficulty_survival_more(camera, game_map) -> list[Robot]:
 
 def main_menu():
     clock = pygame.time.Clock()
-    global font
     global current_map
     global difficulty
     global type
@@ -404,7 +403,6 @@ def main_menu():
 
 def pause_menu():
     clock = pygame.time.Clock()
-    global font
 
     continue_button = Button(
         rect=(screen.get_width() // 2 - 125, 230, 250, 50),
@@ -494,8 +492,6 @@ def pause_menu():
 
 def difficulty_selection():
     clock = pygame.time.Clock()
-    global font
-    global tooltip_font
 
     global difficulty
 
@@ -614,9 +610,7 @@ def difficulty_selection():
 
 def class_selection():
     clock = pygame.time.Clock()
-    global font
     global type
-    global tooltip_font
 
     next_button = Button(
         rect=(screen.get_width() // 2 - 125, 400, 250, 50),
@@ -694,11 +688,9 @@ def class_selection():
 
 def level_selection():
     clock = pygame.time.Clock()
-    global font
     global random_map
     global current_map
     global seed
-    global tooltip_font
 
     start_button = Button(
         rect=(screen.get_width() // 2 - 125, 450, 250, 50),
@@ -826,7 +818,6 @@ def settings():
     global volume
     global texts
     clock = pygame.time.Clock()
-    global font
 
     volume_slider = Slider(
         rect=(screen.get_width() // 2 - 100, 290, 200, 10),
@@ -935,7 +926,6 @@ def settings():
 
 
 def instructions_menu():
-    global font
 
     instructions_scrollbar = Scrollbar(
         len(texts["instructions"]) * 45 - 600,
@@ -1455,7 +1445,6 @@ def victory(camera, map_renderer, robot_renderer, robots, player):
 
 def game_credits():
     clock = pygame.time.Clock()
-    font = pygame.font.SysFont(None, 40)
 
     back_button = Button(
         rect=(screen.get_width() // 2 - 125, 510, 250, 50),
