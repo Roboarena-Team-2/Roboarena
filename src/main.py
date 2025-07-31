@@ -1096,13 +1096,6 @@ def game_loop(map_file: str | None = None):
         dt = clock.tick(60) / 300  # animation speed
         camera.follow_dynamic_center(robots, player)
 
-        # Rotate Player by 10° steps using a/d
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_a]:  # clock-wise
-            player.rotation_frame = (player.rotation_frame + 10) % 360
-        if keys[pygame.K_d]:  # counter-clock-wise
-            player.rotation_frame = (player.rotation_frame - 10) % 360
-
         # Event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
