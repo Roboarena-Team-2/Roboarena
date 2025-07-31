@@ -51,7 +51,7 @@ texts = config.texts
 difficulty: str = "medium"
 highscore: int = 0
 highestkills: int = 0
-robot_size = int(config.TILE_SIZE * 1.1)
+robot_size = int(config.TILE_SIZE * 1.25)
 # Map data
 current_map = "test-level.txt"
 random_map = False
