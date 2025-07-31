@@ -51,7 +51,7 @@ texts = config.texts
 difficulty: str = "medium"
 highscore: int = 0
 highestkills: int = 0
-
+robot_size = int(config.TILE_SIZE * 1.25)
 # Map data
 current_map = "test-level.txt"
 random_map = False
@@ -77,7 +77,7 @@ def draw_text(
 def difficulty_easy(camera, game_map) -> list[Robot]:
     game_map.player_count = 3
     spawn_positions = game_map.generate_spawn_positions()
-    robot_size = int(config.TILE_SIZE * 1.3)
+
     speed = 3 * camera.zoom
     turnspeed = 4 * camera.zoom
     robots: list[Robot] = []
@@ -119,7 +119,6 @@ def difficulty_easy(camera, game_map) -> list[Robot]:
 def difficulty_medium(camera, game_map) -> list[Robot]:
     game_map.player_count = 4
     spawn_positions = game_map.generate_spawn_positions()
-    robot_size = int(config.TILE_SIZE * 1.3)
     speed = 4 * camera.zoom
     turnspeed = 5 * camera.zoom
     robots: list[Robot] = []
@@ -161,7 +160,6 @@ def difficulty_medium(camera, game_map) -> list[Robot]:
 def difficulty_hard(camera, game_map) -> list[Robot]:
     game_map.player_count = 5
     spawn_positions = game_map.generate_spawn_positions()
-    robot_size = int(config.TILE_SIZE * 1.3)
     speed = 5 * camera.zoom
     turnspeed = 6 * camera.zoom
     robots: list[Robot] = []
@@ -203,7 +201,6 @@ def difficulty_hard(camera, game_map) -> list[Robot]:
 def difficulty_survival_faster(camera, game_map) -> list[Robot]:
     game_map.player_count = 3
     spawn_positions = game_map.generate_spawn_positions()
-    robot_size = int(config.TILE_SIZE * 1.3)
     speed = 1 * camera.zoom
     turnspeed = 1 * camera.zoom
     robots: list[Robot] = []
@@ -245,7 +242,6 @@ def difficulty_survival_faster(camera, game_map) -> list[Robot]:
 def difficulty_survival_more(camera, game_map) -> list[Robot]:
     game_map.player_count = 2
     spawn_positions = game_map.generate_spawn_positions()
-    robot_size = int(config.TILE_SIZE * 1.3)
     speed = 2 * camera.zoom
     turnspeed = 2 * camera.zoom
     robots: list[Robot] = []

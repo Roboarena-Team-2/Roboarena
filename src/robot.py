@@ -73,6 +73,7 @@ class Robot:
         )  # List of bush tile positions robot is currently overlapping
         self.robot_type = robot_type
         self.frames_without_turning = 6
+        self.rotation_frame = 0  # current rotation angle
 
     # Lets the player move the robot on map
     def update_player(
@@ -132,9 +133,9 @@ class Robot:
                     diff = (shooting_angle - self.alpha + 180) % 360 - 180
                     alpha = self.alpha
                     if diff >= 0:
-                        alpha += min(45, diff)
+                        alpha += min(30, diff)
                     else:
-                        alpha += max(-45, diff)
+                        alpha += max(-30, diff)
                     self.shoot(alpha, bullets, camera, walls, robots, game_map)
 
         else:  # Spider and back-up robot
@@ -188,7 +189,7 @@ class Robot:
 
             # check, if user used a key for shooting
             for event in pygame.event.get():
-                if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     self.shoot(self.alpha, bullets, camera, walls, robots, game_map)
 
     # Lets a robot follow another robot
@@ -244,8 +245,8 @@ class Robot:
             y = forward_y * self.v * direction
             self.move_if_no_walls(x, y, walls, robots, game_map, check_for_lava=True)
 
-            # shoot, if goal is in 45° range
-            if abs(angle_diff) < 45:
+            # shoot, if goal is in 30° range
+            if abs(angle_diff) < 30:
                 self.shoot(angle_to_goal, bullets, camera, walls, robots, game_map)
 
         else:  # spider and back-up robot
@@ -277,6 +278,7 @@ class Robot:
             or abs(goal.y - self.y) > 0.5
             or abs(angle_to_goal - self.alpha) > 1
         )
+        self.target = goal
 
     # React to collisions with other robots
     def robot_collision(
@@ -556,27 +558,43 @@ class Robot:
         if self.power <= powerloss:
             return None
 
+            # override alpha: use head_angle - 5° for tank player
+        if self.robot_type == "Tank" and self.is_player and hasattr(self, "head_angle"):
+            alpha = (self.head_angle - 5) % 360
+
         # shoot, if there is enough time and power
-        alpha_rad = math.radians(self.alpha)
-        offset = self.hitbox_radius * 0.2  # start the bullet closer to center
-        start_x = self.x + offset * math.cos(alpha_rad)  # start outsinde of the robot
-        start_y = self.y + offset * math.sin(alpha_rad)
+        start_x = self.x
+        start_y = self.y
+
+        # Move a bit forward in turret direction
+        look_shift = 0.2 * self.hitbox_radius
+        start_x += look_shift * math.cos(math.radians(alpha))
+        start_y += look_shift * math.sin(math.radians(alpha))
+
+        # Move a bit back in body direction
+        back_shift = 0.15 * self.hitbox_radius
+        start_x -= back_shift * math.cos(math.radians(self.alpha))
+        start_y -= back_shift * math.sin(math.radians(self.alpha))
+
         if self.robot_type == "Tank":
             velocity = 30 * camera.zoom
-            reach = 800
+            reach = 900
         else:  # Spider and back-up robot
             velocity = 20 * camera.zoom
             reach = 600
+
+        # Create bullet
         bullet = Bullet(
             int(start_x),
             int(start_y),
             alpha,
-            int(7 * camera.zoom),
+            int(4 * (camera.zoom + 0.5)),
             (0, 0, 0),
             self,
             velocity,
             reach,
-        )  # create bullet
+        )
+
         # recoil
         direction_rad = math.radians(self.alpha)
         x = self.v * -math.cos(direction_rad) * 2
@@ -670,7 +688,7 @@ class Robot:
             angle_diff = abs(abs(angle_to_robot) - robot.alpha) % 360
             in_range = False
             if robot.robot_type == "Tank":
-                if (angle_diff <= 45) or (angle_diff >= 315):
+                if (angle_diff <= 30) or (angle_diff >= 330):
                     in_range = True
             else:
                 if (angle_diff <= 10) or (angle_diff >= 350):
