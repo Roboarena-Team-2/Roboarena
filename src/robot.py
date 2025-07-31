@@ -133,9 +133,9 @@ class Robot:
                     diff = (shooting_angle - self.alpha + 180) % 360 - 180
                     alpha = self.alpha
                     if diff >= 0:
-                        alpha += min(45, diff)
+                        alpha += min(30, diff)
                     else:
-                        alpha += max(-45, diff)
+                        alpha += max(-30, diff)
                     self.shoot(alpha, bullets, camera, walls, robots, game_map)
 
         else:  # Spider and back-up robot
@@ -245,8 +245,8 @@ class Robot:
             y = forward_y * self.v * direction
             self.move_if_no_walls(x, y, walls, robots, game_map, check_for_lava=True)
 
-            # shoot, if goal is in 45° range
-            if abs(angle_diff) < 45:
+            # shoot, if goal is in 30° range
+            if abs(angle_diff) < 30:
                 self.shoot(angle_to_goal, bullets, camera, walls, robots, game_map)
 
         else:  # spider and back-up robot
@@ -583,15 +583,11 @@ class Robot:
             velocity = 20 * camera.zoom
             reach = 600
 
-        # Clamp alpha to within 35
-        angle_diff = (alpha - self.alpha + 540) % 360 - 180
-        clamped_alpha = (self.alpha + max(-35, min(35, angle_diff))) % 360
-
         # Create bullet
         bullet = Bullet(
             int(start_x),
             int(start_y),
-            clamped_alpha,
+            alpha,
             int(4 * (camera.zoom + 0.5)),
             (0, 0, 0),
             self,
@@ -692,7 +688,7 @@ class Robot:
             angle_diff = abs(abs(angle_to_robot) - robot.alpha) % 360
             in_range = False
             if robot.robot_type == "Tank":
-                if (angle_diff <= 45) or (angle_diff >= 315):
+                if (angle_diff <= 30) or (angle_diff >= 330):
                     in_range = True
             else:
                 if (angle_diff <= 10) or (angle_diff >= 350):
