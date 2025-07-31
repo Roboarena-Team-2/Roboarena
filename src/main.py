@@ -57,6 +57,10 @@ current_map = "test-level.txt"
 random_map = False
 seed = 1
 
+# Manu variables
+font = pygame.font.SysFont(None, 40)
+tooltip_font = pygame.font.SysFont(None, 25)
+
 
 def draw_text(
     surface, text, x, y, font_size, color=(255, 255, 255), font_name=None, center=False
@@ -282,20 +286,14 @@ def difficulty_survival_more(camera, game_map) -> list[Robot]:
 
 def main_menu():
     clock = pygame.time.Clock()
-    font = pygame.font.SysFont(None, 40)
+    global current_map
+    global difficulty
+    global type
+    global random_map
 
     start_button = Button(
         rect=(screen.get_width() // 2 - 125, 250, 250, 50),
         text=texts["start_text"],
-        font=font,
-        bg_color=(20, 130, 200),
-        text_color=(255, 255, 255),
-        hover_color=(40, 160, 255),
-    )
-
-    difficulty_button = Button(
-        rect=(screen.get_width() // 2 - 125, 320, 250, 50),
-        text=texts["difficulty_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -311,9 +309,9 @@ def main_menu():
         hover_color=(40, 160, 255),
     )
 
-    level_button = Button(
-        rect=(screen.get_width() // 2 - 125, 460, 250, 50),
-        text=texts["level_text"],
+    quickstart_button = Button(
+        rect=(screen.get_width() // 2 - 125, 320, 250, 50),
+        text=texts["quickstart_text"],
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -321,7 +319,7 @@ def main_menu():
     )
 
     settings_button = Button(
-        rect=(screen.get_width() // 2 - 125, 530, 250, 50),
+        rect=(screen.get_width() // 2 - 125, 460, 250, 50),
         text=texts["settings_text"],
         font=font,
         bg_color=(20, 130, 200),
@@ -330,7 +328,7 @@ def main_menu():
     )
 
     quit_button = Button(
-        rect=(screen.get_width() // 2 - 125, 600, 250, 50),
+        rect=(screen.get_width() // 2 - 125, 530, 250, 50),
         text=texts["quit_text"],
         font=font,
         bg_color=(200, 50, 50),
@@ -353,13 +351,26 @@ def main_menu():
                 sys.exit()
 
             if start_button.is_clicked(event):
-                class_selection()
-            if difficulty_button.is_clicked(event):
                 difficulty_selection()
             if instructions_button.is_clicked(event):
                 instructions_menu()
-            if level_button.is_clicked(event):
-                level_selection()
+            if quickstart_button.is_clicked(event):
+                type = random.choice(["Tank", "Spider"])
+                current_map = random.choice(
+                    [
+                        "test-level.txt",
+                        "test-level2.txt",
+                        "lavariver.txt",
+                        "fourelements.txt",
+                    ]
+                )
+                difficulty = random.choice(
+                    ["easy", "medium", "hard", "survival1", "survival2"]
+                )
+                random_map = random.choice(
+                    [True, False, False, False, False]
+                )  # to get random maps in a ratio of 1:4
+                game_loop(current_map)
             if settings_button.is_clicked(event):
                 settings()
                 main_menu()
@@ -369,9 +380,8 @@ def main_menu():
                 sys.exit()
 
         start_button.draw(screen)
-        difficulty_button.draw(screen)
         instructions_button.draw(screen)
-        level_button.draw(screen)
+        quickstart_button.draw(screen)
         settings_button.draw(screen)
         quit_button.draw(screen)
 
@@ -381,7 +391,6 @@ def main_menu():
 
 def pause_menu():
     clock = pygame.time.Clock()
-    font = pygame.font.SysFont(None, 40)
 
     continue_button = Button(
         rect=(screen.get_width() // 2 - 125, 230, 250, 50),
@@ -471,9 +480,10 @@ def pause_menu():
 
 def difficulty_selection():
     clock = pygame.time.Clock()
-    font = pygame.font.SysFont(None, 40)
-
     global difficulty
+    global type
+    global current_map
+    global random_map
 
     easy_button = Button(
         rect=(screen.get_width() // 2 - 425, 300, 250, 50),
@@ -484,6 +494,8 @@ def difficulty_selection():
         hover_color=(40, 160, 255),
         selected=difficulty == "easy",
         selected_color=(0, 100, 150),
+        tooltip_text=texts["easy_tooltip"],
+        tooltip_font=tooltip_font,
     )
 
     medium_button = Button(
@@ -495,6 +507,8 @@ def difficulty_selection():
         hover_color=(40, 160, 255),
         selected=difficulty == "medium",
         selected_color=(0, 100, 150),
+        tooltip_text=texts["medium_tooltip"],
+        tooltip_font=tooltip_font,
     )
 
     hard_button = Button(
@@ -506,6 +520,8 @@ def difficulty_selection():
         hover_color=(40, 160, 255),
         selected=difficulty == "hard",
         selected_color=(0, 100, 150),
+        tooltip_text=texts["hard_tooltip"],
+        tooltip_font=tooltip_font,
     )
 
     survival1_button = Button(
@@ -517,6 +533,8 @@ def difficulty_selection():
         hover_color=(40, 160, 255),
         selected=difficulty == "survival1",
         selected_color=(0, 100, 150),
+        tooltip_text=texts["survival1_tooltip"],
+        tooltip_font=tooltip_font,
     )
 
     survival2_button = Button(
@@ -528,10 +546,34 @@ def difficulty_selection():
         hover_color=(40, 160, 255),
         selected=difficulty == "survival2",
         selected_color=(0, 100, 150),
+        tooltip_text=texts["survival2_tooltip"],
+        tooltip_font=tooltip_font,
+    )
+
+    next_button = Button(
+        rect=(screen.get_width() // 2 + 25, 570, 250, 50),
+        text="next",
+        font=font,
+        bg_color=(20, 130, 200),
+        text_color=(255, 255, 255),
+        hover_color=(40, 160, 255),
+        tooltip_text=texts["next_tooltip"],
+        tooltip_font=tooltip_font,
+    )
+
+    start_button = Button(
+        rect=(screen.get_width() // 2 - 275, 570, 250, 50),
+        text=texts["start_text"],
+        font=font,
+        bg_color=(20, 130, 200),
+        text_color=(255, 255, 255),
+        hover_color=(40, 160, 255),
+        tooltip_text=texts["start_tooltip"],
+        tooltip_font=tooltip_font,
     )
 
     back_button = Button(
-        rect=(screen.get_width() // 2 - 125, 600, 250, 50),
+        rect=(screen.get_width() // 2 - 125, 650, 250, 50),
         text=texts["back_text"],
         font=font,
         bg_color=(200, 50, 50),
@@ -556,19 +598,35 @@ def difficulty_selection():
 
             if easy_button.is_clicked(event):
                 difficulty = "easy"
-                return options()  # noqa: F821
+                return difficulty_selection()  # noqa: F821
             if medium_button.is_clicked(event):
                 difficulty = "medium"
-                return options()  # noqa: F821
+                return difficulty_selection()  # noqa: F821
             if hard_button.is_clicked(event):
                 difficulty = "hard"
-                return options()  # noqa: F821
+                return difficulty_selection()  # noqa: F821
             if survival1_button.is_clicked(event):
                 difficulty = "survival1"
-                return options()  # noqa: F821
+                return difficulty_selection()  # noqa: F821
             if survival2_button.is_clicked(event):
                 difficulty = "survival2"
-                return options()  # noqa: F821
+                return difficulty_selection()  # noqa: F821
+            if next_button.is_clicked(event):
+                class_selection()
+            if start_button.is_clicked(event):
+                type = random.choice(["Tank", "Spider"])
+                current_map = random.choice(
+                    [
+                        "test-level.txt",
+                        "test-level2.txt",
+                        "lavariver.txt",
+                        "fourelements.txt",
+                    ]
+                )
+                random_map = random.choice(
+                    [True, False, False, False, False]
+                )  # to get random maps in a ratio of 1:4
+                game_loop(current_map)
             if back_button.is_clicked(event):
                 return
 
@@ -577,6 +635,8 @@ def difficulty_selection():
         hard_button.draw(screen)
         survival1_button.draw(screen)
         survival2_button.draw(screen)
+        next_button.draw(screen)
+        start_button.draw(screen)
         back_button.draw(screen)
 
         pygame.display.flip()
@@ -585,12 +645,11 @@ def difficulty_selection():
 
 def class_selection():
     clock = pygame.time.Clock()
-    font = pygame.font.SysFont(None, 40)
     global type
 
-    start_button = Button(
+    next_button = Button(
         rect=(screen.get_width() // 2 - 125, 400, 250, 50),
-        text=texts["start_text"],
+        text="next",
         font=font,
         bg_color=(20, 130, 200),
         text_color=(255, 255, 255),
@@ -606,6 +665,8 @@ def class_selection():
         hover_color=(40, 160, 255),
         selected=type == "Tank",
         selected_color=(0, 100, 150),
+        tooltip_text=texts["tank_tooltip"],
+        tooltip_font=tooltip_font,
     )
 
     spider_button = Button(
@@ -617,6 +678,8 @@ def class_selection():
         hover_color=(40, 160, 255),
         selected=type == "Spider",
         selected_color=(0, 100, 150),
+        tooltip_text=texts["spider_tooltip"],
+        tooltip_font=tooltip_font,
     )
 
     back_button = Button(
@@ -638,8 +701,8 @@ def class_selection():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if start_button.is_clicked(event):
-                game_loop()
+            if next_button.is_clicked(event):
+                level_selection()
             if tank_button.is_clicked(event):
                 type = "Tank"
                 return class_selection()
@@ -649,7 +712,7 @@ def class_selection():
             if back_button.is_clicked(event):
                 return
 
-        start_button.draw(screen)
+        next_button.draw(screen)
         spider_button.draw(screen)
         tank_button.draw(screen)
         back_button.draw(screen)
@@ -660,7 +723,6 @@ def class_selection():
 
 def level_selection():
     clock = pygame.time.Clock()
-    font = pygame.font.SysFont(None, 40)
     global random_map
     global current_map
     global seed
@@ -727,6 +789,8 @@ def level_selection():
         hover_color=(40, 160, 255),
         selected=random_map,
         selected_color=(0, 100, 150),
+        tooltip_text=texts["random_tooltip"],
+        tooltip_font=tooltip_font,
     )
 
     back_button = Button(
@@ -789,7 +853,6 @@ def settings():
     global volume
     global texts
     clock = pygame.time.Clock()
-    font = pygame.font.SysFont(None, 40)
 
     volume_slider = Slider(
         rect=(screen.get_width() // 2 - 100, 290, 200, 10),
@@ -898,7 +961,6 @@ def settings():
 
 
 def instructions_menu():
-    font = pygame.font.SysFont(None, 40)
 
     instructions_scrollbar = Scrollbar(
         len(texts["instructions"]) * 45 - 600,
@@ -1314,7 +1376,7 @@ def gameover(camera, map_renderer, robot_renderer, robots, player, score=-1, kil
         for robot in robots:
             robot_renderer.draw(robot, camera, 0)
 
-        draw_text(screen, "GAME OVER", 0, 200, 100, center=True)
+        draw_text(screen, texts["gameover_text"], 0, 200, 100, center=True)
 
         if difficulty == "survival1" or difficulty == "survival2":
             global highscore
@@ -1323,10 +1385,10 @@ def gameover(camera, map_renderer, robot_renderer, robots, player, score=-1, kil
                 highscore = score
             if highestkills < kills:
                 highestkills = kills
-            draw_text(screen, f"Highscore: {highscore}s", 0, 330, 70, center=True)
-            draw_text(screen, f"Score: {score}s", 0, 400, 70, center=True)
-            draw_text(screen, f"Highest Kills: {highestkills}", 0, 470, 70, center=True)
-            draw_text(screen, f"Kills: {kills}", 0, 540, 70, center=True)
+            draw_text(screen, f"Highscore: {highscore}s", 0, 380, 70, center=True)
+            draw_text(screen, f"Score: {score}s", 0, 450, 70, center=True)
+            draw_text(screen, f"Highest Kills: {highestkills}", 0, 520, 70, center=True)
+            draw_text(screen, f"Kills: {kills}", 0, 590, 70, center=True)
 
         pygame.display.flip()
         clock.tick(60)
@@ -1344,13 +1406,13 @@ def gameover(camera, map_renderer, robot_renderer, robots, player, score=-1, kil
         draw_text(screen, texts["gameover_text"], 0, 200, 100, center=True)
 
         for i, line in enumerate(texts["endgame_text"]):
-            draw_text(screen, line, 0, 300 + i * 55, 50, center=True)
+            draw_text(screen, line, 0, 250 + i * 35, 50, center=True)
 
         if difficulty == "survival1" or difficulty == "survival2":
-            draw_text(screen, f"Highscore: {highscore}s", 0, 330, 70, center=True)
-            draw_text(screen, f"Score: {score}s", 0, 400, 70, center=True)
-            draw_text(screen, f"Highest Kills: {highestkills}", 0, 470, 70, center=True)
-            draw_text(screen, f"Kills: {kills}", 0, 540, 70, center=True)
+            draw_text(screen, f"Highscore: {highscore}s", 0, 380, 70, center=True)
+            draw_text(screen, f"Score: {score}s", 0, 450, 70, center=True)
+            draw_text(screen, f"Highest Kills: {highestkills}", 0, 520, 70, center=True)
+            draw_text(screen, f"Kills: {kills}", 0, 590, 70, center=True)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -1418,7 +1480,6 @@ def victory(camera, map_renderer, robot_renderer, robots, player):
 
 def game_credits():
     clock = pygame.time.Clock()
-    font = pygame.font.SysFont(None, 40)
 
     back_button = Button(
         rect=(screen.get_width() // 2 - 125, 510, 250, 50),

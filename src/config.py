@@ -39,7 +39,7 @@ def update_language(language):
             "start_text": "Spiel starten",
             "difficulty_text": "Schwierigkeit",
             "instructions_text": "Anleitung",
-            "level_text": "Karten-Auswahl",
+            "quickstart_text": "Schnellstart",
             "settings_text": "Einstellungen",
             "quit_text": "Spiel beenden",
             "main_menu_text": "Hauptmenü",
@@ -165,13 +165,30 @@ def update_language(language):
             "four_elements": "Vier Elemente",
             "Random": "Zufall",
             "survival_mode_text": "Survival",
+            "next_text": "weiter",
+            "easy_tooltip": "2 Gegner",
+            "medium_tooltip": "3 Gegner",
+            "hard_tooltip": "4 Gegner",
+            "survival1_tooltip": "Es tauchen immer mehr\n"
+                                 "und immer schneller Gegner auf",
+            "survival2_tooltip": "Es gibt immer 2 Gegner,\n"
+                                 "die mit jedem Tod schneller werden",
+            "tank_tooltip": "Bewegt sich wie ein Panzer\n"
+                            "bekommt weniger Schaden von Schüssen\n"
+                            "Eingeschränktes Schussfeld",
+            "spider_tooltip": "Kann in alle Richtungen laufen\n"
+                              "Kann sich in alle Richtungen drehen beim schießen",
+            "random_tooltip": "eine zufällig generierte map",
+            "next_tooltip": "Wähle deine Klasse und Karte",
+            "start_tooltip": "Startet das Spiel mit einer\n"
+                             "zufälligen Karte und Klasse"
         }
     else:
         texts = {
             "start_text": "Start Game",
             "difficulty_text": "Difficulty",
             "instructions_text": "How to play",
-            "level_text": "Map Selection",
+            "quickstart_text": "Quick start",
             "settings_text": "Settings",
             "quit_text": "Exit Game",
             "main_menu_text": "Main Menu",
@@ -291,5 +308,21 @@ def update_language(language):
             "four_elements": "Four Elements",
             "Random": "Random",
             "survival_mode_text": "Survival",
+            "next_text": "next",
+            "easy_tooltip": "2 enemies",
+            "medium_tooltip": "3 enemies",
+            "hard_tooltip": "4 enemies",
+            "survival1_tooltip": "More and more enemies\n"
+                                 "will spawn as time goes on",
+            "survival2_tooltip": "There will always be 2 enemies\n"
+                                 "but their speed increases upon death",
+            "tank_tooltip": "Moves like a tank\n"
+                            "takes less damage from shots\n"
+                            "limited firing radius",
+            "spider_tooltip": "Can move in all directions\n"
+                              "and turn in every direction while shooting",
+            "random_tooltip": "a randomly generated map",
+            "next_tooltip": "choose your robot and a map",
+            "start_tooltip": "Start the game with a random robot and map"
         }
     return texts
