@@ -19,12 +19,13 @@ class Powerup:
     def draw_powerup(self, camera: Camera) -> None:
         # draw powerup
         draw_x, draw_y = camera.apply(int(self.rect.x), int(self.rect.y))
+        powerup_size = 20
         if self.type == "ram":
             icon_fire = pygame.transform.scale(
                 config.ICONS["explosion"],
                 (
-                    int(self.rect.width + 3) * camera.zoom,
-                    int(self.rect.height + 3) * camera.zoom,
+                    int(self.rect.width + powerup_size) * camera.zoom,
+                    int(self.rect.height + powerup_size) * camera.zoom,
                 ),
             ).convert_alpha()
             camera.surface.blit(icon_fire, (draw_x, draw_y))
@@ -32,8 +33,8 @@ class Powerup:
             icon_health = pygame.transform.scale(
                 config.ICONS["heart"],
                 (
-                    int(self.rect.width + 3) * camera.zoom,
-                    int(self.rect.height + 3) * camera.zoom,
+                    int(self.rect.width + powerup_size) * camera.zoom,
+                    int(self.rect.height + powerup_size) * camera.zoom,
                 ),
             ).convert_alpha()
             camera.surface.blit(icon_health, (draw_x, draw_y))
@@ -41,8 +42,8 @@ class Powerup:
             icon_power = pygame.transform.scale(
                 config.ICONS["power"],
                 (
-                    int(self.rect.width + 3) * camera.zoom,
-                    int(self.rect.height + 3) * camera.zoom,
+                    int(self.rect.width + powerup_size) * camera.zoom,
+                    int(self.rect.height + powerup_size) * camera.zoom,
                 ),
             ).convert_alpha()
             camera.surface.blit(icon_power, (draw_x, draw_y))
@@ -50,8 +51,8 @@ class Powerup:
             icon_shield = pygame.transform.scale(
                 config.ICONS["shield"],
                 (
-                    int(self.rect.width + 3) * camera.zoom,
-                    int(self.rect.height + 3) * camera.zoom,
+                    int(self.rect.width + powerup_size) * camera.zoom,
+                    int(self.rect.height + powerup_size) * camera.zoom,
                 ),
             ).convert_alpha()
             camera.surface.blit(icon_shield, (draw_x, draw_y))
