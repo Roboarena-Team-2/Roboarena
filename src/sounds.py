@@ -31,7 +31,7 @@ class Sounds:
             ),
             "background_sound": pygame.mixer.Sound(
                 "../resources/sounds/FutureAmbient_3.wav"
-            )
+            ),
         }
 
         # different channels fot different sound categories
@@ -98,7 +98,7 @@ class Sounds:
                 self.channel_other.play(self.sounds[action], loops=0)
         if action == "background_sound":
             if not self.channel_music.get_busy():
-                self.channel_music.play(self.sounds[action], loops = -1)
+                self.channel_music.play(self.sounds[action], loops=-1)
 
     def stop_loop(self, action: str | None):
         if action is None:
