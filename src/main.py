@@ -1153,6 +1153,10 @@ def game_loop(map_file: str | None = None):
 
     running = True
 
+    # start background music
+    sounds = Sounds(volume / 100)
+    sounds.play_sound("background_sound")
+
     # run game
     while running:
         dt = clock.tick(60) / 300  # animation speed
