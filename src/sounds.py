@@ -2,7 +2,7 @@ import pygame
 
 
 class Sounds:
-    def __init__(self, volume=1.0):
+    def __init__(self, effect_volume=1.0, music_volume=1.0):
         pygame.mixer.init()
         # load sounds
         self.sounds = {
@@ -29,19 +29,24 @@ class Sounds:
             "powerup_sound": pygame.mixer.Sound(
                 "../resources/sounds/power_up_sound_v1.ogg"
             ),
+            "background_sound": pygame.mixer.Sound(
+                "../resources/sounds/FutureAmbient_3.wav"
+            ),
         }
 
         # different channels fot different sound categories
         self.channel_move = pygame.mixer.Channel(1)
-        self.channel_move.set_volume(volume)
+        self.channel_move.set_volume(effect_volume)
         self.channel_loop = pygame.mixer.Channel(2)
-        self.channel_loop.set_volume(volume)
+        self.channel_loop.set_volume(effect_volume)
         self.channel_single_texture = pygame.mixer.Channel(3)
-        self.channel_single_texture.set_volume(volume)
+        self.channel_single_texture.set_volume(effect_volume)
         self.channel_shooting = pygame.mixer.Channel(4)
-        self.channel_shooting.set_volume(volume)
+        self.channel_shooting.set_volume(effect_volume)
         self.channel_other = pygame.mixer.Channel(5)
-        self.channel_other.set_volume(volume)
+        self.channel_other.set_volume(effect_volume)
+        self.channel_music = pygame.mixer.Channel(6)
+        self.channel_music.set_volume(music_volume * 0.1)
         self.loops = {"bush_sound", "sand_sound"}
         self.single_textures = {"wall_hit_sound", "lava_sound", "ice_sound"}
         self.shooting = {"shot_sound", "player_hit_sound"}
@@ -91,6 +96,9 @@ class Sounds:
         if action in self.other:
             if not self.channel_other.get_busy():
                 self.channel_other.play(self.sounds[action], loops=0)
+        if action == "background_sound":
+            if not self.channel_music.get_busy():
+                self.channel_music.play(self.sounds[action], loops=-1)
 
     def stop_loop(self, action: str | None):
         if action is None:
@@ -127,6 +135,8 @@ class Sounds:
                 self.channel_shooting.stop()
             if sound in self.other and self.channel_other.get_busy():
                 self.channel_other.stop()
+            if sound == "background_sound" and self.channel_music.get_busy():
+                self.channel_music.stop()
             self.current_loop = None
             self.move_playing = False
             self.drive = False

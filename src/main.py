@@ -46,7 +46,8 @@ print(f"TILE_SIZE: {config.TILE_SIZE}")
 type: str = random.choice(["Tank", "Spider"])
 language: str = "English"
 config.update_language("English")
-volume: int = 100
+effect_volume: int = 100
+music_volume: int = 100
 texts = config.texts
 difficulty: str = "medium"
 highscore: int = 0
@@ -436,7 +437,7 @@ def pause_menu():
     paused = True
     while paused:
 
-        sounds = Sounds(volume / 100)
+        sounds = Sounds(effect_volume / 100, music_volume / 100)
         sounds.stop_all_sounds()
         screen.fill((30, 30, 30))
 
@@ -846,13 +847,22 @@ def level_selection():
 
 
 def settings():
-    global volume
+    global effect_volume
+    global music_volume
     global texts
     clock = pygame.time.Clock()
 
-    volume_slider = Slider(
-        rect=(screen.get_width() // 2 - 100, 290, 200, 10),
-        current_percentage=volume,
+    effect_volume_slider = Slider(
+        rect=(screen.get_width() // 2 - 250, 290, 200, 10),
+        current_percentage=effect_volume,
+        slider_color=(20, 130, 200),
+        circle_color=(200, 50, 50),
+        hover_color=(255, 80, 80),
+    )
+
+    music_volume_slider = Slider(
+        rect=(screen.get_width() // 2 + 50, 290, 200, 10),
+        current_percentage=music_volume,
         slider_color=(20, 130, 200),
         circle_color=(200, 50, 50),
         hover_color=(255, 80, 80),
@@ -902,7 +912,13 @@ def settings():
 
         draw_text(screen, texts["settings_text"], 0, 150, 80, center=True)
 
-        draw_text(screen, texts["volume_text"], 0, 250, 50, center=True)
+        draw_text(
+            screen, texts["effect_volume_text"], screen.get_width() // 2 - 265, 240, 50
+        )
+
+        draw_text(
+            screen, texts["music_volume_text"], screen.get_width() // 2 + 40, 240, 50
+        )
 
         draw_text(screen, texts["language_text"], 0, 350, 50, center=True)
 
@@ -917,19 +933,32 @@ def settings():
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    if volume_slider.circle_rect.collidepoint(event.pos):
-                        active_slider = volume_slider.circle_rect
+                    if effect_volume_slider.circle_rect.collidepoint(event.pos):
+                        active_slider = effect_volume_slider.circle_rect
+                    if music_volume_slider.circle_rect.collidepoint(event.pos):
+                        active_slider = music_volume_slider.circle_rect
 
             if event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
-                    active_slider = None
-                    volume = volume_slider.percentage
+                    if active_slider == effect_volume_slider.circle_rect:
+                        active_slider = None
+                        effect_volume = effect_volume_slider.percentage
+                    if active_slider == music_volume_slider.circle_rect:
+                        active_slider = None
+                        music_volume = music_volume_slider.percentage
 
             if event.type == pygame.MOUSEMOTION:
                 if active_slider:
-                    volume_slider.update(
-                        event.rel[0] / (volume_slider.rect.width / 100)
-                    )
+                    if active_slider == effect_volume_slider.circle_rect:
+                        effect_volume_slider.update(
+                            event.rel[0] / (effect_volume_slider.rect.width / 100)
+                        )
+                        active_slider = effect_volume_slider.circle_rect
+                    if active_slider == music_volume_slider.circle_rect:
+                        music_volume_slider.update(
+                            event.rel[0] / (music_volume_slider.rect.width / 100)
+                        )
+                        active_slider = music_volume_slider.circle_rect
 
             if english_button.is_clicked(event):
                 language = "English"
@@ -946,7 +975,8 @@ def settings():
             if back_button.is_clicked(event):
                 return
 
-        volume_slider.draw(screen)
+        effect_volume_slider.draw(screen)
+        music_volume_slider.draw(screen)
         english_button.draw(screen)
         german_button.draw(screen)
         credits_button.draw(screen)
@@ -1069,7 +1099,7 @@ def countdown(surface, camera, map_renderer, robot_renderer, robots, player):
     font = pygame.font.SysFont(None, 150)
     countdown_numbers = ["3", "2", "1", texts["go_text"]]
 
-    sounds = Sounds(volume / 100)
+    sounds = Sounds(effect_volume / 100, music_volume / 100)
     sounds.play_sound("countdown_sound")
 
     # player can see whole arena during countdown
@@ -1153,6 +1183,10 @@ def game_loop(map_file: str | None = None):
 
     running = True
 
+    # start background music
+    sounds = Sounds(effect_volume / 100, music_volume / 100)
+    sounds.play_sound("background_sound")
+
     # run game
     while running:
         dt = clock.tick(60) / 300  # animation speed
@@ -1162,7 +1196,7 @@ def game_loop(map_file: str | None = None):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-                sounds = Sounds(volume / 100)
+                sounds = Sounds(effect_volume / 100, music_volume / 100)
                 sounds.stop_all_sounds()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
@@ -1358,7 +1392,7 @@ def game_loop(map_file: str | None = None):
 
 
 def gameover(camera, map_renderer, robot_renderer, robots, player, score=-1, kills=-1):
-    sounds = Sounds(volume / 100)
+    sounds = Sounds(effect_volume / 100, music_volume / 100)
     sounds.stop_all_sounds()
     sounds.play_sound("gameover_sound")
 
@@ -1426,7 +1460,7 @@ def gameover(camera, map_renderer, robot_renderer, robots, player, score=-1, kil
 
 def victory(camera, map_renderer, robot_renderer, robots, player):
 
-    sounds = Sounds(volume / 100)
+    sounds = Sounds(effect_volume / 100, music_volume / 100)
     sounds.stop_all_sounds()
     sounds.play_sound("win_sound")
 
