@@ -397,7 +397,7 @@ class RobotRenderer:
         # Draw power icon (lightning)
         icon_power = pygame.transform.scale(
             config.ICONS["power"], (int(power_height + 4), int(power_height + 4))
-        )
+        ).convert_alpha()
         icon_x = power_x - icon_power.get_width() - 5
         icon_y = power_y
         if not robot.in_bush:
@@ -486,7 +486,7 @@ class RobotRenderer:
         icon_size = max_life_height
         icon_heart = pygame.transform.scale(
             config.ICONS["heart"], (int(icon_size + 3), int(icon_size + 3))
-        )
+        ).convert_alpha()
         icon_x = life_x - icon_heart.get_width() - 5
         icon_y = life_y
         if not robot.in_bush:
