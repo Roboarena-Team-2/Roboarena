@@ -46,7 +46,7 @@ class Sounds:
         self.channel_other = pygame.mixer.Channel(5)
         self.channel_other.set_volume(effect_volume)
         self.channel_music = pygame.mixer.Channel(6)
-        self.channel_music.set_volume(music_volume * 0.5)
+        self.channel_music.set_volume(music_volume * 0.1)
         self.loops = {"bush_sound", "sand_sound"}
         self.single_textures = {"wall_hit_sound", "lava_sound", "ice_sound"}
         self.shooting = {"shot_sound", "player_hit_sound"}
