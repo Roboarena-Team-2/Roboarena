@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>6. Sprint</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <h1>6. Sprint (4.7. - 1.8.):</h1>
+    
+    <h3>Unsere Meetings in diesem Sprint</h3>
+    <h4>8.7. 10 Uhr</h4>
+    <ul>
+        <li>
+            Katja hat mit Power-Ups schon begonnen, aber nochmal genauere Besprechung und Klärung von Fragen: 
+            Icons (wer eine gute Idee für das Power-Up hat, bei dem man andere rammen kann, meldet sich),
+            Wirkung der Power-Ups soll visuell sichtbar sein & Power-Ups bekommen auch einen Sound (übernimmt Sarah im selben PR)
+        </li>
+        <li>
+            Genauere Klärung der veränderten Steuerung für Panzer-Roboter und Spinnen-Roboter, da dieses Issue in diesem Sprint begonnen wird (von Sarah).
+        </li>
+        <li>
+            Besprechung von kleineren Bugs und Verbesserungsmöglichkeiten.
+        </li>
+        <li>
+            Besprechung Zeitplan bis zum Ende des Projekts und Festlegung, dass wir die Abschlusspräsentation am Besten in 4 Wochen machen möchten.
+        </li>
+    </ul>
+    <h4>16.7. 10 Uhr</h4>
+    <ul>
+        <li>
+            Besprechung von kleinen Bugs, die uns in der letzten Woche noch aufgefallen sind
+            und Aufteilung wer sich darum in welchen PR kümmert.
+        </li>
+        <li>
+            Besprechung der aktuell noch offenen Pull Requests: bei #82 wird die Menge der Power-Ups 
+            wieder etwas reduziert und sie verschwinden nach einiger Zeit von selbst wieder, bei #79 
+            probieren alle mal aus, welcher survival mode besser ist und ob ggf. ein single-shot-kill 
+            Mechanismus besser wäre, bei #83 wird noch weiter gearbeitet und der Panzer bekommt noch ein 
+            anderes Schieß-Verhalten
+        </li>
+        <li>
+            nächste Woche (am 24. um 10 Uhr) treffen, um alle Variablen festzulegen (z.B. Geschwindigkeiten)
+        </li>
+        <li>
+        Aufgabenverteilung: alle arbeiten an ihren noch offenen PRs weiter, Katja übernimmt kleine 
+        Aufgaben, die noch übrig sind (Sprache, Anleitung, ...), Walid arbeitet weiter am Design (v.a. Kennzeichnung des 
+        Spielers und Bewegung des Rohrs beim Panzer), Sarah und Nico kümmern sich vorraussichtlich um die Abschlusspräsentation.
+        Falls diese Woche nochmal ein Meeting ist, präsentiert Katja.
+        </li>
+    </ul>
+    <h4>24.7. 10 Uhr</h4>
+    <ul>
+        <li>
+            Hauptthema heute: Anpassen der Variablen, so dass ein guter Unterschied zwischen den Schwierigkeiten
+            ist und dass der survival mode nicht mehr zu schwer ist. Außerdem Anpassen der
+            Unterschiede zwischen Spinne und Panzer. Jeder kann nach Abschluss nochmal ausprobieren, ob alles gut ist
+            und sonst Verbesserungen vornehmen.
+        </li>
+        <li>
+            Weiteres Vorgehen Design (Walid): dringend noch zu erledigen ist das Lava-spawn-Problem lösen,
+            den Spieler markieren und den Schussbereich des Panzers (45 Grad nach links und rechts) markieren.
+        </li>
+        <li>
+            Weiteres Vorgehen Maps/Spielnavigation (Nico): random Map Generator muss fertiggestellt werden, die beiden Maps werden nochmal überarbeitet,
+            ausgewählte Buttons werden markiert, Navigation vor Spielbeginn wird verbessert
+            (bei Spielstart Auswahl von Robotertyp und Map möglich) und kurze Zusammenfasung bei Auswahlseite was Spinne/Panzer können
+            und was die survival modes ausmacht.
+        </li>
+        <li>
+            Sonstiges weiteres Vorgehen: Katja macht Settings/instruktions fertig und Sarah noch ein paar
+            Kleinigkeiten
+        </li>
+        <li>
+            Abschlusspräsentation: Sarah erstellt die Präsentation, letzte inhaltliche Änderungen bis spätestens
+            Sonntag (oder bis da Ankündigung, dass noch was kommt) und letzte Chance für optische Änderungen bis Mittwoch,
+            danach werden Screenshots und Bildschirmvideos für die Präsentation gemacht.
+        </li>
+        <li>
+            GitHub-Page: jeder trägt für Sprint 6 noch ein, was man gemacht hat
+        </li>
+        <li>
+            nächstes Treffen: 30.7. (hauptsächlich um bis dahin vorhandenen Stand der Präsenation zu besprechen)
+        </li>
+    </ul>
+    <h4>30.7. 10 Uhr</h4>
+    <ul>
+        <li>
+            Besprechung, wie die Menüführung genau aussehen soll.
+        </li>
+        <li>
+            Sarah zeigt Präsentation für Abschlusspräsentation und Verteilung wer welchen Teil präsentiert.
+        </li>
+    </ul>
+    
+    <h3>Coding: Steuerung</h3>
+    <ul>
+        <li>
+            Die Steuerung der Roboter wurde verändert. Außerdem unterscheiden sich Spinne und Panzer
+            nicht mehr nur optisch, sondern auch in der Steuerung und in einigen Variablen.
+        </li>
+        <li>
+            Steuerung Spinne: die Spinne kann weiterhin vorwärts, rückwärts, links, rechts und auch diagonal bewegt werden,
+            allerdings jetzt mit den tasten WASD. Die Drehung erfolgt nun über den Mauszeiger (Spinne dreht sich so, 
+            dass sie in Richtung des Mauszeigers schaut), Schießen erfolgt beim Klicken der 
+            linken Maustaste in Blickrichtung.
+        </li>
+        <li>
+            Steuerung Panzer: der Panzer kann nur noch vorwärts und rückwärts fahren (W- und S-Taste) und drehen
+            (A- und D-Taste). Geschossen wird mit Mausklick in die Richtung, in der Mauszeiger zeigt,
+            aber maximal 45° links oder rechts von der Blickrichtung. Das gilt auch für die von uns programmierten Gegner.
+        </li>
+        <li>
+            weitere Unterschiede zwischen Panzer und Spinne: der Panzer kann weiter schießen und mit höherer Geschwindigkeit, 
+            Schießen kostet mehr Energie, ein Treffer verusacht mehr Schaden (um schwierigere Steuerung auszugleichen) und 
+            Panzer fährt und dreh sich langsamer (damit es realistischer wirkt und um Steuerung durch zu schnelles Drehen nicht zu erschweren).
+        </li>
+    </ul>
+    (Sarah)
+
+    <h3>Coding: Modi, Powerups und Menuerweiterung</h3>
+    <ul>
+        <li>
+            Schwierigkeiten: <br>
+            Es wurden verschiedene Schwierigkeitslevel eingefügt um verschiedene Skill-level testen zu können.
+            Hier wurden die 3 Typen: leicht, mittel und schwer verwendet.
+            Die Level werden durch Anzahl der Gegner, höhere Geschwindigkeit (+ kürzerer Shotbreakduration) und Vorteil für Spieler unterschieden.
+            Die Schwierigkeiten korrespondieren zu dem benötigten Skill-level, da man Leicht öfters hintereinander gewinnen kann und Schwer nahezu unmöglich ist.
+        </li>
+        <li>
+            Survival Mode: <br>
+            Zudem wurde noch Survival-Mode mit 2 Variationen zugefügt zwischen den entschieden werden konnte, wir haben uns allerdings dafür entschieden beide zu behalten.
+            Bei Survival-Mode kann man Gegner mit einem Schuss töten, score (in sec) und kills werden gezählt und mit highscore angezeigt.
+            Das Ziel ist solange zu überleben, wie man kann und dabei evtl. den aktuellen highscore zu übertreffen.
+            In Survival 1 werden in kürzer werdenden Abständen neue Roboter hinzugefügt, bzw. wenn sonst keine Gegner mehr leben.
+            In Survival 2 gibt es dauerhaft 3 Roboter und sobald ein Gegner stirbt, wird ein neuer etwas schnellerer gespawnt.
+        </li>
+        <li>
+            Powerups: <br>
+            Es gibt 4 verschiedene Arten von Powerups, von denen alle 8 sec an einer "sicheren" zufälligen Stelle 1 zufällig ausgewähltes Powerup gespawnt wird.
+            Es verweilt für ca 10 sekunden, in den jeder Roboter sie einsammeln kann.
+            - Energie-booster: gibt sofort 50 Energie
+            - Gesundheits-booster: gibt sofort 50 Gesundheit
+            - Schild: hält ca 5 Sekunden und beschützt den Besitzer vor Schüssen (wird durch blaue aura angezeigt)
+            - Rammbock: hält ca 5 Sekunden, verdoppelt die Geschwindigkeit und bei Kollision bekommt der Gegner Schaden
+        </li>
+        <li>
+            Einstellungen: <br>
+            Eine Einstellungsseite wurde zum Menu hinzugefügt, in der Lautstärke durch slider angepasst werden kann, die Sprache zwischen deutsch und englisch wechseln 
+            und die credits angezeigt werden können.<br>
+            Anleitung:<br>
+            Zudem wurde eine Anleitungsseite erstellt, die alle wichtiger Infos beinhaltet und die auch durch das Pause-Menu aufgerufen werden kann.<br>
+            Die Buttons wurden etwas vergrößert, um den längeren deutschen Wörten zu passen und sie wurden angepasst, die aktuell ausgewählte Schwierigkeit/Sprache/Karte/Roboterart anzuzeigen.
+        </li>
+
+    </ul>
+    (Katja)
+
+    <h3>Coding: Random Map Generator und Menüerweiterung</h3>
+    <ul>
+        <li>
+            Random Map Generator: <br>
+            Der Random Map Generator wurde nochmal überarbietet und funktioniert jetzt mit Perlin Noise. Es wird eine Heightmap erstellt,
+            welche durch das Überlagern mehrerer Noise Funktionen generiert wird. Basierned auf der Heightmap wird dann das Terrain gewählt.
+            Die Maps sind dadurch deutlich interessanter als zuvor und auch so gut wie immer bespielbar (Es ist noch nie vorgekommen, dass eine unspielbare map generiert wurde, aber in der Theorie könnte das passieren)
+        </li>
+        <li>
+            Menüerweiterungen: <br>
+            Die Menüführung wurde angepasst und es wurde sowohl ein quickstart button hinzugefügt, als auch ein Button,
+            der nach Auswahl der Schwierigkeit direkt das Spiel startet. In beiden fällen werden dann alle nicht angegebenen Parameter
+            (Map, Klasse, Schwierigkeit/Spielmodi) zufällig ausgewählt.
+        </li>
+
+    </ul>
+    (Nico)
+
+    <h3>Design: 2.5D für Map und Roboter</h3>
+    <ul>
+        <li>Spinne und Panzer wurden in Blender modelliert.
+            Die Spinne nutzt ein vollständiges Skelett für 360°-Animationen.
+            Es wurden aufgrund von Leistungsproblemen nur 36 Bilder von Beiden gemacht
+            -- alle 10 grad.
+            Der Panzer hat einen drehbaren Kopf mit Laservisier.
+            Die Rotation des Kopfes wurde auf +/- 30° beschränkt.</li>
+        <li>Einige Tiles wurden auf 2.5d angepasst.</li>
+        <li>Die Kamera-Zoomtechnik wurde verbessert und die Hitboxen leicht verkleinert,
+            um falsche Kollisionen mit Lava zu vermeiden.</li>
+    </ul>
+    (Walid)
+
+    <h3>Coding: Sonstiges</h3>
+    <ul>
+        <li>
+            Der gameover-/ victory-Screen wurde angepasst, so dass der Sound erst vollständig abgespielt wird
+            bevor man das Spiel neu starten kann. <br>(Sarah)
+        </li>
+        <li>
+            Es wurde noch eine Hintergrundmusik zum Spiel hinzugefügt. Diese kann über eine separate
+            Lautstärkeeinstellung leißer oder auch lautlos gestellt werden.<br>
+            (Musik auswählen: Nico, Musik ins Spiel einfügen: Sarah, zusätzliche Lautstärkeeinstellung: Katja)
+        </li>
+    </ul>
+    
+    <h3>Sonstiges (Absprachen, Probleme, Fragen etc.)</h3>
+    <ul>
+        <li>
+            Die einzelnen Variablen (z.B. Geschwindigkeiten) wurden angepasst, so dass sich das Spiel gut spielen lässt und
+            die einzelnen Schwierigkeiten merklich unterschiedlich sind. (alle zusammen)
+        </li>
+        <li>
+            Am Ende dieses Sprints steht die Präsentation unseres Spiels "vor den Investoren" an.
+            Deshalb wurde ein Pitch vorbereitet und ein Trailer und eine Präsentation dafür erstellt. (Sarah)
+        </li>
+        <li>
+            Nach Abschluss dieses Sprints ist das Spiel erstmal fertig und es wird ein Release gemacht. (Sarah)
+        </li>
+    </ul>
+    
+    <a style="display: block; text-align: center;" href="../index.html">zurück zur Startseite</a>
+</body>
+</html>
